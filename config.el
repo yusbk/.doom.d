@@ -53,10 +53,24 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+(setq display-line-numbers-type 'relative)
+
+(after! doom-modeline
+  (setq doom-modeline-major-mode-color-icon t
+        doom-modeline-minor-modes (featurep 'minions)))
+
+(use-package! dimmer
+  :custom
+  (dimmer-fraction 0.30)
+  (dimmer-mode t)
+  (dimmer-configure-which-key)
+  )
+
 (use-package! aggresive-indent
   :hook ((emacs-lisp-mode ess-r-mode org-src-mode) . aggresive-indent-mode))
 
 (after! ess
+  (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer)
