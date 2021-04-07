@@ -53,11 +53,22 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
+(unless (equal "Battery status not available"
+               (battery))
+  (display-battery-mode 1))                           ; On laptops it's nice to know how much power you have
+
+(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
+    (toggle-frame-maximized)
+  (toggle-frame-fullscreen))
+
 (setq display-line-numbers-type 'relative)
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-color-icon t
         doom-modeline-minor-modes (featurep 'minions)))
+
+(map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
 (use-package! dimmer
   :custom
@@ -67,7 +78,11 @@
   )
 
 (use-package! aggresive-indent
-  :hook ((emacs-lisp-mode ess-r-mode org-src-mode) . aggresive-indent-mode))
+  :hook
+  (lisp-mode . aggressive-indent-mode)
+  (ess-r-mode . aggressive-indent-mode)
+  (org-src-mode . aggressive-indent-mode))
+
 
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
