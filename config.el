@@ -77,12 +77,9 @@
   (dimmer-configure-which-key)
   )
 
-(use-package! aggresive-indent
-  :hook
-  (lisp-mode . aggressive-indent-mode)
-  (ess-r-mode . aggressive-indent-mode)
-  (org-src-mode . aggressive-indent-mode))
-
+(use-package! aggressive-indent
+  :hook ((lisp-mode ess-r-mode org-src-mode) . aggressive-indent-mode)
+  )
 
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
