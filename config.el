@@ -6,8 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+(setq user-full-name "Yusman Kamaleri"
+       buser-mail-address "ybkamaleri@gmail.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -52,3 +52,143 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+(use-package! aggresive-indent
+  :hook ((emacs-lisp-mode ess-r-mode org-src-mode) . aggresive-indent-mode))
+
+(after! ess
+  (map! (:map ess-mode-map
+         :localleader
+         "T" #'test-R-buffer)
+        (:map ess-r-mode-map
+        :i "M--" #'ess-cycle-assign
+        :i "M-+" #'my-add-column
+        :i "M-'" #'my-add-match
+        :i "M-\\" #'my-add-pipe)
+       (:map inferior-ess-r-mode-map
+        :i "M--" #'ess-cycle-assign
+        :n "C-<up>" #'ess-readline))
+  :config
+  (setq comint-scroll-to-bottom-on-input t
+        comint-scroll-to-bottom-on-output t
+        comint-move-point-for-output t)
+
+  (setq inferior-R-args "--no-save")
+
+  (setq ess-R-font-lock-keywords
+        '((ess-R-fl-keyword:modifiers . t)
+          (ess-R-fl-keyword:fun-defs . t)
+          (ess-R-fl-keyword:keywords . t)
+          (ess-R-fl-keyword:assign-ops . t)
+          (ess-R-fl-keyword:constants . t)
+          (ess-fl-keyword:fun-calls . nil)
+          (ess-fl-keyword:numbers . t)
+          (ess-fl-keyword:operators . t)
+          (ess-fl-keyword:delimiters . nil)
+          (ess-fl-keyword:= . t)
+          (ess-R-fl-keyword:F&T . t)
+          (ess-R-fl-keyword:%op% . t)))
+  (setq inferior-ess-r-font-lock-keywords
+        '((ess-S-fl-keyword:prompt . t)
+          (ess-R-fl-keyword:messages . t)
+          (ess-R-fl-keyword:modifiers . t)
+          (ess-R-fl-keyword:fun-defs . t)
+          (ess-R-fl-keyword:keywords . t)
+          (ess-R-fl-keyword:assign-ops . t)
+          (ess-R-fl-keyword:constants . t)
+          (ess-fl-keyword:matrix-labels . t)
+          (ess-fl-keyword:fun-calls . nil)
+          (ess-fl-keyword:numbers . nil)
+          (ess-fl-keyword:operators . nil)
+          (ess-fl-keyword:delimiters . nil)
+          (ess-fl-keyword:= . nil)
+          (ess-R-fl-keyword:F&T . nil)))
+
+
+  ;; use styler package but it has to be install first
+  (defun ess-indent-region-with-styler (beg end)
+    "Format region of code R using styler::style_text()."
+    (interactive "r")
+    (let ((string
+           (replace-regexp-in-string
+            "\"" "\\\\\\&"
+            (replace-regexp-in-string ;; how to avoid this double matching?
+             "\\\\\"" "\\\\\\&"
+             (buffer-substring-no-properties beg end))))
+          (buf (get-buffer-create "*ess-command-output*")))
+      (ess-force-buffer-current "Process to load into:")
+      (ess-command
+       (format
+        "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
+        string) buf)
+      (with-current-buffer buf
+        (goto-char (point-max))
+        ;; (skip-chars-backward "\n")
+        (let ((end (point)))
+          (goto-char (point-min))
+          (goto-char (1+ (point-at-eol)))
+          (setq string (buffer-substring-no-properties (point) end))
+          ))
+      (delete-region beg end)
+      (insert string)
+      (delete-char -1)
+      ))
+
+
+  ;; data.table update
+  (defun my-add-column ()
+    "Adds a data.table update."
+    (interactive)
+    ;;(just-one-space 1) ;delete whitespace around cursor
+    (insert " := "))
+
+  ;; Match
+  (defun my-add-match ()
+    "Adds match."
+    (interactive)
+    (insert " %in% "))
+
+  ;; pipe
+  (defun my-add-pipe ()
+    "Adds a pipe operator %>% with one space to the left and then
+  starts a newline with proper indentation"
+    (interactive)
+    (just-one-space 1)
+    (insert "%>%")
+    (ess-newline-and-indent))
+
+  ;; Get commands run from script or console
+  ;; https://stackoverflow.com/questions/27307757/ess-retrieving-command-history-from-commands-entered-in-essr-inferior-mode-or
+  (defun ess-readline ()
+    "Move to previous command entered from script *or* R-process and copy
+     to prompt for execution or editing"
+    (interactive)
+    ;; See how many times function was called
+    (if (eq last-command 'ess-readline)
+        (setq ess-readline-count (1+ ess-readline-count))
+      (setq ess-readline-count 1))
+    ;; Move to prompt and delete current input
+    (comint-goto-process-mark)
+    ;; (end-of-buffer nil) ;; tweak here
+    (goto-char (point-max))
+    (comint-kill-input)
+    ;; Copy n'th command in history where n = ess-readline-count
+    (comint-previous-prompt ess-readline-count)
+    (comint-copy-old-input)
+    ;; Below is needed to update counter for sequential calls
+    (setq this-command 'ess-readline)
+    )
+
+(defun test-R-buffer ()
+    "Create a new empty buffer with R-mode."
+    (interactive)
+    (let (($buf (generate-new-buffer "*r-test*"))
+          (test-mode2 (quote R-mode)))
+      (switch-to-buffer $buf)
+      (insert (format "## == Test %s == \n\n" "R script"))
+      (funcall test-mode2)
+      (setq buffer-offer-save t)
+      $buf
+      ))
+
+  )
