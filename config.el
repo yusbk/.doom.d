@@ -70,11 +70,15 @@
 
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
+(set-eshell-alias! "cdc" "cd ~/test")
+
 (use-package! dimmer
   :custom
   (dimmer-fraction 0.30)
-  (dimmer-mode t)
+  :config
   (dimmer-configure-which-key)
+  (dimmer-configure-posframe)
+  (dimmer-mode t)
   )
 
 (use-package! aggressive-indent
