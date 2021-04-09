@@ -52,3 +52,4 @@
 (package! aggressive-indent)
 (package! dimmer)
 (package! beacon)
+(package! outshine)
