@@ -71,7 +71,13 @@
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
-(set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")
+
+(cond (( eq system-type 'gnu/linux )
+       (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")  )
+      ((eq system-type 'windows-nt)
+       (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")
+       ))
+
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
