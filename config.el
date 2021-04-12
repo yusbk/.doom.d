@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Yusman Kamaleri"
-       buser-mail-address "ybkamaleri@gmail.com")
+      buser-mail-address "ybkamaleri@gmail.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -22,18 +22,43 @@
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
+
+;;; Check system.
+;; Source https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-elisp
+(defmacro with-system (type &rest body)
+  "Evaluate BODY if `system-type' equals TYPE."
+  (declare (indent defun))
+  `(when (eq system-type ',type)
+     ,@body))
+
+(with-system gnu/linux
+  (setq fhi-dir-h "/mnt/H")
+  (setq fhi-dir-f "/mnt/F")
+  (setq fhi-dir-n "/mnt/N"))
+
+(with-system windows-nt
+  (setq fhi-dir-h "H:")
+  (setq fhi-dir-f "F:")
+  (setq fhi-dir-n "N:"))
+
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-gruvbox)
+;; (setq doom-theme 'doom-palenight)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+(setq org-directory (expand-file-name "org-mode/" fhi-dir-h))
+
+;; (with-system gnu/linux
+;;              (setq org-directory "/mnt/H/org-mode"))
+;; (with-system windows-nt
+;;              (setq org-directory "H:/org-mode"))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -62,21 +87,68 @@
     (toggle-frame-maximized)
   (toggle-frame-fullscreen))
 
-(setq display-line-numbers-type 'relative)
+(setq-default
+ delete-by-moving-to-trash t                      ; Delete files to trash
+ tab-width 4                                      ; Set width for tabs
+ uniquify-buffer-name-style 'forward              ; Uniquify buffer names
+ window-combination-resize t                      ; take new window space from all other windows (not just current)
+ x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+
+(delete-selection-mode 1)                         ; Replace selection when inserting text
+(display-time-mode 1)                             ; Enable time in the mode-line
+(global-subword-mode 1)                           ; Iterate through CamelCase words
+(setq line-spacing 0.3)                           ; seems like a nice line spacing balance.
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-color-icon t
         doom-modeline-minor-modes (featurep 'minions)))
 
+;; Split windows and show Ivy for view
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-buffer))
+(setq +ivy-buffer-preview t)
+
+;; Only show if document isn't in UTF-8
+(defun doom-modeline-conditional-buffer-encoding ()
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+;; Use SPC w SPC to rotate if not using Doom default SPC w r/R
+(map! :map evil-window-map
+      "SPC" #'rotate-layout
+      "<left>"     #'evil-window-left
+      "<down>"     #'evil-window-down
+      "<up>"       #'evil-window-up
+      "<right>"    #'evil-window-right
+      ;; Swapping windows
+      "C-<left>"       #'+evil/window-move-left
+      "C-<down>"       #'+evil/window-move-down
+      "C-<up>"         #'+evil/window-move-up
+      "C-<right>"      #'+evil/window-move-right)
+
+
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
 
-(cond (( eq system-type 'gnu/linux )
-       (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")  )
-      ((eq system-type 'windows-nt)
-       (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")
-       ))
+(set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
+
+;; (with-system gnu/linux
+;;   (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
+
+;; (with-system windows-nt
+;;        (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
+
+;; (cond (( eq system-type 'gnu/linux )
+;;        (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")  )
+;;       ((eq system-type 'windows-nt)
+;;        (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")
+;;        ))
 
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
@@ -90,14 +162,14 @@
   (dimmer-mode t)
   )
 
-;;;; Outshine header
+;;; Outshine header
+;; For nativation like Org major-mode. Use <S-Tab> or <C-M i> on the header to fold
 (use-package! outshine
-  :commands (outshine-mode))
+  :hook (emacs-lisp-mode . outshine-mode))
 
-;;;; Aggressive Indent
+;;; Aggressive Indent
 (use-package! aggressive-indent
-  :hook ((lisp-mode ess-r-mode org-src-mode) . aggressive-indent-mode)
-  )
+  :hook ((emacs-lisp-mode ess-r-mode org-src-mode) . aggressive-indent-mode))
 
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -105,19 +177,25 @@
          :localleader
          "T" #'test-R-buffer)
         (:map ess-r-mode-map
-        :i "M--" #'ess-cycle-assign
-        :i "M-+" #'my-add-column
-        :i "M-'" #'my-add-match
-        :i "M-\\" #'my-add-pipe)
-       (:map inferior-ess-r-mode-map
-        :i "M--" #'ess-cycle-assign
-        :n "C-<up>" #'ess-readline))
+         :i "M--" #'ess-cycle-assign
+         :i "M-+" #'my-add-column
+         :i "M-'" #'my-add-match
+         :i "M-\\" #'my-add-pipe)
+        (:map inferior-ess-r-mode-map
+         :i "M--" #'ess-cycle-assign
+         :n "C-<up>" #'ess-readline))
   :config
+  ;; Error when saving .Rhistory because folder ess-history doesn't exist
+  ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
+  ;; folder manually
+
+
   (setq comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
         comint-move-point-for-output t)
 
   (setq inferior-R-args "--no-save")
+  ;; (setq ess-history-directory "~/rhistory")
 
   (setq ess-R-font-lock-keywords
         '((ess-R-fl-keyword:modifiers . t)
@@ -223,7 +301,7 @@
     (setq this-command 'ess-readline)
     )
 
-(defun test-R-buffer ()
+  (defun test-R-buffer ()
     "Create a new empty buffer with R-mode."
     (interactive)
     (let (($buf (generate-new-buffer "*r-test*"))
