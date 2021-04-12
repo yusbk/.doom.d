@@ -103,7 +103,7 @@
   (setq doom-modeline-major-mode-color-icon t
         doom-modeline-minor-modes (featurep 'minions)))
 
-;; Split windows and show Ivy for view
+;;;; Split windows and show Ivy for view
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
 (defadvice! prompt-for-buffer (&rest _)
