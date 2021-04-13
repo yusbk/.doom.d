@@ -49,14 +49,6 @@
 (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-palenight)
 
-;; If you use `org' and don't want your org files in the default location below,
-;; change `org-directory'. It must be set before org loads!
-(setq org-directory (expand-file-name "org-mode/" fhi-dir-h))
-
-;; (with-system gnu/linux
-;;              (setq org-directory "/mnt/H/org-mode"))
-;; (with-system windows-nt
-;;              (setq org-directory "H:/org-mode"))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -80,6 +72,33 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;;; Font
+;; Font size adjustment based on monitor size
+;; https://www.reddit.com/r/emacs/comments/dpc2aj/readjusting_fontsize_according_to_monitor/
+(defun hoagie-adjust-font-size (frame)
+  "Inspired by https://emacs.stackexchange.com/a/44930/17066. FRAME is ignored.
+If I let Windows handle DPI everything looks blurry."
+  ;; Using display names is unreliable...switched to checking the resolution
+  (let* ((attrs (frame-monitor-attributes)) ;; gets attribs for current frame
+         (monitor-name (cdr (fourth attrs)))
+         (width-mm (second (third attrs)))
+         (width-px (fourth (first attrs)))
+         (size 13)) ;; default for first screen at work
+    (when (eq width-px 2560) ;; middle display at work
+      (setq size 11))
+    (when (eq width-px 1920) ;; laptop screen
+      (setq size 12))
+    (when (eq 531 width-mm)
+      (setq size 9)) ;; External monitor at home
+    (when (eq 1095 width-mm)
+      (setq size 15)) ;; television
+    (when (eq (length (display-monitor-attributes-list)) 1) ;; override everything if no external monitors!
+      (setq size 10))
+    (set-frame-font (format "Consolas %s" size))
+    ))
+(add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
+
+;;; UI
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
                (battery))
@@ -316,4 +335,24 @@
       $buf
       ))
 
+  )
+
+;;; Org extention
+;; Other packages to make org-mode nicer
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+(setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
+
+;; org-journal the DOOM way
+(after! org-journal
+  :init
+  (setq org-journal-dir (concat org-directory "Journal/")
+        org-journal-time-prefix "* " ;Start at first level heading
+        org-journal-date-prefix "#+TITLE: "
+        org-journal-file-format "%Y-%m-%d.org"
+        org-journal-date-format "%A, %d %B %Y")
+  :config
+  (setq org-journal-find-file #'find-file-other-window )
+  (map! :map org-journal-mode-map
+        "C-c n s" #'evil-save-modified-and-close )
   )
