@@ -98,6 +98,13 @@ If I let Windows handle DPI everything looks blurry."
     ))
 (add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
 
+;; Installed from https://github.com/be5invis/Iosevka
+(setq doom-font (font-spec :family "Iosevka SS04" :size 16)
+      doom-big-font (font-spec :family "Iosevka SS04" :size 36)
+                                        ;doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
+                                        ;doom-serif-font (font-spec :family "ETBembo" :size 24)
+      )
+
 ;;; UI
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
