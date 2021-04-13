@@ -34,12 +34,14 @@
 (with-system gnu/linux
   (setq fhi-dir-h "/mnt/H")
   (setq fhi-dir-f "/mnt/F")
-  (setq fhi-dir-n "/mnt/N"))
+  (setq fhi-dir-n "/mnt/N")
+  (setq fhi-dir-c "~/"))
 
 (with-system windows-nt
   (setq fhi-dir-h "H:")
   (setq fhi-dir-f "F:")
-  (setq fhi-dir-n "N:"))
+  (setq fhi-dir-n "N:")
+  (setq fhi-dir-c "C:/Users/ybka"))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -135,7 +137,8 @@
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
-
+(set-eshell-alias! "cdc" fhi-dir-c)
+(set-eshell-alias! "cdh" fhi-dir-h)
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 
 ;; (with-system gnu/linux
