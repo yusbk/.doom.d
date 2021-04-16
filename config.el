@@ -73,6 +73,13 @@
 ;; they are implemented.
 
 ;;; Font
+;; Installed from https://github.com/be5invis/Iosevka
+(setq doom-font (font-spec :family "Iosevka SS04" :size 16)
+      doom-big-font (font-spec :family "Iosevka SS04" :size 36)
+                                        ;doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
+                                        ;doom-serif-font (font-spec :family "ETBembo" :size 24)
+      )
+
 ;; Font size adjustment based on monitor size
 ;; https://www.reddit.com/r/emacs/comments/dpc2aj/readjusting_fontsize_according_to_monitor/
 (defun hoagie-adjust-font-size (frame)
@@ -97,14 +104,6 @@ If I let Windows handle DPI everything looks blurry."
     (set-frame-font (format "Consolas %s" size))
     ))
 (add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
-
-;; Installed from https://github.com/be5invis/Iosevka
-(setq doom-font (font-spec :family "Iosevka SS04" :size 16)
-      doom-big-font (font-spec :family "Iosevka SS04" :size 36)
-                                        ;doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
-                                        ;doom-serif-font (font-spec :family "ETBembo" :size 24)
-      )
-
 ;;; UI
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
@@ -120,12 +119,16 @@ If I let Windows handle DPI everything looks blurry."
  tab-width 4                                      ; Set width for tabs
  uniquify-buffer-name-style 'forward              ; Uniquify buffer names
  window-combination-resize t                      ; take new window space from all other windows (not just current)
- x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+ x-stretch-cursor t                               ; Stretch cursor to the glyph width
+ )
 
-(delete-selection-mode 1)                         ; Replace selection when inserting text
-(display-time-mode 1)                             ; Enable time in the mode-line
-(global-subword-mode 1)                           ; Iterate through CamelCase words
-(setq line-spacing 0.3)                           ; seems like a nice line spacing balance.
+(setq
+ delete-selection-mode 1                         ; Replace selection when inserting text
+ display-time-mode 1                             ; Enable time in the mode-line
+ global-subword-mode 1                           ; Iterate through CamelCase words
+ line-spacing 0.3                                ; seems like a nice line spacing balance.
+ confirm-kill-emacs nil                          ; No need to confirm when exit
+ )
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-color-icon t
@@ -165,6 +168,7 @@ If I let Windows handle DPI everything looks blurry."
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
 (set-eshell-alias! "cdc" fhi-dir-c)
 (set-eshell-alias! "cdh" fhi-dir-h)
+(set-eshell-alias! "cdn" fhi-dir-n)
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 
 ;; (with-system gnu/linux
@@ -341,7 +345,6 @@ If I let Windows handle DPI everything looks blurry."
       (setq buffer-offer-save t)
       $buf
       ))
-
   )
 
 ;;; Org extention
@@ -359,7 +362,25 @@ If I let Windows handle DPI everything looks blurry."
         org-journal-file-format "%Y-%m-%d.org"
         org-journal-date-format "%A, %d %B %Y")
   :config
-  (setq org-journal-find-file #'find-file-other-window )
   (map! :map org-journal-mode-map
-        "C-c n s" #'evil-save-modified-and-close )
+        :localleader
+        "S" #'evil-save-modified-and-close )
   )
+
+;; Code block shortcuts instead of <s[TAB]
+(defun my-org-insert-src-block (src-code-type)
+  "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
+  (interactive
+   (let ((src-code-types
+          '("emacs-lisp" "python" "sh" "R" "latex")))
+     (list (ivy-completing-read "Source code type: " src-code-types))))
+  (progn
+    (newline-and-indent)
+    (insert "#+END_SRC\n")
+    (previous-line 2)
+    (insert (format "#+BEGIN_SRC %s\n" src-code-type))
+    (org-edit-src-code)))
+
+(map! :map org-mode-map
+      :localleader
+      "C" #'my-org-insert-src-block)
