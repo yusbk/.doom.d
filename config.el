@@ -152,10 +152,6 @@ If I let Windows handle DPI everything looks blurry."
 ;; Use SPC w SPC to rotate if not using Doom default SPC w r/R
 (map! :map evil-window-map
       "SPC" #'rotate-layout
-      "<left>"     #'evil-window-left
-      "<down>"     #'evil-window-down
-      "<up>"       #'evil-window-up
-      "<right>"    #'evil-window-right
       ;; Swapping windows
       "C-<left>"       #'+evil/window-move-left
       "C-<down>"       #'+evil/window-move-down
@@ -165,6 +161,7 @@ If I let Windows handle DPI everything looks blurry."
 
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
+(map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
 (set-eshell-alias! "cdc" fhi-dir-c)
 (set-eshell-alias! "cdh" fhi-dir-h)
@@ -384,3 +381,33 @@ If I let Windows handle DPI everything looks blurry."
 (map! :map org-mode-map
       :localleader
       "C" #'my-org-insert-src-block)
+
+;;; ox-hugo
+;; Activated by adding +hugo in init.el
+(defun org-hugo-new-subtree-post-capture-template ()
+  "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+  (let* (;;https://github.com/sunnyhasija/Academic-Doom-Emacs-Config#ox-hugo
+         (date (format-time-string (org-time-stamp-format  :inactive) (org-current-time)))
+         (title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+         (fname (org-hugo-slug title)))
+    (mapconcat #'identity
+               `(
+                 ,(concat "* TODO " title)
+                 ":PROPERTIES:"
+                 ,(concat ":EXPORT_FILE_NAME: " fname)
+                 ,(concat ":EXPORT_DATE: " date) ;Enter current date and time
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
+                 ":END:"
+                 "%?\n")          ;Place the cursor here
+               "\n")))
+(defvar hugo-org-path "/home/ybk/org/"
+  "define the place where we put our org files for hugo")
+;;(defvar org-capture-blog (concat hugo-org-path "blog.org"))
+
+(setq org-capture-templates
+      '(
+        ("h" "Hugo Post"
+         entry
+         (file+olp "/home/ybk/org/blog-harbor.org" "Posts")
+         (function  org-hugo-new-subtree-post-capture-template))))
