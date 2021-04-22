@@ -53,3 +53,4 @@
 (package! dimmer)
 (package! beacon)
 (package! outshine)
+(package! rotate)
