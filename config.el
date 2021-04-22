@@ -411,7 +411,7 @@ Version 2017-09-01"
 
 (map! :map org-mode-map
       :localleader
-      "C" #'my-org-insert-src-block)
+      :desc "Insert SRC block" "C" #'my-org-insert-src-block)
 
 ;;; ox-hugo
 ;; Activated by adding +hugo in init.el
@@ -442,3 +442,15 @@ See `org-capture-templates' for more information."
          entry
          (file+olp "/home/ybk/org/blog-harbor.org" "Posts")
          (function  org-hugo-new-subtree-post-capture-template))))
+;;; CSV
+(use-package! csv-mode
+  :mode "\\.csv$"
+  :custom
+  (csv-separators '(","))
+  :config
+  (map! :map csv-mode-map
+        :localleader
+        "a" #'csv-align-fields
+        "u" #'csv-unalign-fields
+        "s" #'csv-sort-fields
+        "n" #'csv-sort-numeric-fields))

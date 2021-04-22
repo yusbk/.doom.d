@@ -54,3 +54,4 @@
 (package! beacon)
 (package! outshine)
 (package! rotate)
+(package! csv-mode)
