@@ -168,6 +168,13 @@
 (set-eshell-alias! "cdh" fhi-dir-h)
 (set-eshell-alias! "cdn" fhi-dir-n)
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
+(set-eshell-alias! "gpush" "git push origin master --recurse-submodules=on-demand")
+
+(set-eshell-alias! "gitp"
+                   (concat "cd " (expand-file-name "/Git-personal && ls -a" fhi-dir-c)))
+
+(set-eshell-alias! "gitf"
+                   (concat "cd " (expand-file-name "/Git-fhi && ls -a" fhi-dir-c)))
 
 ;; (with-system gnu/linux
 ;;   (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
@@ -201,13 +208,13 @@
 ;;; Copy file path
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
-Result is full path.
-If `universal-argument' is called first, copy only the dir path.
-If in dired, copy the file/dir cursor is on, or marked files.
-If a buffer is not file and not dired, copy value of `default-directory' (which is usually
-the current dir when that buffer was created)
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2017-09-01"
+  Result is full path.
+  If `universal-argument' is called first, copy only the dir path.
+  If in dired, copy the file/dir cursor is on, or marked files.
+  If a buffer is not file and not dired, copy value of `default-directory' (which is usually
+                                                                                  the current dir when that buffer was created)
+  URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+  Version 2017-09-01"
   (interactive "P")
   (let (($fpath
          (if (string-equal major-mode 'dired-mode)
@@ -305,19 +312,19 @@ Version 2017-09-01"
       (ess-command
        (format
         "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
-        string) buf)
-      (with-current-buffer buf
-        (goto-char (point-max))
-        ;; (skip-chars-backward "\n")
-        (let ((end (point)))
-          (goto-char (point-min))
-          (goto-char (1+ (point-at-eol)))
-          (setq string (buffer-substring-no-properties (point) end))
-          ))
-      (delete-region beg end)
-      (insert string)
-      (delete-char -1)
-      ))
+                       string) buf)
+                   (with-current-buffer buf
+                     (goto-char (point-max))
+                     ;; (skip-chars-backward "\n")
+                     (let ((end (point)))
+                       (goto-char (point-min))
+                       (goto-char (1+ (point-at-eol)))
+                       (setq string (buffer-substring-no-properties (point) end))
+                       ))
+                   (delete-region beg end)
+                   (insert string)
+                   (delete-char -1)
+                   ))
 
 
   ;; data.table update
@@ -438,12 +445,21 @@ See `org-capture-templates' for more information."
   "define the place where we put our org files for hugo")
 ;;(defvar org-capture-blog (concat hugo-org-path "blog.org"))
 
-(setq org-capture-templates
-      '(
-        ("h" "Hugo Post"
-         entry
-         (file+olp "/home/ybk/org/blog-harbor.org" "Posts")
-         (function  org-hugo-new-subtree-post-capture-template))))
+;;Doom has it's own way to create org-capture-templates and add-to-list will not work
+;;therefore has to overwrite the template with setq
+;; (setq org-capture-templates
+;;       '(
+;;         ("h" "Hugo Post"
+;;          entry
+;;          (file+olp "/home/ybk/org/blog-harbor.org" "Posts")
+;;          (function  org-hugo-new-subtree-post-capture-template))))
+
+(after! org-capture
+  (add-to-list 'org-capture-templates
+               '("h" "Hugo Post" entry
+                 (file+olp "c:/Git-personal/blog-raw/blog-harbor.org" "Blog Posts")
+                 (function org-hugo-new-subtree-post-capture-template))))
+
 ;;; CSV
 (use-package! csv-mode
   :mode "\\.csv$"
