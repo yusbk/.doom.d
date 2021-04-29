@@ -457,7 +457,7 @@ See `org-capture-templates' for more information."
 (after! org-capture
   (add-to-list 'org-capture-templates
                '("h" "Hugo Post" entry
-                 (file+olp "c:/Git-personal/blog-raw/blog-harbor.org" "Blog Posts")
+                 (file+olp "c:/Git-personal/blog-raw/org/blog-harbor.org" "Blog Posts")
                  (function org-hugo-new-subtree-post-capture-template))))
 
 ;;; CSV
