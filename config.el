@@ -312,19 +312,19 @@
       (ess-command
        (format
         "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
-                       string) buf)
-                   (with-current-buffer buf
-                     (goto-char (point-max))
-                     ;; (skip-chars-backward "\n")
-                     (let ((end (point)))
-                       (goto-char (point-min))
-                       (goto-char (1+ (point-at-eol)))
-                       (setq string (buffer-substring-no-properties (point) end))
-                       ))
-                   (delete-region beg end)
-                   (insert string)
-                   (delete-char -1)
-                   ))
+        string) buf)
+      (with-current-buffer buf
+        (goto-char (point-max))
+        ;; (skip-chars-backward "\n")
+        (let ((end (point)))
+          (goto-char (point-min))
+          (goto-char (1+ (point-at-eol)))
+          (setq string (buffer-substring-no-properties (point) end))
+          ))
+      (delete-region beg end)
+      (insert string)
+      (delete-char -1)
+      ))
 
 
   ;; data.table update
@@ -390,6 +390,33 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
 
+;; Org-roam depends on SQLite3 and needs to be installed
+(setq org-roam-directory (concat org-directory "Notes/"))
+
+;; Deft for searcing notes
+(setq deft-directory (concat org-directory "Notes/")
+      deft-extensions '("org" "txt")
+      def-recursive t) ;to be able searching in sub-directories
+
+;; Roam-server always open
+(use-package! org-roam-server
+  :after org-roam
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8080
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-label-truncate t
+        org-roam-server-label-truncate-length 60
+        org-roam-server-label-wrap-length 20)
+  (defun org-roam-server-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (org-roam-server-mode 1)
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+(after! org-roam
+  (org-roam-server-mode))
+
 ;; org-journal the DOOM way
 (after! org-journal
   :init
@@ -397,7 +424,7 @@
         org-journal-time-prefix "* " ;Start at first level heading
         org-journal-date-prefix "#+TITLE: "
         org-journal-file-format "%Y-%m-%d.org"
-        org-journal-date-format "%A, %d %B %Y")
+        org-journal-date-format "%a, %Y-%m-%d")
   :config
   (map! :map org-journal-mode-map
         :localleader
@@ -437,22 +464,13 @@ See `org-capture-templates' for more information."
                  ":PROPERTIES:"
                  ,(concat ":EXPORT_FILE_NAME: " fname)
                  ,(concat ":EXPORT_DATE: " date) ;Enter current date and time
-                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
+                 ;; ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
                  ":END:"
                  "%?\n")          ;Place the cursor here
                "\n")))
 (defvar hugo-org-path "/home/ybk/org/"
   "define the place where we put our org files for hugo")
 ;;(defvar org-capture-blog (concat hugo-org-path "blog.org"))
-
-;;Doom has it's own way to create org-capture-templates and add-to-list will not work
-;;therefore has to overwrite the template with setq
-;; (setq org-capture-templates
-;;       '(
-;;         ("h" "Hugo Post"
-;;          entry
-;;          (file+olp "/home/ybk/org/blog-harbor.org" "Posts")
-;;          (function  org-hugo-new-subtree-post-capture-template))))
 
 (after! org-capture
   (add-to-list 'org-capture-templates
@@ -472,3 +490,9 @@ See `org-capture-templates' for more information."
         "u" #'csv-unalign-fields
         "s" #'csv-sort-fields
         "n" #'csv-sort-numeric-fields))
+
+;;; Personal keybindings
+(map! :leader
+      (:prefix ("y" . "My keys")
+       :desc "file-other-window"
+       "f" #'find-file-other-window))
