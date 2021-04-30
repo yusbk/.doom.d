@@ -390,34 +390,6 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
 
-;; Org-roam depends on SQLite3 and needs to be installed
-(setq org-roam-directory (concat org-directory "Notes/"))
-
-(use-package! org-roam-server
-  :after org-roam
-  :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8080
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-label-truncate t
-        org-roam-server-label-truncate-length 60
-        org-roam-server-label-wrap-length 20)
-
-  (defun org-roam-server-open ()
-    "Ensure the server is active, then open the roam graph."
-    (interactive)
-    (smartparens-global-mode -1)
-    (org-roam-server-mode 1)
-    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))
-    (smartparens-global-mode 1)))
-
-;; automatically enable server-mode
-(after! org-roam
-  (smartparens-global-mode -1)
-  (org-roam-server-mode)
-  (smartparens-global-mode 1))
-
 ;; Deft for searcing notes
 (setq deft-directory (concat org-directory "Notes/")
       deft-extensions '("org" "txt")
