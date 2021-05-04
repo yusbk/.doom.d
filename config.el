@@ -416,12 +416,22 @@
   ;; Change separator from == to -
   (setq org-agenda-block-separator ?-)
 
-  (setq org-agenda-current-time-string "----| now |---")
+  (setq org-agenda-current-time-string "------------------------------------------| now |---")
   ;; Make deadline and overdue stand out
   (setq org-agenda-deadline-leaders '("Deadline: " "In %d days: " "Overdue %d day: "))
+  ;; Remove done from agenda
+  (setq org-agenda-skip-deadline-if-done t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-timestamp-if-done t)
   )
 
-(setq my-org-agenda-directory (file-truename (expand-file-name "Dropbox/org/gtd/" fhi-dir-h)))
+;;; Other org settings
+(after! org-capture
+  (add-to-list 'org-capture-templates
+               '("i" "Inbox" entry (file my-agenda-inbox)
+                 "* TODO %?\n\n /Created:/ %U")))
+
+(setq my-org-agenda-directory (file-truename (expand-file-name "gtd/" org-directory)))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
   "Unstructured capture")
 (defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
@@ -433,11 +443,6 @@
       `(,my-agenda-inbox
         ,my-agenda-work
         ,my-agenda-private))
-
-(after! org-capture
-  (add-to-list 'org-capture-templates
-               '("i" "Inbox" entry (file my-agenda-inbox)
-                 "* TODO %?\n\n /Created:/ %U")))
 
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t%s")
