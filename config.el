@@ -390,10 +390,26 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
 
-(after! org-capture
-  (add-to-list 'org-capture-templates
-               '("i" "Inbox" entry (file my-agenda-inbox)
-                 "* TODO %?\n /Created:/ %U")))
+(after! org
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+          (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+
+  ;;Tetapkan warna keyword
+  (setq org-todo-keyword-faces
+        (quote (("TODO" :foreground "red" :weight bold)
+                ("NEXT" :foreground "purple" :weight bold)
+                ("DONE" :foreground "forest green" :weight bold)
+                ("HOLD" :foreground "magenta" :weight bold)
+                ("CANCELLED" :foreground "dark green" :weight bold)
+                )))
+
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+
+  (setq org-agenda-start-day "-1d"
+        org-agenda-span 4
+        org-agenda-start-on-weekday 1)
+  )
 
 (setq my-org-agenda-directory (file-truename (expand-file-name "Dropbox/org/gtd/" fhi-dir-h)))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
@@ -408,11 +424,17 @@
         ,my-agenda-work
         ,my-agenda-private))
 
+(after! org-capture
+  (add-to-list 'org-capture-templates
+               '("i" "Inbox" entry (file my-agenda-inbox)
+                 "* TODO %?\n /Created:/ %U")))
+
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t% s")
         (todo   . " ")
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
+
 
 (setq org-agenda-custom-commands
       '(
@@ -421,24 +443,51 @@
          ((agenda "" nil)
           (todo "NEXT"
                 ((org-agenda-max-entries 5)
-                 (org-agenda-overriding-header "Dagens oppgaver:")))))
+                 (org-agenda-overriding-header "Dagens oppgaver:")))
+          (tags "REFILE"
+                ((org-agenda-overriding-header "Refile:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "CANCELLED")))))))
         ))
 
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
-        (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+;; (use-package! org-super-agenda
+;;   :commands (org-super-agenda-mode))
+;; (after! org-agenda
+;;   (org-super-agenda-mode))
 
-;;Tetapkan warna keyword
-(setq org-todo-keyword-faces
-      (quote (("TODO" :foreground "red" :weight bold)
-              ("NEXT" :foreground "purple" :weight bold)
-              ("DONE" :foreground "forest green" :weight bold)
-              ("HOLD" :foreground "magenta" :weight bold)
-              ("CANCELLED" :foreground "dark green" :weight bold)
-              )))
-
-(setq org-refile-allow-creating-parent-nodes 'confirm
-      org-refile-targets '((org-agenda-files . (:maxlevel 3)))) ;Up to 3 level headlines
+;; (setq org-agenda-skip-scheduled-if-done t
+;;       org-agenda-skip-deadline-if-done t
+;;       org-agenda-include-deadlines t
+;;       org-agenda-block-separator nil
+;;       ;; org-agenda-start-day nil ;;i.e today
+;;       ;; org-agenda-span 1
+;;       org-agenda-tags-column 100
+;;       org-agenda-compact-blocks t)
+;; (setq org-agenda-custom-commands
+;;       '(
+;;         ("r" tags "REFILE")
+;;         ("o" "Overview"
+;;          ((agenda "" ((org-agenda-span 'day)
+;;                       (org-super-agenda-groups
+;;                        '((:name "Today"
+;;                           :time-grid t
+;;                           :date today
+;;                           :todo "TODAY"
+;;                           :scheduled today
+;;                           :order 1)))))
+;;           (alltodo "" ((org-agenda-overriding-header "")
+;;                        (org-super-agenda-groups
+;;                         '((:name "Next to do"
+;;                            :todo "NEXT"
+;;                            :order 1)
+;;                           (:name "Due Today"
+;;                            :deadline today
+;;                            :order 2)
+;;                           (:name "Due Soon"
+;;                            :deadline future
+;;                            :order 6)
+;;                           (:name "Refile"
+;;                            :tag "REFILE"
+;;                            :order 3)))))))))
 
 ;; Exclude DONE state tasks from refile targets
 (defun ybk/verify-refile-target ()

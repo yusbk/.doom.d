@@ -55,3 +55,4 @@
 (package! outshine)
 (package! rotate)
 (package! csv-mode)
+;; (package! org-super-agenda)
