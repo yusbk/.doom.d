@@ -549,6 +549,34 @@ See `org-capture-templates' for more information."
                  (file+olp "c:/Git-personal/blog-raw/org/blog-harbor.org" "Blog Posts")
                  (function org-hugo-new-subtree-post-capture-template))))
 
+;;; Flyspell
+;; Check spelling error
+(after! flyspell
+  (with-system windows-nt
+    ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
+    (setenv "DICTPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
+    (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
+    ;; ;;use the newest version installed via MSYS2
+    ;; (ispell-program-name "C:/Users/ybka/scoop/apps/msys2/2020-09-03/mingw64/bin/hunspell.exe")
+    )
+
+  (setq cache-h-drive (concat fhi-dir-h "Dropbox/cache/"))
+  (setq ispell-extra-args '("-p" ,(expand-file-name "hunspell" cache-h-drive))) ;Save dict common location
+  (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
+                            "--lang=en_GB"))
+  (defun lang-norsk ()
+    "Change to Norwegian."
+    (interactive)
+    (ispell-change-dictionary "nb_NO")
+    (flyspell-buffer))
+
+  (defun lang-eng ()
+    "Change to English."
+    (interactive)
+    (ispell-change-dictionary "nb_GB")
+    (flyspell-buffer))
+  )
+
 ;;; CSV
 (use-package! csv-mode
   :mode "\\.csv$"
@@ -566,4 +594,8 @@ See `org-capture-templates' for more information."
 (map! :leader
       (:prefix ("y" . "My keys")
        :desc "file-other-window"
-       "f" #'find-file-other-window))
+       "f" #'find-file-other-window
+       :desc "Norsk"
+       "n" #'lang-norsk
+       :desc "English"
+       "e" #'lang-eng))
