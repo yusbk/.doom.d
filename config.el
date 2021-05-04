@@ -390,6 +390,63 @@
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
 
+(after! org-capture
+  (add-to-list 'org-capture-templates
+               '("i" "Inbox" entry (file my-agenda-inbox)
+                 "* TODO %?\n /Created:/ %U")))
+
+(setq my-org-agenda-directory (file-truename (expand-file-name "Dropbox/org/gtd/" fhi-dir-h)))
+(defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
+  "Unstructured capture")
+(defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
+  "Work related")
+(defvar my-agenda-private (expand-file-name "private.org" my-org-agenda-directory)
+  "Work related")
+
+(setq org-agenda-files
+      `(,my-agenda-inbox
+        ,my-agenda-work
+        ,my-agenda-private))
+
+(setq org-agenda-prefix-format
+      '((agenda . " %i %-12:c%?-12t% s")
+        (todo   . " ")
+        (tags   . " %i %-12:c")
+        (search . " %i %-12:c")))
+
+(setq org-agenda-custom-commands
+      '(
+        ("r" tags "REFILE")
+        ("w" "Work Agenda"
+         ((agenda "" nil)
+          (todo "NEXT"
+                ((org-agenda-max-entries 5)
+                 (org-agenda-overriding-header "Dagens oppgaver:")))))
+        ))
+
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
+
+;;Tetapkan warna keyword
+(setq org-todo-keyword-faces
+      (quote (("TODO" :foreground "red" :weight bold)
+              ("NEXT" :foreground "purple" :weight bold)
+              ("DONE" :foreground "forest green" :weight bold)
+              ("HOLD" :foreground "magenta" :weight bold)
+              ("CANCELLED" :foreground "dark green" :weight bold)
+              )))
+
+(setq org-refile-allow-creating-parent-nodes 'confirm
+      org-refile-targets '((org-agenda-files . (:maxlevel 3)))) ;Up to 3 level headlines
+
+;; Exclude DONE state tasks from refile targets
+(defun ybk/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+
+(setq org-refile-target-verify-function 'ybk/verify-refile-target)
+
 ;; Deft for searcing notes
 (setq deft-directory (concat org-directory "Notes/")
       deft-extensions '("org" "txt")
