@@ -552,6 +552,11 @@ See `org-capture-templates' for more information."
 ;;; Flyspell
 ;; Check spelling error
 (after! flyspell
+  ;; This setting specifically for Windows
+  ;; http://juanjose.garciaripoll.com/blog/my-emacs-windows-configuration/
+  ;; https://www.reddit.com/r/emacs/comments/8by3az/how_to_set_up_sell_check_for_emacs_in_windows/
+  ;; general guide for downloading hundspell http://www.nextpoint.se/?p=656
+  ;; Dictionary https://github.com/LibreOffice/dictionaries
   (with-system windows-nt
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
     (setenv "DICTPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
