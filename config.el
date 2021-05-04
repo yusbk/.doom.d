@@ -409,6 +409,16 @@
   (setq org-agenda-start-day "-1d"
         org-agenda-span 4
         org-agenda-start-on-weekday 1)
+
+  ;;By default, the time grid has a lot of ugly '....' lines. Remove those.
+  (setq org-agenda-time-grid
+        '((daily today remove-match) (800 1000 1200 1400 1600 1800 2000) "" ""))
+  ;; Change separator from == to -
+  (setq org-agenda-block-separator ?-)
+
+  (setq org-agenda-current-time-string "----| now |---")
+  ;; Make deadline and overdue stand out
+  (setq org-agenda-deadline-leaders '("Deadline: " "In %d days: " "Overdue %d day: "))
   )
 
 (setq my-org-agenda-directory (file-truename (expand-file-name "Dropbox/org/gtd/" fhi-dir-h)))
@@ -427,10 +437,10 @@
 (after! org-capture
   (add-to-list 'org-capture-templates
                '("i" "Inbox" entry (file my-agenda-inbox)
-                 "* TODO %?\n /Created:/ %U")))
+                 "* TODO %?\n\n /Created:/ %U")))
 
 (setq org-agenda-prefix-format
-      '((agenda . " %i %-12:c%?-12t% s")
+      '((agenda . " %i %-12:c%?-12t%s")
         (todo   . " ")
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
@@ -447,47 +457,19 @@
           (tags "REFILE"
                 ((org-agenda-overriding-header "Refile:")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "CANCELLED")))))))
+        ("d" "Deadlines"
+         ((agenda ""
+                  ((org-agenda-entry-types '(:deadline))
+                   (org-agenda-span 'fortnight)
+                   (org-agenda-time-grid nil)
+                   (org-deadline-warning-days 0)
+                   (org-agenda-skip-deadline-prewarning-if-scheduled nil)
+                   (org-agenda-skip-deadline-if-done nil)))))
+        ("u" "Unscheduled"
+         ((todo  "TODO"
+                 ((org-agenda-overriding-header "Unscheduled tasks")
+                  (org-agenda-todo-ignore-with-date t)))))
         ))
-
-;; (use-package! org-super-agenda
-;;   :commands (org-super-agenda-mode))
-;; (after! org-agenda
-;;   (org-super-agenda-mode))
-
-;; (setq org-agenda-skip-scheduled-if-done t
-;;       org-agenda-skip-deadline-if-done t
-;;       org-agenda-include-deadlines t
-;;       org-agenda-block-separator nil
-;;       ;; org-agenda-start-day nil ;;i.e today
-;;       ;; org-agenda-span 1
-;;       org-agenda-tags-column 100
-;;       org-agenda-compact-blocks t)
-;; (setq org-agenda-custom-commands
-;;       '(
-;;         ("r" tags "REFILE")
-;;         ("o" "Overview"
-;;          ((agenda "" ((org-agenda-span 'day)
-;;                       (org-super-agenda-groups
-;;                        '((:name "Today"
-;;                           :time-grid t
-;;                           :date today
-;;                           :todo "TODAY"
-;;                           :scheduled today
-;;                           :order 1)))))
-;;           (alltodo "" ((org-agenda-overriding-header "")
-;;                        (org-super-agenda-groups
-;;                         '((:name "Next to do"
-;;                            :todo "NEXT"
-;;                            :order 1)
-;;                           (:name "Due Today"
-;;                            :deadline today
-;;                            :order 2)
-;;                           (:name "Due Soon"
-;;                            :deadline future
-;;                            :order 6)
-;;                           (:name "Refile"
-;;                            :tag "REFILE"
-;;                            :order 3)))))))))
 
 ;; Exclude DONE state tasks from refile targets
 (defun ybk/verify-refile-target ()
