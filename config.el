@@ -250,7 +250,8 @@
          :i "M-+" #'my-add-column
          :i "M-'" #'my-add-match
          :i "M-\\" #'my-add-pipe
-         :n "i" #'ess-indent-region-with-styler)
+         :ni "C-i" #'ess-indent-region-with-styler
+         )
         (:map inferior-ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :n "C-<up>" #'ess-readline))
