@@ -170,11 +170,13 @@
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 (set-eshell-alias! "gpush" "git push origin master --recurse-submodules=on-demand")
 
-(set-eshell-alias! "gitp"
-                   (concat "cd " (expand-file-name "/Git-personal && ls -a" fhi-dir-c)))
+(set-eshell-alias! "gw"
+                   (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
+(set-eshell-alias! "gp"
+                   (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
 
-(set-eshell-alias! "gitf"
-                   (concat "cd " (expand-file-name "/Git-fhi && ls -a" fhi-dir-c)))
+(set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
+(set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
 ;; (with-system gnu/linux
 ;;   (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
@@ -187,9 +189,6 @@
 ;;       ((eq system-type 'windows-nt)
 ;;        (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")
 ;;        ))
-
-(set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
-(set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
 (use-package! dimmer
   :custom
