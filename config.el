@@ -681,9 +681,9 @@ See `org-capture-templates' for more information."
        "n" #'lang-norsk
        :desc "English"
        "e" #'lang-eng
-       :desc "fold/toggle"
-       :ni "a" #'+fold/toggle
+       :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
+       "a" #'+fold/toggle     ;with similar keys but less explicit prefix
        :desc "fold/open-all"
-       :ni "r" #'+fold/open-all
+       "r" #'+fold/open-all
        :desc "fold/close-all"
-       :ni "m" #'+fold/close-all))
+       "m" #'+fold/close-all))
