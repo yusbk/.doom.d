@@ -250,7 +250,8 @@
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
          :i "M-'" #'my-add-match
-         :i "M-\\" #'my-add-pipe)
+         :i "M-\\" #'my-add-pipe
+         :n "i" #'ess-indent-region-with-styler)
         (:map inferior-ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :n "C-<up>" #'ess-readline))
@@ -258,7 +259,6 @@
   ;; Error when saving .Rhistory because folder ess-history doesn't exist
   ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
   ;; folder manually
-
 
   (setq comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
@@ -297,7 +297,7 @@
           (ess-R-fl-keyword:F&T . nil)))
 
 
-  ;; use styler package but it has to be install first
+  ;; use styler package but it has to be installed first
   (defun ess-indent-region-with-styler (beg end)
     "Format region of code R using styler::style_text()."
     (interactive "r")
