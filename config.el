@@ -680,4 +680,10 @@ See `org-capture-templates' for more information."
        :desc "Norsk"
        "n" #'lang-norsk
        :desc "English"
-       "e" #'lang-eng))
+       "e" #'lang-eng
+       :desc "fold/toggle"
+       :ni "a" #'+fold/toggle
+       :desc "fold/open-all"
+       :ni "r" #'+fold/open-all
+       :desc "fold/close-all"
+       :ni "m" #'+fold/close-all))
