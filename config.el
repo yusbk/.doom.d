@@ -608,6 +608,24 @@ See `org-capture-templates' for more information."
                  (file+olp "c:/Git-personal/blog-raw/org/blog-harbor.org" "Blog Posts")
                  (function org-hugo-new-subtree-post-capture-template))))
 
+;;; ox-pandoc
+;; Already included in doom with +pandoc but keeping the settings below
+;; just incase the default doesn't work
+;; (use-package! ox-pandoc
+;;   :after org
+;;   :config
+;;   ;; default options for all output formats
+;;   (setq org-pandoc-options '((standalone . t)))
+;;   ;; cancel above settings only for 'docx' format
+;;   (setq org-pandoc-options-for-docx '((standalone . nil)))
+;;   ;; special settings for beamer-pdf and latex-pdf exporters
+;;   (setq org-pandoc-options-for-beamer-pdf '((pdf-engine . "xelatex")))
+;;   (setq org-pandoc-options-for-latex-pdf '((pdf-engine . "pdflatex")))
+;;   ;; special extensions for markdown_github output
+;;   (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
+;;   )
+
+
 ;;; Flyspell
 ;; Check spelling error
 (after! flyspell
