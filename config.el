@@ -422,14 +422,32 @@
   ;; Remove done from agenda
   (setq org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-timestamp-if-done t)
+        org-agenda-skip-timestamp-if-done t
+        org-agenda-hide-tags-regexp ".")
   )
 
 ;;; Other org settings
+;; Org-capture fix
+;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
+(advice-add #'org-capture :around
+            (lambda (fun &rest args)
+              (letf! ((#'+org--restart-mode-h #'ignore))
+                (apply fun args))))
+
 (after! org-capture
   (add-to-list 'org-capture-templates
                '("i" "Inbox" entry (file my-agenda-inbox)
                  "* TODO %?\n\n /Created:/ %U")))
+
+(defun my-org-capture-inbox ()
+  "Capture to Inbox directly"
+  (interactive)
+  ;; (call-interactively 'org-store-link)
+  (org-capture nil "i"))
+
+(map! :niv
+      :desc "Capture inbox"
+      "<f5>" #'my-org-capture-inbox)
 
 (setq my-org-agenda-directory (file-truename (expand-file-name "gtd/" org-directory)))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
@@ -453,13 +471,13 @@
 
 (setq org-agenda-custom-commands
       '(
-        ("r" tags "REFILE")
+        ("r" tags "inbox")
         ("w" "Work Agenda"
          ((agenda "" nil)
           (todo "NEXT"
                 ((org-agenda-max-entries 5)
                  (org-agenda-overriding-header "Dagens oppgaver:")))
-          (tags "REFILE"
+          (tags "inbox"
                 ((org-agenda-overriding-header "Refile:")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "CANCELLED")))))))
         ("d" "Deadlines"
