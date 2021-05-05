@@ -449,18 +449,27 @@
       :desc "Capture inbox"
       "<f5>" #'my-org-capture-inbox)
 
+;; Show local file TODO list
+(map! :leader
+      :desc "local TODO"
+      "n T" #'org-show-todo-tree)
+
 (setq my-org-agenda-directory (file-truename (expand-file-name "gtd/" org-directory)))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
   "Unstructured capture")
 (defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
   "Work related")
 (defvar my-agenda-private (expand-file-name "private.org" my-org-agenda-directory)
-  "Work related")
+  "Private related")
+(defvar my-reminder-date (expand-file-name "misc/" org-directory)
+  "Dates to remember")
 
-(setq org-agenda-files
-      `(,my-agenda-inbox
-        ,my-agenda-work
-        ,my-agenda-private))
+(setq org-agenda-files `(,my-org-agenda-directory
+                         ,my-reminder-date))
+;; (setq org-agenda-files
+;;       `(,my-agenda-inbox
+;;         ,my-agenda-work
+;;         ,my-agenda-private))
 
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t%s")
