@@ -264,9 +264,6 @@
         comint-scroll-to-bottom-on-output t
         comint-move-point-for-output t)
 
-  (setq inferior-R-args "--no-save")
-  ;; (setq ess-history-directory "~/rhistory")
-
   (setq ess-R-font-lock-keywords
         '((ess-R-fl-keyword:modifiers . t)
           (ess-R-fl-keyword:fun-defs . t)
@@ -603,7 +600,6 @@ See `org-capture-templates' for more information."
 (after! org-capture
   (add-to-list 'org-capture-templates
                '("h" "Hugo Post" entry
-                 ;; (file+olp "c:/Git-personal/blog-raw/org/blog-harbor.org" "Blog Posts")
                  (file+olp my-hugo-org-file "Posts")
                  (function org-hugo-new-subtree-post-capture-template))))
 
