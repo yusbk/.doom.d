@@ -598,14 +598,13 @@ See `org-capture-templates' for more information."
                  ":END:"
                  "%?\n")          ;Place the cursor here
                "\n")))
-(defvar hugo-org-path "/home/ybk/org/"
-  "define the place where we put our org files for hugo")
-;;(defvar org-capture-blog (concat hugo-org-path "blog.org"))
 
+(setq my-hugo-org-file (expand-file-name "Git-personal/blog-raw/org/blog-harbor.org" fhi-dir-c))
 (after! org-capture
   (add-to-list 'org-capture-templates
                '("h" "Hugo Post" entry
-                 (file+olp "c:/Git-personal/blog-raw/org/blog-harbor.org" "Blog Posts")
+                 ;; (file+olp "c:/Git-personal/blog-raw/org/blog-harbor.org" "Blog Posts")
+                 (file+olp my-hugo-org-file "Posts")
                  (function org-hugo-new-subtree-post-capture-template))))
 
 ;;; ox-pandoc
