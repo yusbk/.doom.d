@@ -653,25 +653,26 @@ See `org-capture-templates' for more information."
   ;; https://www.reddit.com/r/emacs/comments/8by3az/how_to_set_up_sell_check_for_emacs_in_windows/
   ;; general guide for downloading hundspell http://www.nextpoint.se/?p=656
   ;; Dictionary https://github.com/LibreOffice/dictionaries
-  (with-system windows-nt
+  (when IS-WINDOWS
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
     (setenv "DICTPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
     (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
     ;; ;;use the newest version installed via MSYS2
     ;; (ispell-program-name "C:/Users/ybka/scoop/apps/msys2/2020-09-03/mingw64/bin/hunspell.exe")
-    (setq ispell-extra-args '("-p" ,(expand-file-name "hunspell" cache-h-drive))) ;Save dict common location
+    (setq lang-norsk "nb_NO")
+    (setq lang-eng "nb_GB")
     )
 
   (with-system gnu/linux
     (setq ispell-program-name "aspell"))
 
   (setq cache-h-drive (concat fhi-dir-h "Dropbox/cache/"))
-  (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
-                            "--lang=en_GB"))
-  (when IS-WINDOWS
-    (setq lang-norsk "nb_NO")
-    (setq lang-eng "nb_GB")
-    )
+
+  ;; (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
+  ;;                           "--lang=en_GB"
+  ;;                           "-p" ,(expand-file-name "hundspell" cache-h-drive) ;Save dict common location
+  ;;                           ))
+
   (when IS-LINUX
     (setq lang-norsk "norsk")
     (setq lang-eng "english"))
