@@ -453,6 +453,26 @@ if there is displayed buffer that have shell it will use that window"
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-timestamp-if-done t
         org-agenda-hide-tags-regexp ".")
+
+  (setq org-babel-load-languages '((R . t)
+                                   (dot . t)
+                                   (emacs-lisp . t)
+                                   (python . t))
+        org-use-speed-commands t
+        org-structure-template-alist '(("a" . "export ascii")
+                                       ("c" . "center")
+                                       ("C" . "comment")
+                                       ("e" . "example")
+                                       ("E" . "export")
+                                       ("h" . "export html")
+                                       ("l" . "export latex")
+                                       ("q" . "quote")
+                                       ("s" . "src")
+                                       ("v" . "verse")
+                                       ("el" . "src emacs-lisp")
+                                       ("d" . "definition")
+                                       ("t" . "theorem"))
+        )
   )
 
 ;;; Other org settings
@@ -539,12 +559,15 @@ if there is displayed buffer that have shell it will use that window"
 
 (setq org-refile-target-verify-function 'ybk/verify-refile-target)
 
-;; Deft for searcing notes
+;;;; Deft for searcing notes
 (setq deft-directory (concat org-directory "Notes/")
       deft-extensions '("org" "txt")
       def-recursive t) ;to be able searching in sub-directories
 
-;; org-journal the DOOM way
+;;;; Roam
+(setq org-roam-directory (concat org-directory "Notes/"))
+
+;;;; org-journal the DOOM way
 (after! org-journal
   :init
   (setq org-journal-dir (concat org-directory "Journal/")
