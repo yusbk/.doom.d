@@ -437,7 +437,8 @@ if there is displayed buffer that have shell it will use that window"
 
   (setq org-agenda-start-day "-1d"
         org-agenda-span 4
-        org-agenda-start-on-weekday 1)
+        org-agenda-start-on-weekday 1
+        )
 
   ;;By default, the time grid has a lot of ugly '....' lines. Remove those.
   (setq org-agenda-time-grid
@@ -716,9 +717,18 @@ See `org-capture-templates' for more information."
     (delete-region start end)
     (insert insertion)))
 
+;;;; Agenda inbox file
+(defun open-inbox-file ()
+  "Open my agenda inbox file"
+  (interactive)
+  (find-file my-agenda-inbox))
+
+
 ;;; Personal keybindings
 (map! :leader
       (:prefix ("y" . "My keys")
+       :desc "Inbox"
+       "i" #'open-inbox-file
        :desc "file-other-window"
        "f" #'find-file-other-window
        :desc "Norsk"
