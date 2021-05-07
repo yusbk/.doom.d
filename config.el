@@ -663,9 +663,6 @@ See `org-capture-templates' for more information."
     (setq lang-eng "nb_GB")
     )
 
-  (with-system gnu/linux
-    (setq ispell-program-name "aspell"))
-
   (setq cache-h-drive (concat fhi-dir-h "Dropbox/cache/"))
 
   ;; (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
@@ -673,7 +670,11 @@ See `org-capture-templates' for more information."
   ;;                           "-p" ,(expand-file-name "hundspell" cache-h-drive) ;Save dict common location
   ;;                           ))
 
+  ;; (with-system gnu/linux
+  ;;   (setq ispell-program-name "aspell"))
+
   (when IS-LINUX
+    (setq ispell-program-name "aspell")
     (setq lang-norsk "norsk")
     (setq lang-eng "english"))
 
