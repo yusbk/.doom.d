@@ -659,22 +659,33 @@ See `org-capture-templates' for more information."
     (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
     ;; ;;use the newest version installed via MSYS2
     ;; (ispell-program-name "C:/Users/ybka/scoop/apps/msys2/2020-09-03/mingw64/bin/hunspell.exe")
+    (setq ispell-extra-args '("-p" ,(expand-file-name "hunspell" cache-h-drive))) ;Save dict common location
     )
 
+  (with-system gnu/linux
+    (setq ispell-program-name "aspell"))
+
   (setq cache-h-drive (concat fhi-dir-h "Dropbox/cache/"))
-  (setq ispell-extra-args '("-p" ,(expand-file-name "hunspell" cache-h-drive))) ;Save dict common location
   (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
                             "--lang=en_GB"))
+  (when IS-WINDOWS
+    (setq lang-norsk "nb_NO")
+    (setq lang-eng "nb_GB")
+    )
+  (when IS-LINUX
+    (setq lang-norsk "norsk")
+    (setq lang-eng "english"))
+
   (defun lang-norsk ()
     "Change to Norwegian."
     (interactive)
-    (ispell-change-dictionary "nb_NO")
+    (ispell-change-dictionary lang-norsk)
     (flyspell-buffer))
 
   (defun lang-eng ()
     "Change to English."
     (interactive)
-    (ispell-change-dictionary "nb_GB")
+    (ispell-change-dictionary lang-eng)
     (flyspell-buffer))
   )
 
