@@ -690,6 +690,32 @@ See `org-capture-templates' for more information."
         "s" #'csv-sort-fields
         "n" #'csv-sort-numeric-fields))
 
+;;; Misc
+;; Different functions that helps my work
+
+;;;; Vectorise
+;; Make words in several lines to be a vector
+;; Ref: https://news.ycombinator.com/item?id=22129636
+;; Can also use macro as follows:
+;; - go to end of the first word
+;; - press F3
+;; - add comma and a space
+;; - delete all the whitespaces the start of next word
+;; - go to end of that word
+;; - press F4 to register the macro
+;; - press F4 to implement the macro repeatedly or C-u 100 F4 to repeat it 100 times
+;; Or Vim way in Evil :'<,'>!awk '{printf("\"\%s\", ",$0)}'
+;; or the whole file with :%!awk '{printf("\"\%s\", ",$0)}'
+(defun vectorise (start end quote)
+  "Turn strings on newlines into a QUOTEd, comma-separated one-liner."
+  (interactive "r\nMQuote with: ")
+  (let ((insertion
+         (mapconcat
+          (lambda (x) (format "%s%s%s" quote x quote))
+          (split-string (buffer-substring start end)) ", ")))
+    (delete-region start end)
+    (insert insertion)))
+
 ;;; Personal keybindings
 (map! :leader
       (:prefix ("y" . "My keys")
@@ -704,4 +730,6 @@ See `org-capture-templates' for more information."
        :desc "fold/open-all"
        "r" #'+fold/open-all
        :desc "fold/close-all"
-       "m" #'+fold/close-all))
+       "m" #'+fold/close-all
+       :desc "vectorise"
+       "v" #'vectorise))
