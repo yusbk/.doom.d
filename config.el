@@ -128,7 +128,7 @@
  delete-selection-mode 1                         ; Replace selection when inserting text
  display-time-mode 1                             ; Enable time in the mode-line
  global-subword-mode 1                           ; Iterate through CamelCase words
- line-spacing 0.3                                ; seems like a nice line spacing balance.
+ ;; line-spacing 0.3                                ; seems like a nice line spacing balance.
  confirm-kill-emacs nil                          ; No need to confirm when exit
  )
 
@@ -566,7 +566,29 @@ if there is displayed buffer that have shell it will use that window"
       def-recursive t) ;to be able searching in sub-directories
 
 ;;;; Roam
-(setq org-roam-directory (concat org-directory "Notes/"))
+;; I use multiple directories specified in .dir-locals.el
+;; Remember to run org-roam-db-build-cache from a file within specific diretory
+(after! org-roam
+  :init
+  (setq org-roam-directory (concat org-directory "Notes/"))
+  )
+
+(when IS-LINUX
+  (use-package! org-roam-server
+    :after org-roam
+    :config
+    (setq org-roam-server-host "127.0.0.1"
+          org-roam-server-port 8080
+          org-roam-server-authenticate nil
+          org-roam-server-export-inline-images t
+          org-roam-server-serve-files nil
+          org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+          org-roam-server-network-poll t
+          org-roam-server-network-arrows nil
+          org-roam-server-network-label-truncate t
+          org-roam-server-network-label-truncate-length 60
+          org-roam-server-network-label-wrap-length 20))
+  )
 
 ;;;; org-journal the DOOM way
 (after! org-journal
