@@ -55,4 +55,4 @@
 (package! outshine)
 (package! rotate)
 (package! csv-mode)
-;; (package! org-super-agenda)
+(when IS-LINUX (package! org-roam-server))
