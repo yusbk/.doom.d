@@ -244,13 +244,13 @@
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
   (map! (:map ess-mode-map
          :localleader
-         "T" #'test-R-buffer)
+         "T" #'test-R-buffer
+         "s" #'ess-indent-region-with-styler)
         (:map ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
          :i "M-'" #'my-add-match
          :i "M-\\" #'my-add-pipe
-         :ni "C-i" #'ess-indent-region-with-styler
          )
         (:map inferior-ess-r-mode-map
          :i "M--" #'ess-cycle-assign
