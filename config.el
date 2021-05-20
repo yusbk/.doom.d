@@ -22,8 +22,8 @@
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
-
-;;; Check system.
+;;; Personal settings
+;;;; Check system.
 ;; Source https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-elisp
 (defmacro with-system (type &rest body)
   "Evaluate BODY if `system-type' equals TYPE."
@@ -71,6 +71,15 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;;;; Local folder
+;; Create folder if it doesn't exist
+(defvar ybk/local-folder (concat fhi-dir-c "emacs-local/")
+  (unless (file-exists-p ybk/local-folder)
+    (make-directory ybk/local-folder)))
+
+(defvar ybk/local-cache (concat ybk/local-folder "cache/")
+  "Else use standard doom .cache")
 
 ;;; Font
 ;; Installed from https://github.com/be5invis/Iosevka
@@ -235,6 +244,49 @@
          $fpath )))))
 
 (map! :leader "f L" #'xah-copy-file-path)
+
+;;; Undo
+;; Doom uses undo-fu with C-_ and M-_ but I keep undo-tree and activate it when needed
+;; as I have used it for a while now
+(use-package! undo-tree
+  :config
+  (defalias 'redo 'undo-tree-redo)
+
+  (setq undo-tree-visualizer-timestamps t)
+  (setq undo-tree-visualizer-diff t)
+
+  (defun ybk/undo-tree-enable-save-history ()
+    "Enable auto saving of the undo history."
+    (interactive)
+
+    (setq undo-tree-auto-save-history t)
+
+    ;; Compress the history files as .gz files
+    ;; (advice-add 'undo-tree-make-history-save-file-name :filter-return
+    ;;             (lambda (return-val) (concat return-val ".gz")))
+
+    ;; Persistent undo-tree history across emacs sessions
+    (setq my-undo-tree-history-dir (let ((dir (concat ybk/local-cache
+                                                      "undo-tree-history/")))
+                                     (make-directory dir :parents)
+                                     dir))
+    (setq undo-tree-history-directory-alist `(("." . ,my-undo-tree-history-dir)))
+
+    (add-hook 'write-file-functions #'undo-tree-save-history-hook)
+    (add-hook 'find-file-hook #'undo-tree-load-history-hook))
+
+  (defun my-undo-tree-disable-save-history ()
+    "Disable auto saving of the undo history."
+    (interactive)
+
+    (setq undo-tree-auto-save-history nil)
+
+    (remove-hook 'write-file-functions #'undo-tree-save-history-hook)
+    (remove-hook 'find-file-hook #'undo-tree-load-history-hook))
+
+  ;; ;; Aktifkan
+  (global-undo-tree-mode)
+  )
 
 ;;; Aggressive Indent
 (use-package! aggressive-indent

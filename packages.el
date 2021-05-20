@@ -56,3 +56,4 @@
 (package! rotate)
 (package! csv-mode)
 (when IS-LINUX (package! org-roam-server))
+(package! undo-tree)
