@@ -245,7 +245,8 @@
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
-         "s" #'ess-indent-region-with-styler)
+         ;; "s" #'ess-indent-region-with-styler
+         )
         (:map ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
@@ -259,6 +260,8 @@
   ;; Error when saving .Rhistory because folder ess-history doesn't exist
   ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
   ;; folder manually
+
+  (setq ess-style 'RStudio) ;has trouble with styler
 
   (setq comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
@@ -294,34 +297,34 @@
           (ess-R-fl-keyword:F&T . nil)))
 
 
-  ;; use styler package but it has to be installed first
-  (defun ess-indent-region-with-styler (beg end)
-    "Format region of code R using styler::style_text()."
-    (interactive "r")
-    (let ((string
-           (replace-regexp-in-string
-            "\"" "\\\\\\&"
-            (replace-regexp-in-string ;; how to avoid this double matching?
-             "\\\\\"" "\\\\\\&"
-             (buffer-substring-no-properties beg end))))
-          (buf (get-buffer-create "*ess-command-output*")))
-      (ess-force-buffer-current "Process to load into:")
-      (ess-command
-       (format
-        "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
-        string) buf)
-      (with-current-buffer buf
-        (goto-char (point-max))
-        ;; (skip-chars-backward "\n")
-        (let ((end (point)))
-          (goto-char (point-min))
-          (goto-char (1+ (point-at-eol)))
-          (setq string (buffer-substring-no-properties (point) end))
-          ))
-      (delete-region beg end)
-      (insert string)
-      (delete-char -1)
-      ))
+  ;; ;; use styler package but it has to be installed first
+  ;; (defun ess-indent-region-with-styler (beg end)
+  ;;   "Format region of code R using styler::style_text()."
+  ;;   (interactive "r")
+  ;;   (let ((string
+  ;;          (replace-regexp-in-string
+  ;;           "\"" "\\\\\\&"
+  ;;           (replace-regexp-in-string ;; how to avoid this double matching?
+  ;;            "\\\\\"" "\\\\\\&"
+  ;;            (buffer-substring-no-properties beg end))))
+  ;;         (buf (get-buffer-create "*ess-command-output*")))
+  ;;     (ess-force-buffer-current "Process to load into:")
+  ;;     (ess-command
+  ;;      (format
+  ;;       "local({options(styler.colored_print.vertical = FALSE);styler::style_text(text = \"\n%s\", reindention = styler::specify_reindention(regex_pattern = \"###\", indention = 0), indent_by = 4)})\n"
+  ;;       string) buf)
+  ;;     (with-current-buffer buf
+  ;;       (goto-char (point-max))
+  ;;       ;; (skip-chars-backward "\n")
+  ;;       (let ((end (point)))
+  ;;         (goto-char (point-min))
+  ;;         (goto-char (1+ (point-at-eol)))
+  ;;         (setq string (buffer-substring-no-properties (point) end))
+  ;;         ))
+  ;;     (delete-region beg end)
+  ;;     (insert string)
+  ;;     (delete-char -1)
+  ;;     ))
 
 
   ;; data.table update
