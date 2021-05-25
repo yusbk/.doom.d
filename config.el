@@ -307,7 +307,8 @@
          )
         (:map inferior-ess-r-mode-map
          :i "M--" #'ess-cycle-assign
-         :n "C-<up>" #'ess-readline))
+         :n "C-<up>" #'ess-readline
+         ))
   :config
   ;; Error when saving .Rhistory because folder ess-history doesn't exist
   ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
@@ -319,6 +320,7 @@
         comint-scroll-to-bottom-on-output t
         comint-move-point-for-output t)
 
+  (setq inferior-R-args "--no-save")
   (setq ess-R-font-lock-keywords
         '((ess-R-fl-keyword:modifiers . t)
           (ess-R-fl-keyword:fun-defs . t)
