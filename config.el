@@ -46,7 +46,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-nord-light)
+;; (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-palenight)
 
 
@@ -288,10 +289,12 @@
   (global-undo-tree-mode)
   )
 
-;;; Aggressive Indent
+;;; Config
+;;;; Aggressive Indent
 (use-package! aggressive-indent
   :hook ((emacs-lisp-mode ess-r-mode org-src-mode) . aggressive-indent-mode))
 
+;;; ESS
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
   (map! (:map ess-mode-map
