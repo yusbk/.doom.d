@@ -188,6 +188,10 @@
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
+(after! eshell
+  :config
+  (setq eshell-list-files-after-cd t))
+
 ;; (with-system gnu/linux
 ;;   (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
 
