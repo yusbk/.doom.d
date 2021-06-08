@@ -46,7 +46,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-nord-light)
+(setq doom-theme 'doom-badger)
 ;; (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-palenight)
 
