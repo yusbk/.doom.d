@@ -179,14 +179,16 @@
 (set-eshell-alias! "cdn" fhi-dir-n)
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 (set-eshell-alias! "gpush" "git push origin master --recurse-submodules=on-demand")
-
+(set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
+(set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
+;; Git shortcuts
 (set-eshell-alias! "gw"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
 (set-eshell-alias! "gp"
                    (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+(set-eshell-alias! "gc" "git checkout $1")
+(set-eshell-alias! "gm" "git merge $1")
 
-(set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
-(set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
 (after! eshell
   :config
