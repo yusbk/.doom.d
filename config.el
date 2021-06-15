@@ -501,6 +501,7 @@ if there is displayed buffer that have shell it will use that window"
 
   (setq org-refile-allow-creating-parent-nodes 'confirm)
 
+  ;; To change agenda view, use 'z'
   (setq org-agenda-start-day "-1d"
         org-agenda-span 4
         org-agenda-start-on-weekday 1
