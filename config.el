@@ -323,6 +323,10 @@
   ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
   ;; folder manually
 
+  ;; When Rterm not found, add R to Windows path. Else use this:
+  (when IS-WINDOWS
+    (setq inferior-R-program-name "C:/Program Files/R/R-4.1.0/bin/R.exe"))
+
   (setq ess-style 'RStudio) ;has trouble with styler
 
   (setq comint-scroll-to-bottom-on-input t
