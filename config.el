@@ -188,6 +188,7 @@
                    (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
 (set-eshell-alias! "gc" "git checkout $1")
 (set-eshell-alias! "gm" "git merge $1")
+(set-eshell-alias! "gpo" "git push origin")
 
 
 (after! eshell
