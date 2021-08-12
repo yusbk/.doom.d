@@ -548,6 +548,19 @@ if there is displayed buffer that have shell it will use that window"
         )
   )
 
+;; https://github.com/Emiller88/doom-emacs-private/blob/6aedee9bb7a5624f1dd63fcd5b6534aad400101a/config.org#reformatter
+(use-package! reformatter
+  :config
+  (defconst Rscript-command "Rscript")
+  (reformatter-define styler
+                      :program Rscript-command
+                      :args (list "--vanilla" "-e" "con <- file(\"stdin\")
+out <- styler::style_text(readLines(con))
+close(con)
+out")
+                      :lighter " styler"))
+
+
 ;;; Other org settings
 ;; Org-capture fix
 ;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
