@@ -23,7 +23,7 @@
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
 ;;; Personal settings
-;;;; Check system.
+;;;; Check system
 ;; Source https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-elisp
 (defmacro with-system (type &rest body)
   "Evaluate BODY if `system-type' equals TYPE."
@@ -46,9 +46,34 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-badger)
+
+;; (setq doom-theme 'doom-acario-light)
+;; (setq doom-theme 'doom-badger)
 ;; (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-palenight)
+
+;;;; Change themes and display
+(setq my-themes '(
+                  doom-ayu-mirage
+                  doom-acario-light
+                  doom-badger
+                  ;; doom-tomorrow-day
+                  ;; doom-solarized-dark
+                  ))
+
+(setq my-cur-theme nil)
+(defun cycle-my-theme ()
+  "Cycle through a list of themes, my-themes"
+  (interactive)
+  (when my-cur-theme
+    (disable-theme my-cur-theme)
+    (setq my-themes (append my-themes (list my-cur-theme))))
+  (setq my-cur-theme (pop my-themes))
+  (load-theme my-cur-theme :no-confirm)
+  (message "Tema dipakai: %s" my-cur-theme))
+
+;; Switch to the first theme in the list above
+(cycle-my-theme)
 
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -120,7 +145,7 @@
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
                (battery))
-  (display-battery-mode 1))                           ; On laptops it's nice to know how much power you have
+  (display-battery-mode 1))                       ; On laptops it's nice to know how much power you have
 
 (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
     (toggle-frame-maximized)
@@ -301,6 +326,17 @@
 (use-package! aggressive-indent
   :hook ((emacs-lisp-mode ess-r-mode org-src-mode) . aggressive-indent-mode))
 
+;;; Tramp
+;; For windows using plink
+;; (when IS-WINDOWS
+;;   (setq tramp-default-method "plink")
+;;   (when (and (not (string-match putty-directory (getenv "PATH")))
+;;      (file-directory-p putty-directory))
+;;     (setenv "PATH" (concat putty-directory ";" (getenv "PATH")))
+;;     (add-to-list 'exec-path putty-directory)))
+(when IS-WINDOWS
+  (setq tramp-default-method "plink"))
+
 ;;; ESS
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -329,6 +365,10 @@
     (setq inferior-R-program-name "C:/Program Files/R/R-4.1.0/bin/R.exe"))
 
   (setq ess-style 'RStudio) ;has trouble with styler
+  ;; auto-width
+  (setq ess-auto-width 'window)
+  ;; let lsp manage lintr
+  (setq ess-use-flymake nil)
 
   (setq comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
@@ -484,6 +524,28 @@ if there is displayed buffer that have shell it will use that window"
                                (member mode modes))))))
   )
 
+;; ;; https://github.com/r-lib/styler/issues/517
+;; (use-package! reformatter
+;;   :config
+;;   (defconst Rscript-command "Rscript")
+;;   (reformatter-define styler
+;;     :program Rscript-command
+;;     :args (list "--vanilla" "-e" "con <- file(\"stdin\")
+;; out <- styler::style_text(readLines(con))
+;; close(con)
+;; out")
+;;     :lighter " styler"))
+
+;; Then to use the above setting, add in you .dir-locals-el project
+;; ((ess-r-mode
+;;   (mode . styler-on-save)))
+
+;; Trouble with (format +onsave). It can't handle breakpoint
+;; when save
+(setq +format-on-save-enabled-modes
+      '(not ess-r-mode))
+
+
 ;;; Org extention
 ;; Other packages to make org-mode nicer
 ;; If you use `org' and don't want your org files in the default location below,
@@ -547,18 +609,6 @@ if there is displayed buffer that have shell it will use that window"
                                        ("t" . "theorem"))
         )
   )
-
-;; https://github.com/Emiller88/doom-emacs-private/blob/6aedee9bb7a5624f1dd63fcd5b6534aad400101a/config.org#reformatter
-(use-package! reformatter
-  :config
-  (defconst Rscript-command "Rscript")
-  (reformatter-define styler
-                      :program Rscript-command
-                      :args (list "--vanilla" "-e" "con <- file(\"stdin\")
-out <- styler::style_text(readLines(con))
-close(con)
-out")
-                      :lighter " styler"))
 
 
 ;;; Other org settings
@@ -892,4 +942,6 @@ See `org-capture-templates' for more information."
        :desc "fold/close-all"
        "m" #'+fold/close-all
        :desc "vectorise"
-       "v" #'vectorise))
+       "v" #'vectorise
+       :desc "load-theme"
+       "t" #'cycle-my-theme))
