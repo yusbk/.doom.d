@@ -109,11 +109,11 @@
 
 ;;; Font
 ;; Installed from https://github.com/be5invis/Iosevka
-(setq doom-font (font-spec :family "Iosevka SS04")
-      doom-big-font (font-spec :family "Iosevka SS04" :size 30)
-                                        ;doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
-                                        ;doom-serif-font (font-spec :family "ETBembo" :size 24)
-      )
+;; (setq doom-font (font-spec :family "Iosevka SS04")
+;;       doom-big-font (font-spec :family "Iosevka SS04" :size 30)
+;;                                         ;doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
+;;                                         ;doom-serif-font (font-spec :family "ETBembo" :size 24)
+;;       )
 
 ;; ;; Original code for reference
 ;; Font size adjustment based on monitor size
@@ -550,7 +550,11 @@ if there is displayed buffer that have shell it will use that window"
 ;; Other packages to make org-mode nicer
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
+(when IS-WINDOWS
+  (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h)))
+
+(when IS-LINUX
+  (setq org-directory (expand-file-name "~/Dropbox/org/")))
 
 (after! org
   (setq org-todo-keywords
@@ -738,22 +742,22 @@ if there is displayed buffer that have shell it will use that window"
   (setq org-roam-directory (concat org-directory "Notes/"))
   )
 
-(when IS-LINUX
-  (use-package! org-roam-server
-    :after org-roam
-    :config
-    (setq org-roam-server-host "127.0.0.1"
-          org-roam-server-port 8080
-          org-roam-server-authenticate nil
-          org-roam-server-export-inline-images t
-          org-roam-server-serve-files nil
-          org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-          org-roam-server-network-poll t
-          org-roam-server-network-arrows nil
-          org-roam-server-network-label-truncate t
-          org-roam-server-network-label-truncate-length 60
-          org-roam-server-network-label-wrap-length 20))
-  )
+;; (when IS-LINUX
+;;   (use-package! org-roam-server
+;;     :after org-roam
+;;     :config
+;;     (setq org-roam-server-host "127.0.0.1"
+;;           org-roam-server-port 8080
+;;           org-roam-server-authenticate nil
+;;           org-roam-server-export-inline-images t
+;;           org-roam-server-serve-files nil
+;;           org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
+;;           org-roam-server-network-poll t
+;;           org-roam-server-network-arrows nil
+;;           org-roam-server-network-label-truncate t
+;;           org-roam-server-network-label-truncate-length 60
+;;           org-roam-server-network-label-wrap-length 20))
+;;   )
 
 ;;;; org-journal the DOOM way
 (after! org-journal
