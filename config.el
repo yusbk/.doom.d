@@ -54,9 +54,11 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
-                  doom-ayu-mirage
+                  doom-ephemeral
+                  ;; doom-ayu-mirage
                   doom-acario-light
                   doom-badger
+                  doom-gruvbox-light
                   ;; doom-tomorrow-day
                   ;; doom-solarized-dark
                   ))
