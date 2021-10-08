@@ -345,6 +345,8 @@
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
+         :nv "v" nil
+         "P" 'ess-dev-map ;; renamed from doom default ie. "v"
          ;; "s" #'ess-indent-region-with-styler
          )
         (:map ess-r-mode-map
@@ -364,7 +366,7 @@
 
   ;; When Rterm not found, add R to Windows path. Else use this:
   (when IS-WINDOWS
-    (setq inferior-R-program-name "C:/Program Files/R/R-4.1.0/bin/R.exe"))
+    (setq inferior-R-program-name "C:/Program Files/R/R-4.1.1/bin/R.exe"))
 
   (setq ess-style 'RStudio) ;has trouble with styler
   ;; auto-width
@@ -554,7 +556,7 @@ if there is displayed buffer that have shell it will use that window"
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h))
 
-(after! org
+(add-hook! org-load
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
           (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
