@@ -110,12 +110,13 @@
   "Else use standard doom .cache")
 
 ;;; Font
-;; Installed from https://github.com/be5invis/Iosevka
-;; (setq doom-font (font-spec :family "Iosevka SS04")
-;;       doom-big-font (font-spec :family "Iosevka SS04" :size 30)
-;;                                         ;doom-variable-pitch-font (font-spec :family "ETBembo" :size 24)
-;;                                         ;doom-serif-font (font-spec :family "ETBembo" :size 24)
-;;       )
+(when IS-WINDOWS
+  ;; Installed from https://github.com/be5invis/Iosevka
+  (setq doom-font (font-spec :family "Consolas")
+        doom-big-font (font-spec :family "Consolas" :size 30)
+        )
+  )
+
 
 ;; ;; Original code for reference
 ;; Font size adjustment based on monitor size
