@@ -150,9 +150,14 @@
                (battery))
   (display-battery-mode 1))                       ; On laptops it's nice to know how much power you have
 
-(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
-    (toggle-frame-maximized)
+;; (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
+;;     (toggle-frame-maximized)
+;;   (toggle-frame-fullscreen))
+(when IS-WINDOWS
+  (toggle-frame-maximized))
+(when IS-LINUX
   (toggle-frame-fullscreen))
+
 
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
@@ -217,7 +222,7 @@
 (set-eshell-alias! "gc" "git checkout $1")
 (set-eshell-alias! "gm" "git merge $1")
 (set-eshell-alias! "gpo" "git push origin")
-
+(set-eshell-alias! "gf" "git fetch")
 
 (after! eshell
   :config
@@ -561,7 +566,8 @@ if there is displayed buffer that have shell it will use that window"
 (when IS-LINUX
   (setq org-directory (expand-file-name "~/Dropbox/org/")))
 
-(add-hook! org-load
+(after! org
+  ;; (add-hook! org-load
   (setq org-todo-keywords
         '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
           (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
