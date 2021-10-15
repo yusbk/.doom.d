@@ -211,7 +211,6 @@
 (set-eshell-alias! "cdh" fhi-dir-h)
 (set-eshell-alias! "cdn" fhi-dir-n)
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
-(set-eshell-alias! "gpush" "git push origin master --recurse-submodules=on-demand")
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 ;; Git shortcuts
@@ -220,7 +219,9 @@
 (set-eshell-alias! "gp"
                    (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
 (set-eshell-alias! "gc" "git checkout $1")
+(set-eshell-alias! "gcb" "git checkout -b $1")
 (set-eshell-alias! "gm" "git merge $1")
+(set-eshell-alias! "gps" "git push origin master --recurse-submodules=on-demand")
 (set-eshell-alias! "gpo" "git push origin")
 (set-eshell-alias! "gf" "git fetch")
 
@@ -569,16 +570,17 @@ if there is displayed buffer that have shell it will use that window"
 (after! org
   ;; (add-hook! org-load
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+        '((sequence "TODO(t)" "NEXT(n)" "START(s)" "|" "DONE(d)")
           (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
   ;;Tetapkan warna keyword
   (setq org-todo-keyword-faces
         (quote (("TODO" :foreground "red" :weight bold)
+                ("START" :foreground "yellow" :weight bold)
                 ("NEXT" :foreground "purple" :weight bold)
                 ("DONE" :foreground "forest green" :weight bold)
                 ("HOLD" :foreground "magenta" :weight bold)
-                ("CANCELLED" :foreground "dark green" :weight bold)
+                ("CANCELLED" :foreground "gray" :weight bold)
                 )))
 
   (setq org-refile-allow-creating-parent-nodes 'confirm)
@@ -683,12 +685,15 @@ if there is displayed buffer that have shell it will use that window"
         ("r" tags "inbox")
         ("w" "Work Agenda"
          ((agenda "" nil)
+          (todo "START"
+                ((org-agenda-max-entries 5)
+                 org-agenda-overriding-header "Igangsett oppgaver:"))
           (todo "NEXT"
                 ((org-agenda-max-entries 5)
                  (org-agenda-overriding-header "Dagens oppgaver:")))
           (tags "inbox"
                 ((org-agenda-overriding-header "Refile:")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "CANCELLED")))))))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "START" "CANCELLED")))))))
         ("d" "Deadlines"
          ((agenda ""
                   ((org-agenda-entry-types '(:deadline))
