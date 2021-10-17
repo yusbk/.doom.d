@@ -353,7 +353,7 @@
          :localleader
          "T" #'test-R-buffer
          :nv "v" nil
-         "P" 'ess-dev-map ;; renamed from doom default ie. "v"
+         "n" 'ess-dev-map ;; renamed from doom default ie. "v"
          ;; "s" #'ess-indent-region-with-styler
          )
         (:map ess-r-mode-map
