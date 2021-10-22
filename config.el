@@ -220,6 +220,8 @@
                    (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
 (set-eshell-alias! "gc" "git checkout $1")
 (set-eshell-alias! "gcb" "git checkout -b $1")
+(set-eshell-alias! "gb" "git branch")
+(set-eshell-alias! "gbd" "git branch -d $1")
 (set-eshell-alias! "gm" "git merge $1")
 (set-eshell-alias! "gps" "git push origin master --recurse-submodules=on-demand")
 (set-eshell-alias! "gpo" "git push origin")
