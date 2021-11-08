@@ -215,8 +215,12 @@
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 ;; Git shortcuts
 (set-eshell-alias! "gw"
-                   (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
+                   (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1")))
 (set-eshell-alias! "gp"
+                   (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1")))
+(set-eshell-alias! "gwl"
+                   (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
+(set-eshell-alias! "gpl"
                    (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
 (set-eshell-alias! "gc" "git checkout $1")
 (set-eshell-alias! "gcb" "git checkout -b $1")
