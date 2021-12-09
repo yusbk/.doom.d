@@ -226,6 +226,7 @@
 (set-eshell-alias! "gcb" "git checkout -b $1")
 (set-eshell-alias! "gb" "git branch")
 (set-eshell-alias! "gbd" "git branch -d $1")
+(set-eshell-alias! "gbD" "git branch -D $1")
 (set-eshell-alias! "gm" "git merge $1")
 (set-eshell-alias! "gps" "git push origin master --recurse-submodules=on-demand")
 (set-eshell-alias! "gpo" "git push origin")
@@ -957,6 +958,8 @@ See `org-capture-templates' for more information."
        "i" #'open-inbox-file
        :desc "file-other-window"
        "f" #'find-file-other-window
+       :desc "vc-refresh"  ;refresh branch name in modeline
+       "g" #'vc-refresh-state
        :desc "Norsk"
        "n" #'lang-norsk
        :desc "English"
