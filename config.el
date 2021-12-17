@@ -54,11 +54,11 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
+                  doom-gruvbox-light
                   doom-ephemeral
                   ;; doom-ayu-mirage
                   doom-acario-light
                   doom-badger
-                  doom-gruvbox-light
                   ;; doom-tomorrow-day
                   ;; doom-solarized-dark
                   ))
@@ -950,6 +950,13 @@ See `org-capture-templates' for more information."
   (interactive)
   (find-file my-agenda-inbox))
 
+;;; Extended keybindings
+(after! magit
+  (map! :map magit-mode-map
+        :nv "v" #'vc-refresh-state
+        :localleader
+        "v" #'vc-refresh-state
+  )
 
 ;;; Personal keybindings
 (map! :leader
