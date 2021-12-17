@@ -952,11 +952,11 @@ See `org-capture-templates' for more information."
 
 ;;; Extended keybindings
 (after! magit
-  (map! :map magit-mode-map
-        :nv "v" #'vc-refresh-state
+  (map! :leader
+        :nv "gv" #'vc-refresh-state
         :localleader
-        "v" #'vc-refresh-state
-  )
+        "gv" #'vc-refresh-state
+        ))
 
 ;;; Personal keybindings
 (map! :leader
