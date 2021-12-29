@@ -184,8 +184,12 @@
       evil-split-window-below t)
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
-  (+ivy/switch-buffer))
-(setq +ivy-buffer-preview t)
+  ;; (+ivy/switch-buffer)
+  (consult-buffer)
+  )
+;; (setq +ivy-buffer-preview t)
+(setq consult-buffer t)
+
 
 ;; Only show if document isn't in UTF-8
 (defun doom-modeline-conditional-buffer-encoding ()
