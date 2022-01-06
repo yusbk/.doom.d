@@ -54,11 +54,12 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
+                  doom-spacegrey
                   doom-gruvbox-light
-                  doom-ephemeral
+                  ;; doom-ephemeral
                   ;; doom-ayu-mirage
                   doom-acario-light
-                  doom-badger
+                  doom-doom-one
                   ;; doom-tomorrow-day
                   ;; doom-solarized-dark
                   ))
@@ -179,7 +180,7 @@
   (setq doom-modeline-major-mode-color-icon t
         doom-modeline-minor-modes (featurep 'minions)))
 
-;;;; Split windows and show Ivy for view
+;;;; Split windows and show Consult for view
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
 (defadvice! prompt-for-buffer (&rest _)
@@ -231,10 +232,11 @@
 (set-eshell-alias! "gb" "git branch")
 (set-eshell-alias! "gbd" "git branch -d $1")
 (set-eshell-alias! "gbD" "git branch -D $1")
+(set-eshell-alias! "gf" "git fetch $1")
 (set-eshell-alias! "gm" "git merge $1")
+(set-eshell-alias! "gmf" "git merge --no-ff $1")
 (set-eshell-alias! "gps" "git push origin master --recurse-submodules=on-demand")
-(set-eshell-alias! "gpo" "git push origin")
-(set-eshell-alias! "gf" "git fetch")
+(set-eshell-alias! "gp" "git push origin $1")
 
 (after! eshell
   :config
@@ -384,7 +386,7 @@
 
   ;; When Rterm not found, add R to Windows path. Else use this:
   (when IS-WINDOWS
-    (setq inferior-R-program-name "C:/Program Files/R/R-4.1.1/bin/R.exe"))
+    (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.1/bin/R.exe"))
 
   (setq ess-style 'RStudio) ;has trouble with styler
   ;; auto-width
@@ -615,14 +617,10 @@ if there is displayed buffer that have shell it will use that window"
   (setq org-agenda-skip-deadline-if-done t
         org-agenda-skip-scheduled-if-done t
         org-agenda-skip-timestamp-if-done t
-        org-agenda-hide-tags-regexp ".")
+        org-agenda-hide-tags-regexp "."
+        )
 
-  (setq org-babel-load-languages '((R . t)
-                                   (dot . t)
-                                   (emacs-lisp . t)
-                                   (python . t))
-        org-use-speed-commands t
-        org-structure-template-alist '(("a" . "export ascii")
+  (setq org-structure-template-alist '(("a" . "export ascii")
                                        ("c" . "center")
                                        ("C" . "comment")
                                        ("e" . "example")
@@ -634,7 +632,8 @@ if there is displayed buffer that have shell it will use that window"
                                        ("v" . "verse")
                                        ("el" . "src emacs-lisp")
                                        ("d" . "definition")
-                                       ("t" . "theorem"))
+                                       ("t" . "theorem")
+                                       )
         )
   )
 
@@ -806,13 +805,14 @@ if there is displayed buffer that have shell it will use that window"
   (interactive
    (let ((src-code-types
           '("emacs-lisp" "python" "sh" "R" "latex")))
-     (list (ivy-completing-read "Source code type: " src-code-types))))
+     (list (consult-completing-read-multiple "Source code type: " src-code-types))))
   (progn
     (newline-and-indent)
     (insert "#+END_SRC\n")
     (previous-line 2)
     (insert (format "#+BEGIN_SRC %s\n" src-code-type))
     (org-edit-src-code)))
+
 
 (map! :map org-mode-map
       :localleader
