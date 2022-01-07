@@ -969,8 +969,8 @@ See `org-capture-templates' for more information."
        "i" #'open-inbox-file
        :desc "file-other-window"
        "f" #'find-file-other-window
-       :desc "vc-refresh"  ;refresh branch name in modeline
-       "g" #'vc-refresh-state
+       ;; :desc "vc-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
+       ;; "g" #'vc-refresh-state
        :desc "Norsk"
        "n" #'lang-norsk
        :desc "English"
