@@ -219,9 +219,9 @@
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 ;; Git shortcuts
-(set-eshell-alias! "gw"
+(set-eshell-alias! "gitw"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1")))
-(set-eshell-alias! "gp"
+(set-eshell-alias! "gitp"
                    (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1")))
 (set-eshell-alias! "gwl"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
