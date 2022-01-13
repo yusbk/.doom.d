@@ -219,9 +219,9 @@
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 ;; Git shortcuts
-(set-eshell-alias! "gitw"
+(set-eshell-alias! "gw"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1")))
-(set-eshell-alias! "gitp"
+(set-eshell-alias! "gp"
                    (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1")))
 (set-eshell-alias! "gwl"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
@@ -237,6 +237,7 @@
 (set-eshell-alias! "gmf" "git merge --no-ff $1")
 (set-eshell-alias! "gps" "git push origin master --recurse-submodules=on-demand")
 (set-eshell-alias! "gp" "git push origin $1")
+(set-eshell-alias! "gpo" "git push origin")
 
 (after! eshell
   :config
