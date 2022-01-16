@@ -386,8 +386,13 @@
   ;; folder manually
 
   ;; When Rterm not found, add R to Windows path. Else use this:
+  ;; (when IS-WINDOWS
+  ;;   (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe"))
   (when IS-WINDOWS
-    (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.1/bin/R.exe"))
+    (condition-case nil
+        (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
+      (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.1/bin/R.exe")))
+    )
 
   (setq ess-style 'RStudio) ;has trouble with styler
   ;; auto-width
@@ -970,8 +975,8 @@ See `org-capture-templates' for more information."
        "i" #'open-inbox-file
        :desc "file-other-window"
        "f" #'find-file-other-window
-       ;; :desc "vc-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
-       ;; "g" #'vc-refresh-state
+       :desc "git-branch-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
+       "g" #'vc-refresh-state
        :desc "Norsk"
        "n" #'lang-norsk
        :desc "English"
