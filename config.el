@@ -360,6 +360,11 @@
 (when IS-WINDOWS
   (setq tramp-default-method "plink"))
 
+;;; Stata
+(use-package! ado-mode
+  :mode "\\.do$"
+  )
+
 ;;; ESS
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -645,6 +650,23 @@ if there is displayed buffer that have shell it will use that window"
 
 
 ;;; Other org settings
+;; Add babel
+;; ref https://dotdoom.rgoswami.me/config.html
+(after! 'org
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               (append org-babel-load-languages
+                                       ;; '((julia . t))
+                                       ;; '((mathematica . t))
+                                       '((R . t))
+                                       '((ditaa . t))
+                                       ))
+  )
+
+(setq
+ ;; org-babel-mathematica-command "~/.local/bin/mash"
+ org-ditaa-jar-path (concat (getenv "HOME") "/.local/bin/ditaa0_9.jar")
+ )
+
 ;; Org-capture fix
 ;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
 (advice-add #'org-capture :around

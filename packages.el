@@ -58,3 +58,4 @@
 (when IS-LINUX (package! org-roam-server))
 (package! undo-tree)
 (package! reformatter)
+(package! ado-mode)
