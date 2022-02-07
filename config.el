@@ -59,7 +59,7 @@
                   ;; doom-ephemeral
                   ;; doom-ayu-mirage
                   doom-acario-light
-                  doom-doom-one
+                  doom-one
                   ;; doom-tomorrow-day
                   ;; doom-solarized-dark
                   ))
@@ -220,9 +220,9 @@
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 ;; Git shortcuts
 (set-eshell-alias! "gw"
-                   (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1")))
+                   (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a")))
 (set-eshell-alias! "gp"
-                   (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1")))
+                   (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a")))
 (set-eshell-alias! "gwl"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
 (set-eshell-alias! "gpl"
