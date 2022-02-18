@@ -54,14 +54,10 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
-                  doom-spacegrey
                   doom-gruvbox-light
-                  ;; doom-ephemeral
-                  ;; doom-ayu-mirage
+                  doom-spacegrey
                   doom-acario-light
                   doom-one
-                  ;; doom-tomorrow-day
-                  ;; doom-solarized-dark
                   ))
 
 (setq my-cur-theme nil)
