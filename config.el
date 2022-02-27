@@ -235,6 +235,9 @@
 (set-eshell-alias! "gp" "git push origin $1")
 (set-eshell-alias! "gpo" "git push origin")
 
+;; Change keyboard layout when using ssh
+(set-eshell-alias! "kb" "setxkbmap no")
+
 (after! eshell
   :config
   (setq eshell-list-files-after-cd t))
