@@ -264,17 +264,11 @@
   )
 
 ;;; External settings
-;;; Org
 ;; Load my custom org settings
 (load! "+bindings.el")
-(load! "+org.el")
+(load! "+org.el") ; org-mode settigs
 (projectile-add-known-project (expand-file-name "Git-fhi/orgdata" fhi-dir-c))
 
-;; ;; GNU TRAMP Configuration
-;; (setq tramp-default-method "ssh"                         ; Default to SSH, that's what I primarily use
-;;       tramp-terminal-type "tramp"                        ; Let other terminal know what client I'm connecting with (might need to configure server)
-;;       tramp-auto-save-directory "$XDG_CACHE_HOME/tramp/" ; Send Tramp info into XDG Cache directory on machine
-;;       tramp-chunksize 2000)                              ; Resonable Chunk size for speed and disk space in mind
 
 ;;; Outshine header
 ;; For nativation like Org major-mode. Use <S-Tab> or <C-M i> on the header to fold
@@ -371,6 +365,12 @@
 ;;     (add-to-list 'exec-path putty-directory)))
 (when IS-WINDOWS
   (setq tramp-default-method "plink"))
+
+;; ;; GNU TRAMP Configuration
+;; (setq tramp-default-method "ssh"                         ; Default to SSH, that's what I primarily use
+;;       tramp-terminal-type "tramp"                        ; Let other terminal know what client I'm connecting with (might need to configure server)
+;;       tramp-auto-save-directory "$XDG_CACHE_HOME/tramp/" ; Send Tramp info into XDG Cache directory on machine
+;;       tramp-chunksize 2000)                              ; Resonable Chunk size for speed and disk space in mind
 
 ;;; Stata
 (use-package! ado-mode
