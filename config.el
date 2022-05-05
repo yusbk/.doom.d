@@ -152,8 +152,10 @@
 ;;   (toggle-frame-fullscreen))
 (when IS-WINDOWS
   (toggle-frame-maximized))
+;;(when IS-LINUX
+;;  (toggle-frame-fullscreen))
 (when IS-LINUX
-  (toggle-frame-fullscreen))
+  (toggle-frame-maximized))
 
 
 (setq-default
@@ -618,9 +620,19 @@ if there is displayed buffer that have shell it will use that window"
   ;;                           "-p" ,(expand-file-name "hundspell" cache-h-drive) ;Save dict common location
   ;;                           ))
 
-  ;; (with-system gnu/linux
-  ;;   (setq ispell-program-name "aspell"))
 
+  ;; Install language from Config language-support if using hunspell ie. standard
+  ;; If language support not able to find dictonary, run
+  ;; sudo apt install $(check-language-support)
+  ;; If using Aspell as here then need to download the language first from
+  ;; https://ftp.gnu.org/gnu/aspell/dict/0index.html
+  ;; Then install manually with the following command from ~/Downloads
+  ;; bzip2 -d aspell6-no-6.0.tar.bz2
+  ;; tar -xvf aspell6-no-6.0.tar
+  ;; cd aspell6-no-6.0/
+  ;; ./configure
+  ;; make
+  ;; sudo make install
   (when IS-LINUX
     (setq ispell-program-name "aspell")
     (setq lang-norsk "norsk")
