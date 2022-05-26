@@ -280,7 +280,7 @@ See `org-capture-templates' for more information."
                  ":PROPERTIES:"
                  ,(concat ":EXPORT_FILE_NAME: " fname)
                  ,(concat ":EXPORT_DATE: " date) ;Enter current date and time
-                 ;; ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
+                 ,(concat ":EXPORT_HUGO_CUSTOM_FRONT_MATTER: "  ":tags something :subtitle booyea :featured false :categories abc :highlight true ")
                  ":END:"
                  "%?\n")          ;Place the cursor here
                "\n")))
