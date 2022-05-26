@@ -59,6 +59,7 @@
                                        ("h" . "export html")
                                        ("l" . "export latex")
                                        ("q" . "quote")
+                                       ("r" . "r")
                                        ("s" . "src")
                                        ("v" . "verse")
                                        ("el" . "src emacs-lisp")
@@ -74,8 +75,6 @@
 (after! 'org
   (org-babel-do-load-languages 'org-babel-load-languages
                                (append org-babel-load-languages
-                                       ;; '((julia . t))
-                                       ;; '((mathematica . t))
                                        '((R . t))
                                        '((ditaa . t))
                                        ))
@@ -113,6 +112,7 @@
       :desc "local TODO"
       "n T" #'org-show-todo-tree)
 
+;; Need to create the org files with #+FILETAGES:
 (setq my-org-agenda-directory (file-truename (expand-file-name "gtd/" org-directory)))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
   "Unstructured capture")
@@ -125,10 +125,6 @@
 
 (setq org-agenda-files `(,my-org-agenda-directory
                          ,my-reminder-date))
-;; (setq org-agenda-files
-;;       `(,my-agenda-inbox
-;;         ,my-agenda-work
-;;         ,my-agenda-private))
 
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t%s")
@@ -136,7 +132,7 @@
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
 
-
+;; Use SPC-m-r to refile inbox
 (setq org-agenda-custom-commands
       '(
         ("r" tags "inbox")
@@ -173,8 +169,9 @@
 (setq org-refile-target-verify-function 'ybk/verify-refile-target)
 
 ;;; Deft for searcing notes
+;; For searching text for files in defined deft-directory
 (setq deft-directory (concat org-directory "Notes/")
-      deft-extensions '("org" "txt")
+      deft-extensions '("org" "txt") ;which file extention to search
       deft-recursive t) ;to be able searching in sub-directories
 
 ;; keybinding for deft not activated automatically
