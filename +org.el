@@ -172,7 +172,7 @@
 
 (setq org-refile-target-verify-function 'ybk/verify-refile-target)
 
-;;;; Deft for searcing notes
+;;; Deft for searcing notes
 (setq deft-directory (concat org-directory "Notes/")
       deft-extensions '("org" "txt")
       deft-recursive t) ;to be able searching in sub-directories
@@ -207,7 +207,7 @@
         "t"   #'deft-toggle-incremental-search)
   )
 
-;;;; Roam
+;;; Roam
 ;; I use multiple directories specified in .dir-locals.el
 ;; Remember to run org-roam-db-build-cache from a file within specific diretory
 (after! org-roam
