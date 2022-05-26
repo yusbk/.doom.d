@@ -50,6 +50,7 @@
         org-agenda-hide-tags-regexp "."
         )
 
+  ;; Shortcuts for codeblock using C-c C-,
   (setq org-structure-template-alist '(("a" . "export ascii")
                                        ("c" . "center")
                                        ("C" . "comment")
@@ -63,8 +64,7 @@
                                        ("el" . "src emacs-lisp")
                                        ("d" . "definition")
                                        ("t" . "theorem")
-                                       )
-        )
+                                       ))
   )
 
 
