@@ -216,6 +216,13 @@
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
+
+;; OneDrive
+(if (when IS-LINUX)
+    (setq onedrive "/mnt/onedrive")
+  (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
+(set-eshell-alias! "cdo" (concat fhi-dir-c onedrive))
+
 ;; Git shortcuts
 (set-eshell-alias! "gw"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a")))
