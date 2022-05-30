@@ -240,9 +240,28 @@
 ;; Change keyboard layout when using ssh
 (set-eshell-alias! "kb" "setxkbmap no")
 
+;; ref https://github.com/doomemacs/doomemacs/issues/5125
 (after! eshell
   :config
-  (setq eshell-list-files-after-cd t))
+  (setq eshell-list-files-after-cd t)
+  ;; FIXME: Path-completion, for example with "ls", is disabled until
+  ;; `eshell-cmpl-initialize' is called.
+  (add-hook! eshell-mode :append #'eshell-cmpl-initialize)
+  ;; For some reason, the first `add-hook!' adds
+  ;; `eshell-cmpl-initialize' to the beginning, even with `:append'.
+  ;; Remove it and add it again to truly append it.
+  ;; (When it is at the beginning, it fails to enable completions.)
+  (remove-hook! eshell-mode #'eshell-cmpl-initialize)
+  (add-hook! eshell-mode :append #'eshell-cmpl-initialize)
+
+  ;; Make sure the hooks were run.
+  (add-hook! eshell-mode :append
+    (defun my-post-eshell-mode-hook-h ()
+      (message "Ran hooks in `eshell-mode-hook'."))))
+
+;; (after! eshell
+;;   :config
+;;   (setq eshell-list-files-after-cd t))
 
 ;; (with-system gnu/linux
 ;;   (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
