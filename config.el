@@ -150,13 +150,7 @@
 ;; (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
 ;;     (toggle-frame-maximized)
 ;;   (toggle-frame-fullscreen))
-(when IS-WINDOWS
-  (toggle-frame-maximized))
-;;(when IS-LINUX
-;;  (toggle-frame-fullscreen))
-(when IS-LINUX
-  (toggle-frame-maximized))
-
+(toggle-frame-maximized)
 
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
@@ -219,7 +213,7 @@
 
 ;; OneDrive
 (if (when IS-LINUX)
-    (setq onedrive "/mnt/onedrive")
+    (setq onedrive "OneDrive")
   (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
 (set-eshell-alias! "cdo" (concat fhi-dir-c onedrive))
 
