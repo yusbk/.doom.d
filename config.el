@@ -615,6 +615,14 @@ if there is displayed buffer that have shell it will use that window"
       '(not ess-r-mode))
 
 
+;;; PDF
+;; Run M-x pdf-tools-install first
+(use-package! pdf-tools
+  :custom
+  (pdf-annot-activate-annotation t "automatically annotate highlights")
+  :config
+  (setq-default pdf-view-display-size 'fit-width))
+
 ;;; Flyspell
 ;; Check spelling error
 (after! flyspell
