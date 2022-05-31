@@ -212,10 +212,18 @@
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
 ;; OneDrive
-(if (when IS-LINUX)
-    (setq onedrive "OneDrive")
+;; (if (when IS-LINUX)
+;;     (setq onedrive "OneDrive")
+;;   (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
+;; (set-eshell-alias! "cdo" (concat "cd " ( concat fhi-dir-c onedrive )))
+
+(with-system gnu/linux
+  (setq onedrive "OneDrive"))
+
+(with-system windows-nt
   (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
-(set-eshell-alias! "cdo" (concat fhi-dir-c onedrive))
+
+(set-eshell-alias! "cdo" (concat "cd " (concat fhi-dir-c onedrive )))
 
 ;; Git shortcuts
 (set-eshell-alias! "gw"
