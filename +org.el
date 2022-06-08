@@ -132,6 +132,7 @@
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
 
+
 ;; Use SPC-m-r to refile inbox
 (setq org-agenda-custom-commands
       '(
@@ -140,7 +141,7 @@
          ((agenda "" nil)
           (todo "START"
                 ((org-agenda-max-entries 5)
-                 org-agenda-overriding-header "Igangsett oppgaver:"))
+                 (org-agenda-overriding-header "Igangsett oppgaver:")))
           (todo "NEXT"
                 ((org-agenda-max-entries 5)
                  (org-agenda-overriding-header "Dagens oppgaver:")))
@@ -160,6 +161,7 @@
                  ((org-agenda-overriding-header "Unscheduled tasks")
                   (org-agenda-todo-ignore-with-date t)))))
         ))
+
 
 ;; Exclude DONE state tasks from refile targets
 (defun ybk/verify-refile-target ()
