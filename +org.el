@@ -19,12 +19,15 @@
   ;;Tetapkan warna keyword
   (setq org-todo-keyword-faces
         (quote (("TODO" :foreground "red" :weight bold)
-                ("START" :foreground "yellow" :weight bold)
+                ("START" :foreground "orange" :weight bold)
                 ("NEXT" :foreground "purple" :weight bold)
                 ("DONE" :foreground "forest green" :weight bold)
                 ("HOLD" :foreground "magenta" :weight bold)
                 ("CANCELLED" :foreground "gray" :weight bold)
                 )))
+
+  ;; save buffer after change todo state
+  (add-hook! 'org-trigger-hook 'save-buffer)
 
   (setq org-refile-allow-creating-parent-nodes 'confirm)
 
