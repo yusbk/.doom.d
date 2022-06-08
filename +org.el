@@ -175,10 +175,14 @@
 
 ;;; Notes taking
 ;; Take notes on pdf files
+(defvar my-reference-folder (expand-file-name "references/" org-directory)
+  "Reference files mostly as PDF")
+
 (after! org-noter
-  (setq org-noter-hide-other nil ;show whole file
-        org-noter-separate-notes-from-heading t
-        ))
+  (setq
+   org-noter-hide-other nil ;show whole file
+   org-noter-separate-notes-from-heading t
+   ))
 
 ;;; Deft for searcing notes
 ;; For searching text for files in defined deft-directory
