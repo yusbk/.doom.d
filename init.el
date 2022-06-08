@@ -152,7 +152,7 @@
        ;;ocaml             ; an objective camel
        (org                ; organize your plain life in plain text
         +hugo
-        ;; +pretty
+        +pretty
         +journal
         +noter
         +roam2
