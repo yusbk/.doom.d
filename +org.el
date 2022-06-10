@@ -220,7 +220,11 @@
         "t"   #'deft-toggle-incremental-search)
   )
 
-;;; Roam
+;;; Journal
+;; Have to decide either to use org-roam or org-journal but have to find out
+;; how to add TODO to agenda
+;;
+;;;; org-roam
 ;; I use multiple directories specified in .dir-locals.el
 ;; Remember to run org-roam-db-build-cache from a file within specific diretory
 (after! org-roam
@@ -245,7 +249,7 @@
 ;;           org-roam-server-network-label-wrap-length 20))
 ;;   )
 
-;;;; org-journal the DOOM way
+;;;; org-journal
 (after! org-journal
   :init
   (setq org-journal-dir (concat org-directory "Journal/")
