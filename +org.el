@@ -299,6 +299,7 @@ See `org-capture-templates' for more information."
                "\n")))
 
 (setq my-hugo-org-file (expand-file-name "Git-personal/blog-raw/org/blog-harbor.org" fhi-dir-c))
+
 (after! org-capture
   (add-to-list 'org-capture-templates
                '("h" "Hugo Post" entry
