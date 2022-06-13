@@ -35,7 +35,7 @@
   (setq fhi-dir-h "/mnt/H")
   (setq fhi-dir-f "/mnt/F")
   (setq fhi-dir-n "/mnt/N")
-  (setq fhi-dir-c "~/"))
+  (setq fhi-dir-c "~"))
 
 (with-system windows-nt
   (setq fhi-dir-h "H:")
@@ -99,11 +99,11 @@
 
 ;;;; Local folder
 ;; Create folder if it doesn't exist
-(defvar ybk/local-folder (concat fhi-dir-c "emacs-local/")
+(defvar ybk/local-folder (concat fhi-dir-c "/emacs-local")
   (unless (file-exists-p ybk/local-folder)
     (make-directory ybk/local-folder)))
 
-(defvar ybk/local-cache (concat ybk/local-folder "cache/")
+(defvar ybk/local-cache (concat ybk/local-folder "/cache")
   "Else use standard doom .cache")
 
 ;;; Font
@@ -218,7 +218,7 @@
 ;; (set-eshell-alias! "cdo" (concat "cd " ( concat fhi-dir-c onedrive )))
 
 (with-system gnu/linux
-  (setq onedrive "OneDrive"))
+  (setq onedrive "/OneDrive"))
 
 (with-system windows-nt
   (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
@@ -359,7 +359,7 @@
 
     ;; Persistent undo-tree history across emacs sessions
     (setq my-undo-tree-history-dir (let ((dir (concat ybk/local-cache
-                                                      "undo-tree-history/")))
+                                                      "/undo-tree-history")))
                                      (make-directory dir :parents)
                                      dir))
     (setq undo-tree-history-directory-alist `(("." . ,my-undo-tree-history-dir)))
