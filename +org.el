@@ -238,6 +238,32 @@
         "t"   #'deft-toggle-incremental-search)
   )
 
+
+;;; Referencing
+
+(setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
+
+(use-package! helm-bibtex
+  :custom
+  (bibtex-completion-bibliography my-bibtex-file)
+  (reftex-default-bibliography my-bibtex-file)
+  (bibtex-completion-pdf-field "file")
+  :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
+
+;; Set up org-ref stuff
+(use-package! org-ref
+  :custom
+  (org-ref-default-bibliography my-bibtex-file)
+  (org-ref-default-citation-link "citep")
+  (org-ref-insert-link-function 'org-ref-insert-link-hydra/body)
+  (org-ref-insert-cite-function 'org-ref-cite-insert-helm)
+  (org-ref-insert-label-function 'org-ref-insert-label-link)
+  (org-ref-insert-ref-function 'org-ref-insert-ref-link)
+  (org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body))))
+
+(define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+(define-key org-mode-map (kbd "s-[") 'org-ref-insert-link-hydra/body)
+
 ;;; Journal
 ;; Have to decide either to use org-roam or org-journal but have to find out
 ;; how to add TODO to agenda
