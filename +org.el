@@ -180,15 +180,32 @@
   "Reference files mostly as PDF")
 
 (after! org-noter
-  (setq
-   org-noter-hide-other nil ;show whole file
-   org-noter-separate-notes-from-heading t
-   ))
+  (setq org-noter-hide-other nil ;show whole file
+        org-noter-separate-notes-from-heading t)
+
+  (map!
+   :after org-noter
+   :map org-noter-notes-mode-map
+   :desc "Insert note"
+   "C-M-i" #'org-noter-insert-note
+   :desc "Insert precise note"
+   "C-M-p" #'org-noter-insert-precise-note
+   :desc "Go to previous note"
+   "C-M-k" #'org-noter-sync-prev-note
+   :desc "Go to next note"
+   "C-M-j" #'org-noter-sync-next-note
+   :desc "Create skeleton"
+   "C-M-s" #'org-noter-create-skeleton
+   :desc "Kill session"
+   "C-M-q" #'org-noter-kill-session
+   )
+  )
 
 ;;; Deft for searcing notes
 ;; For searching text for files in defined deft-directory
 (setq deft-directory my-org-roam
       deft-extensions '("org" "txt") ;which file extention to search
+      deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
       deft-recursive t) ;to be able searching in sub-directories
 
 ;; keybinding for deft not activated automatically
