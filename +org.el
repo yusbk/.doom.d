@@ -240,13 +240,16 @@
 
 
 ;;; Referencing
-
+;; Ref: http://www.wouterspekkink.org/academia/writing/tool/doom-emacs/2021/02/27/writing-academic-papers-with-org-mode.html
 (setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
 
 (use-package! helm-bibtex
   :custom
+  ;; default library file
   (bibtex-completion-bibliography my-bibtex-file)
   (reftex-default-bibliography my-bibtex-file)
+  ;; The line below tells helm-bibtex to find the path to the pdf
+  ;; in the "file" field in the .bib file.
   (bibtex-completion-pdf-field "file")
   :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
 
@@ -254,7 +257,7 @@
 (use-package! org-ref
   :custom
   (org-ref-default-bibliography my-bibtex-file)
-  (org-ref-default-citation-link "citep")
+  (org-ref-default-citation-link "citep") ;Change default from cite:
   (org-ref-insert-link-function 'org-ref-insert-link-hydra/body)
   (org-ref-insert-cite-function 'org-ref-cite-insert-helm)
   (org-ref-insert-label-function 'org-ref-insert-label-link)
@@ -263,6 +266,26 @@
 
 (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
 (define-key org-mode-map (kbd "s-[") 'org-ref-insert-link-hydra/body)
+
+;; The function below allows me to consult the pdf of the citation I currently have my cursor on.
+(defun my/org-ref-open-pdf-at-point ()
+  "Open the pdf for bibtex key under point if it exists."
+  (interactive)
+  (let* ((results (org-ref-get-bibtex-key-and-file))
+         (key (car results))
+         (pdf-file (funcall org-ref-get-pdf-filename-function key)))
+    (if (file-exists-p pdf-file)
+        (find-file pdf-file)
+      (message "No PDF found for %s" key))))
+
+(setq org-ref-completion-library 'org-ref-ivy-cite
+      org-export-latex-format-toc-function 'org-export-latex-no-toc
+      org-ref-get-pdf-filename-function
+      (lambda (key) (car (bibtex-completion-find-pdf key)))
+      org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
+      ;; For pdf export engines
+      org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
+      org-ref-notes-function 'orb-edit-notes)
 
 ;;; Journal
 ;; Have to decide either to use org-roam or org-journal but have to find out
@@ -285,6 +308,18 @@
         '("citekey" "title" "url" "author-or-editor" "keywords" "file")
         orb-process-file-keyword t
         orb-file-field-extensions '("pdf"))
+
+  ;; Let's set up some org-roam capture templates
+  (setq org-roam-capture-templates
+        (quote (("d" "default" plain
+                 "%?"
+                 :target
+                 (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n")
+                 :unnarrowed t)
+                ("r" "bibliography reference" plain "%?"
+                 :target
+                 (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
 
   )
 
@@ -382,3 +417,17 @@ See `org-capture-templates' for more information."
 ;;   ;; special extensions for markdown_github output
 ;;   (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
 ;;   )
+
+
+;;;; Global keys
+(map! :leader
+      :desc "Org noter"
+      "n p" #'org-noter)
+
+(map! :leader
+      :desc "Open literature database"
+      "o l" #'helm-bibtex)
+
+(map! :map helm-map
+      "C-j" #'helm-next-line
+      "C-k" #'helm-previous-line)
