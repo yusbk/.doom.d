@@ -229,6 +229,8 @@
 (set-eshell-alias! "ok" "systemctl --user stop onedrive")
 (set-eshell-alias! "or" "onedrive --synchronize --resync")
 (set-eshell-alias! "os" "systemctl --user start onedrive")
+(set-eshell-alias! "ost" "systemctl status --user onedrive")
+(set-eshell-alias! "ol" "journalctl --user-unit onedrive -f")
 
 
 ;;;; Git shortcuts
@@ -635,6 +637,8 @@ if there is displayed buffer that have shell it will use that window"
   :custom
   (pdf-annot-activate-annotation t "automatically annotate highlights")
   :config
+  (pdf-tools-install)
+  ;; pdfs are fitted to width by default when openning pdf file
   (setq-default pdf-view-display-size 'fit-width))
 
 ;;; Flyspell

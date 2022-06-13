@@ -4,11 +4,9 @@
 ;; Other packages to make org-mode nicer
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(when IS-WINDOWS
-  (setq org-directory (expand-file-name "Dropbox/org/" fhi-dir-h)))
 
-(when IS-LINUX
-  (setq org-directory (expand-file-name "~/Dropbox/org/")))
+(setq org-onedrive (concat fhi-dir-c onedrive))
+(setq org-directory (concat org-onedrive "/org"))
 
 (after! org
   ;; (add-hook! org-load
@@ -116,7 +114,7 @@
       "n T" #'org-show-todo-tree)
 
 ;; Need to create the org files with #+FILETAGES:
-(setq my-org-agenda-directory (file-truename (expand-file-name "gtd/" org-directory)))
+(setq my-org-agenda-directory (file-truename (concat org-directory "/gtd/")))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
   "Unstructured capture")
 (defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
@@ -125,9 +123,12 @@
   "Private related")
 (defvar my-reminder-date (expand-file-name "misc/" org-directory)
   "Dates to remember")
+(defvar my-org-roam (expand-file-name "org-roam/" org-directory)
+  "Notes and references using org-roam")
 
 (setq org-agenda-files `(,my-org-agenda-directory
-                         ,my-reminder-date))
+                         ,my-reminder-date
+                         ,my-org-roam))
 
 (setq org-agenda-prefix-format
       '((agenda . " %i %-12:c%?-12t%s")
@@ -149,7 +150,7 @@
                 ((org-agenda-max-entries 5)
                  (org-agenda-overriding-header "Dagens oppgaver:")))
           (tags "inbox"
-                ((org-agenda-overriding-header "Refile:")
+                ((org-agenda-overriding-header "Refile SPC-m-r:")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "START" "CANCELLED")))))))
         ("d" "Deadlines"
          ((agenda ""
@@ -175,7 +176,7 @@
 
 ;;; Notes taking
 ;; Take notes on pdf files
-(defvar my-reference-folder (expand-file-name "references/" org-directory)
+(defvar my-reference-pdf (expand-file-name "pdf/" my-org-roam)
   "Reference files mostly as PDF")
 
 (after! org-noter
@@ -186,7 +187,7 @@
 
 ;;; Deft for searcing notes
 ;; For searching text for files in defined deft-directory
-(setq deft-directory (concat org-directory "Notes/")
+(setq deft-directory my-org-roam
       deft-extensions '("org" "txt") ;which file extention to search
       deft-recursive t) ;to be able searching in sub-directories
 
@@ -227,9 +228,21 @@
 ;;;; org-roam
 ;; I use multiple directories specified in .dir-locals.el
 ;; Remember to run org-roam-db-build-cache from a file within specific diretory
+
+(setq org-roam-directory my-org-roam)
+
 (after! org-roam
-  :init
-  (setq org-roam-directory (concat org-directory "Notes/"))
+  (add-hook 'after-init-hook 'org-roam-mode)
+
+  ;; org-roam-bibtex stuff
+  (use-package! org-roam-bibtex)
+  (org-roam-bibtex-mode)
+
+  (setq orb-preformat-keywords
+        '("citekey" "title" "url" "author-or-editor" "keywords" "file")
+        orb-process-file-keyword t
+        orb-file-field-extensions '("pdf"))
+
   )
 
 ;; (when IS-LINUX
