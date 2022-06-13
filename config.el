@@ -225,10 +225,10 @@
 
 ;; Ref https://www.linuxuprising.com/2020/02/how-to-keep-onedrive-in-sync-with.html
 ;; Use systemctl --user enable onedrive and then start the OneDrive systemd service
-(set-eshell-alias! "ose" "systemctl --user enable onedrive")
-(set-eshell-alias! "osk" "systemctl --user stop onedrive")
-(set-eshell-alias! "osr" "onedrive --synchronize --resync")
-(set-eshell-alias! "oss" "systemctl --user start onedrive")
+(set-eshell-alias! "oe" "systemctl --user enable onedrive")
+(set-eshell-alias! "ok" "systemctl --user stop onedrive")
+(set-eshell-alias! "or" "onedrive --synchronize --resync")
+(set-eshell-alias! "os" "systemctl --user start onedrive")
 
 
 ;;;; Git shortcuts
