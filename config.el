@@ -202,6 +202,7 @@
 
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
+;;; Shell
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
 (set-eshell-alias! "cdc" fhi-dir-c)
@@ -211,13 +212,10 @@
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
-;; OneDrive
-;; (if (when IS-LINUX)
-;;     (setq onedrive "OneDrive")
-;;   (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
-;; (set-eshell-alias! "cdo" (concat "cd " ( concat fhi-dir-c onedrive )))
 
-(with-system gnu/linux
+;;;; OneDrive
+
+(when IS-LINUX
   (setq onedrive "/OneDrive"))
 
 (with-system windows-nt
@@ -225,7 +223,15 @@
 
 (set-eshell-alias! "cdo" (concat "cd " (concat fhi-dir-c onedrive )))
 
-;; Git shortcuts
+;; Ref https://www.linuxuprising.com/2020/02/how-to-keep-onedrive-in-sync-with.html
+;; Use systemctl --user enable onedrive and then start the OneDrive systemd service
+(set-eshell-alias! "ose" "systemctl --user enable onedrive")
+(set-eshell-alias! "osk" "systemctl --user stop onedrive")
+(set-eshell-alias! "osr" "onedrive --synchronize --resync")
+(set-eshell-alias! "oss" "systemctl --user start onedrive")
+
+
+;;;; Git shortcuts
 (set-eshell-alias! "gw"
                    (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a")))
 (set-eshell-alias! "gp"
