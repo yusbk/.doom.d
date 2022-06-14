@@ -219,7 +219,10 @@
   (setq onedrive "/OneDrive"))
 
 (with-system windows-nt
-  (setq onedrive "'/OneDrive - Folkehelseinstituttet'"))
+  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
+
+;; (with-system windows-nt
+;;   (setq onedrive "/OneDrive\ -\ Folkehelseinstituttet/"))
 
 (set-eshell-alias! "cdo" (concat "cd " (concat fhi-dir-c onedrive )))
 

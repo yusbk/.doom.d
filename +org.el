@@ -4,8 +4,14 @@
 ;; Other packages to make org-mode nicer
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
+;;
 
-(setq org-onedrive (concat fhi-dir-c onedrive))
+(when IS-LINUX
+  (setq org-onedrive (concat fhi-dir-c onedrive)))
+
+(when IS-WINDOWS
+  (setq org-onedrive onedrive))
+
 (setq org-directory (concat org-onedrive "/org"))
 
 (after! org
@@ -123,8 +129,9 @@
   "Private related")
 (defvar my-reminder-date (expand-file-name "misc/" org-directory)
   "Dates to remember")
+
 (defvar my-org-roam (expand-file-name "org-roam/" org-directory)
-  "Notes and references using org-roam")
+  "Notes and references using org-roam" )
 
 (setq org-agenda-files `(,my-org-agenda-directory
                          ,my-reminder-date
@@ -372,6 +379,7 @@
 (map! :map org-mode-map
       :localleader
       :desc "Insert SRC block" "C" #'my-org-insert-src-block)
+
 
 ;;; ox-hugo
 ;; Activated by adding +hugo in init.el
