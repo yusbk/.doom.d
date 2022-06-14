@@ -63,3 +63,6 @@
  :recipe (:host github :repo "org-roam/org-roam-bibtex"))
 (unpin! company-org-roam bibtex-completion helm-bibtex)
 (package! org-ref)
+
+(when IS-WINDOWS (package! emacsql-sqlite))
+;; (when IS-WINDOWS (package! emacsql-sqlite3))
