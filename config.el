@@ -216,15 +216,13 @@
 ;;;; OneDrive
 
 (when IS-LINUX
-  (setq onedrive "/OneDrive"))
+  (setq onedrive "/OneDrive")
+  (set-eshell-alias! "cdo" (concat "cd " (concat fhi-dir-c onedrive ))))
 
 (with-system windows-nt
-  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
+  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet")
+  (set-eshell-alias! "cdo" (concat "cd " onedrive)))
 
-;; (with-system windows-nt
-;;   (setq onedrive "/OneDrive\ -\ Folkehelseinstituttet/"))
-
-(set-eshell-alias! "cdo" (concat "cd " (concat fhi-dir-c onedrive )))
 
 ;; Ref https://www.linuxuprising.com/2020/02/how-to-keep-onedrive-in-sync-with.html
 ;; Use systemctl --user enable onedrive and then start the OneDrive systemd service
@@ -635,6 +633,9 @@ if there is displayed buffer that have shell it will use that window"
 
 
 ;;; PDF
+;; Install msys2 via scoop
+;; In msys2, insall autotools "pacman -S autotools"
+;; If database is locked, delete file /var/lib/pacman/db.lck
 ;; Run M-x pdf-tools-install first
 (use-package! pdf-tools
   :custom

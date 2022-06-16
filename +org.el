@@ -302,6 +302,14 @@
 ;; I use multiple directories specified in .dir-locals.el
 ;; Remember to run org-roam-db-build-cache from a file within specific diretory
 
+;; Need emacsql-sqlite to be installed. In Windows need extra work:
+;; Install msys2 via scoop
+;; Restart shell
+;; in msys2 install make and gcc
+;; pacman -S make gcc
+;; Go to ~/.emacs.d/.local/straight/build/emacsql-sqlite/sqlite
+;; Run this command: make emacsql-sqlite CC=gcc LDLIBS=
+
 (setq org-roam-directory my-org-roam)
 
 (after! org-roam
