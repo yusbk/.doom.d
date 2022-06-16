@@ -220,7 +220,10 @@
 
 (with-system windows-nt
   (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
-(set-eshell-alias! "cdo" (concat "cd " onedrive))
+
+(when IS-LINUX (setq shortcutonedrive (concat fhi-dir-c "/OneDrive")))
+(when IS-WINDOWS (setq shortcutonedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
+(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
 ;; Ref https://www.linuxuprising.com/2020/02/how-to-keep-onedrive-in-sync-with.html
 ;; Use systemctl --user enable onedrive and then start the OneDrive systemd service
