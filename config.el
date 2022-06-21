@@ -142,6 +142,9 @@
 ;; (add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
 
 ;;; UI
+
+(setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-private-dir))
+
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
                (battery))
