@@ -318,7 +318,12 @@
 (use-package! outshine
   :hook (emacs-lisp-mode . outshine-mode))
 
-;;; Copy file path
+;;; Copy paste
+;; Paste with encoding
+;; Ensure when pasting norwegian special character to keep as it's ie. æøå
+(set-clipboard-coding-system 'utf-16le-dos)
+
+;; Copy file path
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
   Result is full path.
