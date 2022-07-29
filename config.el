@@ -644,7 +644,7 @@ if there is displayed buffer that have shell it will use that window"
 ;;; PDF
 ;; Install msys2 via scoop
 ;; In msys2, insall autotools "pacman -S autotools"
-;; If database is locked, delete file /var/lib/pacman/db.lck
+;; If database is locked, delete file /var/lib/pacman/db.lck via Msys2 before running the commond below
 ;; Run M-x pdf-tools-install first
 (use-package! pdf-tools
   :custom
