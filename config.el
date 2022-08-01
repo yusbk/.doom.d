@@ -789,4 +789,23 @@ if there is displayed buffer that have shell it will use that window"
        :desc "vectorise"
        "v" #'vectorise
        :desc "load-theme"
-       "t" #'cycle-my-theme))
+       "t" #'cycle-my-theme
+       :desc "shutdown-server"
+       "q" #'server-shutdown)
+      )
+
+;;;; Speed config
+;; Configuration to speed up start up especially for Windows based on
+;; https://discourse.doomemacs.org/t/why-is-emacs-doom-slow/83/3
+
+;; Speed up deamon
+;; https://github.com/doomemacs/doomemacs/issues/3063
+(setq doom-incremental-load-immediately nil)
+
+;; define function to shutdown emacs server instance
+(defun server-shutdown ()
+  "Save buffers, Quit, and Shutdown (kill) server"
+  (interactive)
+  (save-some-buffers)
+  (kill-emacs)
+  )
