@@ -54,10 +54,10 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
+                  doom-gruvbox
                   doom-gruvbox-light
                   doom-spacegrey
                   doom-acario-light
-                  doom-one
                   ))
 
 (setq my-cur-theme nil)
