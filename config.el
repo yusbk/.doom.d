@@ -114,6 +114,10 @@
         )
   )
 
+;; pasting from external source might need to run it with M-x
+;; to make it work
+(when IS-LINUX
+  (set-clipboard-coding-system 'utf-8-unix))
 
 ;; ;; Original code for reference
 ;; Font size adjustment based on monitor size
