@@ -454,14 +454,15 @@
   ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
   ;; folder manually
 
-  ;; When Rterm not found, add R to Windows path. Else use this:
-  (when IS-WINDOWS
-    (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe"))
+  ;; ;; When Rterm not found, add R to Windows path. Else use this:
   ;; (when IS-WINDOWS
-  ;;   (condition-case nil
-  ;;       (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
-  ;;     (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.1/bin/R.exe")))
-  ;;   )
+  ;;   (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe"))
+
+  (when IS-WINDOWS
+    (condition-case nil
+        (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
+      (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe")))
+    )
 
   (setq ess-style 'RStudio) ;has trouble with styler
   ;; auto-width
