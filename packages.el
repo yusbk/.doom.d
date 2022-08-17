@@ -66,3 +66,5 @@
 
 (when IS-WINDOWS (package! emacsql-sqlite))
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
+
+(package! quarto-mode)

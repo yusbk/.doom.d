@@ -52,6 +52,11 @@
 ;; (setq doom-theme 'doom-gruvbox)
 ;; (setq doom-theme 'doom-palenight)
 
+;;;; External tools
+;; Check tools that required
+(defconst QUARTO-P (executable-find "quarto"))
+(defconst ZOTERO-P (executable-find "zotero"))
+
 ;;;; Change themes and display
 (setq my-themes '(
                   doom-gruvbox
@@ -658,6 +663,11 @@ if there is displayed buffer that have shell it will use that window"
   (pdf-tools-install)
   ;; pdfs are fitted to width by default when openning pdf file
   (setq-default pdf-view-display-size 'fit-width))
+
+;;; Quarto
+;; Replacement for Rmarkdown
+(use-package! quarto-mode
+  :when QUARTO-P)
 
 ;;; Flyspell
 ;; Check spelling error
