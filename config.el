@@ -660,7 +660,7 @@ if there is displayed buffer that have shell it will use that window"
   :custom
   (pdf-annot-activate-annotation t "automatically annotate highlights")
   :config
-  (pdf-tools-install)
+  ;; (pdf-tools-install)
   ;; pdfs are fitted to width by default when openning pdf file
   (setq-default pdf-view-display-size 'fit-width))
 
