@@ -801,6 +801,8 @@ if there is displayed buffer that have shell it will use that window"
        "v" #'vectorise
        :desc "load-theme"
        "t" #'cycle-my-theme
+       :desc "maximize buffer/window"
+       "w" #'toggle-frame-maximized
        :desc "shutdown-server"
        "q" #'server-shutdown)
       )
