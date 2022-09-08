@@ -151,8 +151,8 @@
 ;; (add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
 
 ;;; UI
-
 (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-private-dir))
+;; (setq fancy-splash-image (expand-file-name "img/emacs.png" doom-private-dir))
 
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
@@ -459,15 +459,16 @@
   ;; not sure if it's ess problem. Create ~/.emacs.d/.local/cache/ess-history
   ;; folder manually
 
-  ;; ;; When Rterm not found, add R to Windows path. Else use this:
-  ;; (when IS-WINDOWS
-  ;;   (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe"))
-
+  ;; When Rterm not found, add R to Windows path. Else use this:
   (when IS-WINDOWS
-    (condition-case nil
-        (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
-      (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe")))
-    )
+    (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe"))
+
+  ;; ;; If most recent R version shall be used
+  ;; (when IS-WINDOWS
+  ;;   (condition-case nil
+  ;;       (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
+  ;;     (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe")))
+  ;;   )
 
   (setq ess-style 'RStudio) ;has trouble with styler
   ;; auto-width
