@@ -330,7 +330,7 @@
 ;;; Copy paste
 ;; Paste with encoding
 ;; Ensure when pasting norwegian special character to keep as it's ie. æøå
-(set-clipboard-coding-system 'utf-16le-dos)
+(setq set-clipboard-coding-system 'utf-8-unix)
 
 ;; Use simpleclip for copy-paste
 ;; Copy C-<insert>
