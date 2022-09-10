@@ -68,3 +68,4 @@
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
 
 (package! quarto-mode)
+;; (package! simpleclip)

@@ -332,6 +332,12 @@
 ;; Ensure when pasting norwegian special character to keep as it's ie. æøå
 (set-clipboard-coding-system 'utf-16le-dos)
 
+;; Use simpleclip for copy-paste
+;; Copy C-<insert>
+;; Cut S-<delete>
+;; Paste S-<insert>
+;; (simpleclip-mode 1)
+
 ;; Copy file path
 (defun xah-copy-file-path (&optional @dir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
@@ -792,6 +798,8 @@ if there is displayed buffer that have shell it will use that window"
        "n" #'lang-norsk
        :desc "English"
        "e" #'lang-eng
+       :desc "Encoding" ;Need when pasting from external
+       "c" #'set-clipboard-coding-system
        :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
        "a" #'+fold/toggle     ;with similar keys but less explicit prefix
        :desc "fold/open-all"
