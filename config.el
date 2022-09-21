@@ -164,7 +164,8 @@
 ;; (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
 ;;     (toggle-frame-maximized)
 ;;   (toggle-frame-fullscreen))
-(toggle-frame-maximized)
+(when IS-LINUX
+  (toggle-frame-maximized))
 
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
