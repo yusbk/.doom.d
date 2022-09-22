@@ -336,8 +336,9 @@
 (when IS-LINUX
   (setq set-clipboard-coding-system 'utf-8-unix))
 
+;; https://rufflewind.com/2014-07-20/pasting-unicode-in-emacs-on-windows
 (when IS-WINDOWS
-  (setq set-clipboard-coding-system 'utf-16-le))
+  (setq set-selection-coding-system 'utf-16-le))
 
 ;; ;; Example to use if-else
 ;; (when IS-WINDOWS
