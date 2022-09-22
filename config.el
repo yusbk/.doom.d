@@ -333,7 +333,18 @@
 ;;; Copy paste
 ;; Paste with encoding
 ;; Ensure when pasting norwegian special character to keep as it's ie. æøå
-(setq set-clipboard-coding-system 'utf-8-unix)
+(when IS-LINUX
+  (setq set-clipboard-coding-system 'utf-8-unix))
+
+(when IS-WINDOWS
+  (setq set-clipboard-coding-system 'utf-16-le))
+
+;; ;; Example to use if-else
+;; (when IS-WINDOWS
+;;   (condition-case nil
+;;       (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
+;;     (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe")))
+;;   )
 
 ;; Use simpleclip for copy-paste
 ;; Copy C-<insert>
