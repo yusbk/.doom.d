@@ -676,6 +676,7 @@ if there is displayed buffer that have shell it will use that window"
 
 ;;; Quarto
 ;; Replacement for Rmarkdown
+;; Add to PATH to be able to compile C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
 (use-package! quarto-mode
   :when QUARTO-P)
 
