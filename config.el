@@ -1,6 +1,7 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(server-start)
+(when IS-WINDOWS
+  (server-start))
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -152,8 +153,13 @@
 ;; (add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
 
 ;;; UI
-(setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-private-dir))
-;; (setq fancy-splash-image (expand-file-name "img/emacs.png" doom-private-dir))
+(setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
+;; (when IS-LINUX
+;;   (setq fancy-splash-image "~/.doom.d/img/doom-emacs-cute.png"))
+
+;; (when IS-WINDOWS
+;;   (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir)))
+
 
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
