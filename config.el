@@ -61,10 +61,14 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
-                  doom-gruvbox
-                  doom-gruvbox-light
-                  doom-spacegrey
-                  doom-acario-light
+                  wombat
+                  leuven
+                  manoj-dark
+                  doom-plain
+                  ;; doom-gruvbox
+                  ;; doom-gruvbox-light
+                  ;; doom-spacegrey
+                  ;; doom-acario-light
                   ))
 
 (setq my-cur-theme nil)
