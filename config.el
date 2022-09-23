@@ -61,8 +61,9 @@
 
 ;;;; Change themes and display
 (setq my-themes '(
-                  wombat
+                  doom-material-dark
                   leuven
+                  doom-plain-dark
                   manoj-dark
                   doom-plain
                   ;; doom-gruvbox
