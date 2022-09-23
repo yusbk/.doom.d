@@ -844,7 +844,9 @@ if there is displayed buffer that have shell it will use that window"
 
 ;; Speed up deamon
 ;; https://github.com/doomemacs/doomemacs/issues/3063
-(setq doom-incremental-load-immediately nil)
+(when IS-WINDOWS
+  (setq inhibit-compacting-font-caches nil)
+  (setq doom-incremental-load-immediately nil))
 
 ;; define function to shutdown emacs server instance
 (defun server-shutdown ()
