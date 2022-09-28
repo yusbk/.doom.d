@@ -291,7 +291,8 @@
       (lambda (key) (car (bibtex-completion-find-pdf key)))
       org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
       ;; For pdf export engines
-      org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
+      ;; org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
+      org-latex-pdf-process '("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
       org-ref-notes-function 'orb-edit-notes)
 
 ;;; Journal
