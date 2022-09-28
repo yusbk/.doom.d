@@ -417,7 +417,7 @@
                                      dir))
     (setq undo-tree-history-directory-alist `(("." . ,my-undo-tree-history-dir)))
 
-    (add-hook 'write-file-functions #'undo-tree-save-history-hook)
+    (add-hook 'write-file-functions #'undo-tree-save-history-hook)
     (add-hook 'find-file-hook #'undo-tree-load-history-hook))
 
   (defun my-undo-tree-disable-save-history ()
@@ -800,13 +800,13 @@ if there is displayed buffer that have shell it will use that window"
   (find-file my-agenda-inbox))
 
 ;;; Extended keybindings
-;; (after! magit
-;;   ;; problem with keybind SPC g v
-;;   (map! :leader
-;;         :nv "gv" #'vc-refresh-state
-;;         :localleader
-;;         "gv" #'vc-refresh-state
-;;         ))
+(after! magit
+  (map! :leader
+        :nv "gv" #'vc-refresh-state
+        ;; ;; problem with keybind SPC m g v
+        ;; :localleader
+        ;; "gv" #'vc-refresh-state
+        ))
 
 ;;; Personal keybindings
 (map! :leader
