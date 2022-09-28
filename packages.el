@@ -69,3 +69,5 @@
 
 (package! quarto-mode)
 ;; (package! simpleclip)
+
+(package! org-fragtog)

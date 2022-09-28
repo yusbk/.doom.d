@@ -800,12 +800,13 @@ if there is displayed buffer that have shell it will use that window"
   (find-file my-agenda-inbox))
 
 ;;; Extended keybindings
-(after! magit
-  (map! :leader
-        :nv "gv" #'vc-refresh-state
-        :localleader
-        "gv" #'vc-refresh-state
-        ))
+;; (after! magit
+;;   ;; problem with keybind SPC g v
+;;   (map! :leader
+;;         :nv "gv" #'vc-refresh-state
+;;         :localleader
+;;         "gv" #'vc-refresh-state
+;;         ))
 
 ;;; Personal keybindings
 (map! :leader
@@ -822,6 +823,8 @@ if there is displayed buffer that have shell it will use that window"
        "e" #'lang-eng
        :desc "Encoding" ;Need when pasting from external
        "c" #'set-clipboard-coding-system
+       :desc "LaTeX preview"
+       "l" #'latex-preview-pane
        :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
        "a" #'+fold/toggle     ;with similar keys but less explicit prefix
        :desc "fold/open-all"

@@ -390,6 +390,11 @@
       :desc "Insert SRC block" "C" #'my-org-insert-src-block)
 
 
+;;; latex preview
+(use-package! org-fragtog
+  :after org
+  :hook (org-mode . org-fragtog-mode))
+
 ;;; ox-hugo
 ;; Activated by adding +hugo in init.el
 (defun org-hugo-new-subtree-post-capture-template ()
