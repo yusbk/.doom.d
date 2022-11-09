@@ -482,6 +482,7 @@
          )
         (:map inferior-ess-r-mode-map
          :i "M--" #'ess-cycle-assign
+         :i "M-+" #'my-add-column
          :n "C-<up>" #'ess-readline
          ))
   :config
