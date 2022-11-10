@@ -6,7 +6,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Yusman Kamaleri"
@@ -25,8 +24,25 @@
 ;; (setq doom-font (font-spec :family "monospace" :size 12 :weight 'semi-light)
 ;;       doom-variable-pitch-font (font-spec :family "sans" :size 13))
 
+;; Here are some additional functions/macros that could help you configure Doom:
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
+
 ;;; Personal settings
-;;;; Check system
+;;;; System adaptation
 ;; Source https://stackoverflow.com/questions/1817257/how-to-determine-operating-system-in-elisp
 (defmacro with-system (type &rest body)
   "Evaluate BODY if `system-type' equals TYPE."
@@ -46,30 +62,44 @@
   (setq fhi-dir-n "N:")
   (setq fhi-dir-c "C:/Users/ybka"))
 
-;; There are two ways to load a theme. Both assume the theme is installed and
-;; available. You can either set `doom-theme' or manually load a theme with the
-;; `load-theme' function. This is the default:
+;;;; Local folder
+;; Create folder if it doesn't exist
+(defvar ybk/local-folder (concat fhi-dir-c "/emacs-local")
+  (unless (file-exists-p ybk/local-folder)
+    (make-directory ybk/local-folder)))
 
-;; (setq doom-theme 'doom-acario-light)
-;; (setq doom-theme 'doom-badger)
-;; (setq doom-theme 'doom-gruvbox)
-;; (setq doom-theme 'doom-palenight)
+(defvar ybk/local-cache (concat ybk/local-folder "/cache")
+  "Else use standard doom .cache")
+
+;;;; OneDrive
+
+(when IS-LINUX
+  (setq onedrive "/OneDrive"
+        shortcutonedrive (concat fhi-dir-c "/OneDrive")))
+
+(when IS-WINDOWS
+  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"
+        shortcutonedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
+
+(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
 ;;;; External tools
 ;; Check tools that required
 (defconst QUARTO-P (executable-find "quarto"))
 (defconst ZOTERO-P (executable-find "zotero"))
 
-;;;; Change themes and display
+;;; Display and themes
+;;;; Themes
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+
 (setq my-themes '(
-                  ;; doom-opera
-                  ;; leuven
+                  doom-monokai-pro
                   doom-gruvbox
                   doom-gruvbox-light
                   doom-plain-dark
                   doom-plain
-                  ;; doom-spacegrey
-                  ;; doom-acario-light
                   ))
 
 (setq my-cur-theme nil)
@@ -91,75 +121,14 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type 'relative)
 
-
-;; Here are some additional functions/macros that could help you configure Doom:
-;;
-;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
-;; - `add-load-path!' for adding directories to the `load-path', relative to
-;;   this file. Emacs searches the `load-path' when you load packages with
-;;   `require' or `use-package'.
-;; - `map!' for binding new keys
-;;
-;; To get information about any of these functions/macros, move the cursor over
-;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-;; This will open documentation for it, including demos of how they are used.
-;;
-;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-;; they are implemented.
-
-;;;; Local folder
-;; Create folder if it doesn't exist
-(defvar ybk/local-folder (concat fhi-dir-c "/emacs-local")
-  (unless (file-exists-p ybk/local-folder)
-    (make-directory ybk/local-folder)))
-
-(defvar ybk/local-cache (concat ybk/local-folder "/cache")
-  "Else use standard doom .cache")
-
-;;; Font
+;;;; Font
 (when IS-WINDOWS
   ;; Installed from https://github.com/be5invis/Iosevka
   (setq doom-font (font-spec :family "Consolas" :size 15)
-        doom-big-font (font-spec :family "Consolas" :size 30)
-        )
-  )
+        doom-big-font (font-spec :family "Consolas" :size 30)))
 
-;; ;; Original code for reference
-;; Font size adjustment based on monitor size
-;; ;; https://www.reddit.com/r/emacs/comments/dpc2aj/readjusting_fontsize_according_to_monitor/
-;; (defun hoagie-adjust-font-size (frame)
-;;   "Inspired by https://emacs.stackexchange.com/a/44930/17066. FRAME is ignored.
-;; If I let Windows handle DPI everything looks blurry."
-;;   ;; Using display names is unreliable...switched to checking the resolution
-;;   (let* ((attrs (frame-monitor-attributes)) ;; gets attribs for current frame
-;;          (monitor-name (cdr (fourth attrs)))
-;;          (width-mm (second (third attrs)))
-;;          (width-px (fourth (first attrs)))
-;;          (size 13)) ;; default for first screen at work
-;;     (when (eq width-px 2560) ;; middle display at work
-;;       (setq size 11))
-;;     (when (eq width-px 1920) ;; laptop screen
-;;       (setq size 12))
-;;     (when (eq 531 width-mm)
-;;       (setq size 9)) ;; External monitor at home
-;;     (when (eq 1095 width-mm)
-;;       (setq size 15)) ;; television
-;;     (when (eq (length (display-monitor-attributes-list)) 1) ;; override everything if no external monitors!
-;;       (setq size 10))
-;;     (set-frame-font (format "Iosevka SS04 %s" size))
-;;     ))
-;; (add-hook 'window-size-change-functions #'hoagie-adjust-font-size)
-
-;;; UI
+;;;; UI
 (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
-;; (when IS-LINUX
-;;   (setq fancy-splash-image "~/.doom.d/img/doom-emacs-cute.png"))
-
-;; (when IS-WINDOWS
-;;   (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir)))
-
 
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
@@ -192,7 +161,8 @@
   (setq doom-modeline-major-mode-color-icon t
         doom-modeline-minor-modes (featurep 'minions)))
 
-;;;; Split windows and show Consult for view
+
+;;; Split windows
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
 (defadvice! prompt-for-buffer (&rest _)
@@ -202,7 +172,6 @@
   )
 ;; (setq +ivy-buffer-preview t)
 (setq consult-buffer t)
-
 
 ;; Only show if document isn't in UTF-8
 (defun doom-modeline-conditional-buffer-encoding ()
@@ -222,7 +191,16 @@
 
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
-;;; Shell
+(use-package! dimmer
+  :custom
+  (dimmer-fraction 0.40)
+  :config
+  (dimmer-configure-which-key)
+  (dimmer-configure-posframe)
+  (dimmer-mode t)
+  )
+
+;;; Shell and alias
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
 (set-eshell-alias! "cdc" fhi-dir-c)
@@ -231,19 +209,6 @@
 (set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
-
-
-;;;; OneDrive
-
-(when IS-LINUX
-  (setq onedrive "/OneDrive"))
-
-(with-system windows-nt
-  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
-
-(when IS-LINUX (setq shortcutonedrive (concat fhi-dir-c "/OneDrive")))
-(when IS-WINDOWS (setq shortcutonedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
-(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
 ;; Ref https://www.linuxuprising.com/2020/02/how-to-keep-onedrive-in-sync-with.html
 ;; Use systemctl --user enable onedrive and then start the OneDrive systemd service
@@ -259,26 +224,22 @@
   (set-eshell-alias! "ol" "journalctl --user-unit onedrive -f")
   )
 
-;;;; Git shortcuts
-(set-eshell-alias! "gw"
-                   (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a")))
-(set-eshell-alias! "gp"
-                   (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a")))
-(set-eshell-alias! "gwl"
-                   (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
-(set-eshell-alias! "gpl"
-                   (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
-(set-eshell-alias! "gc" "git checkout $1")
-(set-eshell-alias! "gcb" "git checkout -b $1")
-(set-eshell-alias! "gb" "git branch")
-(set-eshell-alias! "gbd" "git branch -d $1")
-(set-eshell-alias! "gbD" "git branch -D $1")
-(set-eshell-alias! "gf" "git fetch $1")
-(set-eshell-alias! "gm" "git merge $1")
-(set-eshell-alias! "gmf" "git merge --no-ff $1")
-(set-eshell-alias! "gps" "git push origin master --recurse-submodules=on-demand")
-(set-eshell-alias! "gp" "git push origin $1")
-(set-eshell-alias! "gpo" "git push origin")
+;;;; Git alias
+(set-eshell-alias!
+ "gw" (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a"))
+ "gp" (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a"))
+ "gwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
+ "gpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+
+(set-eshell-alias! "gc" "git checkout $1"
+                   "gcb" "git checkout -b $1"
+                   "gb" "git branch"
+                   "gbd" "git branch -d $1"
+                   "gbD" "git branch -D $1"
+                   "gf" "git fetch $1"
+                   "gm" "git merge $1"
+                   "gmf" "git merge --no-ff $1"
+                   "gps" "git push origin master --recurse-submodules=on-demand")
 
 ;; Change keyboard layout when using ssh
 (set-eshell-alias! "kb" "setxkbmap no")
@@ -301,31 +262,6 @@
   (add-hook! eshell-mode :append
     (defun my-post-eshell-mode-hook-h ()
       (message "Ran hooks in `eshell-mode-hook'."))))
-
-;; (after! eshell
-;;   :config
-;;   (setq eshell-list-files-after-cd t))
-
-;; (with-system gnu/linux
-;;   (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
-
-;; (with-system windows-nt
-;;        (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'"))
-
-;; (cond (( eq system-type 'gnu/linux )
-;;        (set-eshell-alias! "cdf" "cd '/mnt/F/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")  )
-;;       ((eq system-type 'windows-nt)
-;;        (set-eshell-alias! "cdf" "cd 'F:/Forskningsprosjekter/PDB 2455 - Helseprofiler og til_'")
-;;        ))
-
-(use-package! dimmer
-  :custom
-  (dimmer-fraction 0.40)
-  :config
-  (dimmer-configure-which-key)
-  (dimmer-configure-posframe)
-  (dimmer-mode t)
-  )
 
 ;;; External settings
 ;; Load my custom org settings
@@ -356,6 +292,7 @@
 ;;     (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe")))
 ;;   )
 
+;;---- Note ----
 ;; Use simpleclip for copy-paste
 ;; Copy C-<insert>
 ;; Cut S-<delete>
@@ -541,7 +478,6 @@
           (ess-fl-keyword:= . nil)
           (ess-R-fl-keyword:F&T . nil)))
 
-
   ;; use styler package but it has to be installed first
   (defun ess-indent-region-with-styler (beg end)
     "Format region of code R using styler::style_text()."
@@ -687,12 +623,12 @@ if there is displayed buffer that have shell it will use that window"
 ;; Install msys2 via scoop
 ;; In msys2, insall autotools "pacman -S autotools"
 ;; If database is locked, delete file /var/lib/pacman/db.lck via Msys2 before running the commond below
-;; Run M-x pdf-tools-install first
+;; Run 'M-x pdf-tools-install' first
 (use-package! pdf-tools
   :custom
   (pdf-annot-activate-annotation t "automatically annotate highlights")
   :config
-  ;; (pdf-tools-install)
+  (when IS-LINUX (pdf-tools-install))
   ;; pdfs are fitted to width by default when openning pdf file
   (setq-default pdf-view-display-size 'fit-width)
   ;; automatically annotate highlights
@@ -816,12 +752,6 @@ if there is displayed buffer that have shell it will use that window"
     (delete-region start end)
     (insert insertion)))
 
-;;;; Agenda inbox file
-(defun open-inbox-file ()
-  "Open my agenda inbox file"
-  (interactive)
-  (find-file my-agenda-inbox))
-
 ;;; Extended keybindings
 (after! magit
   (map! :leader
@@ -835,38 +765,6 @@ if there is displayed buffer that have shell it will use that window"
 (general-define-key
  :keymaps '(insert visual normal)
  "S-SPC" 'evil-force-normal-state)
-;;; Personal keybindings
-(map! :leader
-      (:prefix ("y" . "My keys")
-       :desc "Inbox"
-       "i" #'open-inbox-file
-       :desc "file-other-window"
-       "f" #'find-file-other-window
-       :desc "git-branch-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
-       "g" #'vc-refresh-state
-       :desc "Norsk"
-       "n" #'lang-norsk
-       :desc "English"
-       "e" #'lang-eng
-       :desc "Encoding" ;Need when pasting from external
-       "c" #'set-clipboard-coding-system
-       :desc "LaTeX preview"
-       "l" #'latex-preview-pane
-       :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
-       "a" #'+fold/toggle     ;with similar keys but less explicit prefix
-       :desc "fold/open-all"
-       "r" #'+fold/open-all
-       :desc "fold/close-all"
-       "m" #'+fold/close-all
-       :desc "vectorise"
-       "v" #'vectorise
-       :desc "load-theme"
-       "t" #'cycle-my-theme
-       :desc "maximize buffer/window"
-       "w" #'toggle-frame-maximized
-       :desc "shutdown-server"
-       "q" #'server-shutdown)
-      )
 
 ;;;; Speed config
 ;; Configuration to speed up start up especially for Windows based on

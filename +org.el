@@ -110,6 +110,11 @@
   ;; (call-interactively 'org-store-link)
   (org-capture nil "i"))
 
+(defun open-inbox-file ()
+  "Open my agenda inbox file"
+  (interactive)
+  (find-file my-agenda-inbox))
+
 (map! :niv
       :desc "Capture inbox"
       "<f5>" #'my-org-capture-inbox)
@@ -377,27 +382,6 @@
         "S" #'evil-save-modified-and-close )
   )
 
-;; ;Deactivate. Just use <s or org-insert-structure-template
-;; ;; Code block shortcuts instead of <s[TAB]
-;; (defun my-org-insert-src-block (src-code-type)
-;;   "Insert a `SRC-CODE-TYPE' type source code block in org-mode."
-;;   (interactive
-;;    (let ((src-code-types
-;;           '("emacs-lisp" "python" "sh" "R" "latex")))
-;;      (list (consult-completing-read-multiple "Source code type: " src-code-types))))
-;;   (progn
-;;     (newline-and-indent)
-;;     (insert "#+END_SRC\n")
-;;     (previous-line 2)
-;;     (insert (format "#+BEGIN_SRC %s\n" src-code-type))
-;;     (org-edit-src-code)))
-
-
-;; (map! :map org-mode-map
-;;       :localleader
-;;       :desc "Insert SRC block" "C" #'my-org-insert-src-block)
-
-
 ;;; latex preview
 (use-package! org-fragtog
   :after org
@@ -433,7 +417,7 @@ See `org-capture-templates' for more information."
 
 ;;; ox-pandoc
 ;; Already included in doom with +pandoc but keeping the settings below
-;; just incase the default doesn't work
+;; just in case the default doesn't work
 ;; (use-package! ox-pandoc
 ;;   :after org
 ;;   :config
