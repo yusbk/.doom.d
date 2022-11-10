@@ -694,7 +694,25 @@ if there is displayed buffer that have shell it will use that window"
   :config
   ;; (pdf-tools-install)
   ;; pdfs are fitted to width by default when openning pdf file
-  (setq-default pdf-view-display-size 'fit-width))
+  (setq-default pdf-view-display-size 'fit-width)
+  ;; automatically annotate highlights
+  (setq pdf-annot-activate-created-annotations t)
+
+  (map!
+   :map pdf-view-mode-map
+   :n "g g"          #'pdf-view-first-page
+   :n "G"            #'pdf-view-last-page
+   :n "N"            #'pdf-view-next-page-command
+   :n "E"            #'pdf-view-previous-page-command
+   :n "e"            #'evil-collection-pdf-view-previous-line-or-previous-page
+   :n "n"            #'evil-collection-pdf-view-next-line-or-next-page
+   :localleader
+   (:prefix "o"
+            (:prefix "n"
+             :desc "Insert" "i" 'org-noter-insert-note
+             ))
+   )
+  )
 
 ;;; Quarto
 ;; Replacement for Rmarkdown
