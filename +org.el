@@ -57,7 +57,7 @@
         org-agenda-hide-tags-regexp "."
         )
 
-  ;; Shortcuts for codeblock using C-c C-, or "<s"
+  ;; Shortcuts for codeblock using C-c C-,
   (setq org-structure-template-alist '(("a" . "export ascii")
                                        ("c" . "center")
                                        ("C" . "comment")
@@ -66,8 +66,8 @@
                                        ("h" . "export html")
                                        ("l" . "export latex")
                                        ("q" . "quote")
-                                       ("r" . "src R")
-                                       ("s" . "src")
+                                       ("r" . "SRC R")
+                                       ("s" . "SRC")
                                        ("S" . "src sh")
                                        ("v" . "verse")
                                        ("el" . "src emacs-lisp")
@@ -76,11 +76,15 @@
                                        ))
   )
 
+(map! :map org-mode-map
+      :localleader
+      :desc "SRC block" "B" #'org-insert-structure-template)
+
 
 ;;; Other org settings
 ;; Add babel
 ;; ref https://dotdoom.rgoswami.me/config.html
-(after! 'org
+(after! org
   (org-babel-do-load-languages 'org-babel-load-languages
                                (append org-babel-load-languages
                                        '((R . t))
