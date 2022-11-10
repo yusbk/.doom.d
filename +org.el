@@ -57,7 +57,7 @@
         org-agenda-hide-tags-regexp "."
         )
 
-  ;; Shortcuts for codeblock using C-c C-,
+  ;; Shortcuts for codeblock using C-c C-, or "<s"
   (setq org-structure-template-alist '(("a" . "export ascii")
                                        ("c" . "center")
                                        ("C" . "comment")
@@ -66,8 +66,9 @@
                                        ("h" . "export html")
                                        ("l" . "export latex")
                                        ("q" . "quote")
-                                       ("r" . "r")
+                                       ("r" . "src R")
                                        ("s" . "src")
+                                       ("S" . "src sh")
                                        ("v" . "verse")
                                        ("el" . "src emacs-lisp")
                                        ("d" . "definition")
@@ -134,7 +135,6 @@
   "Private related")
 (defvar my-reminder-date (expand-file-name "misc/" org-directory)
   "Dates to remember")
-
 (defvar my-org-roam (expand-file-name "org-roam/" org-directory)
   "Notes and references using org-roam" )
 
