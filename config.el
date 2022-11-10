@@ -813,6 +813,10 @@ if there is displayed buffer that have shell it will use that window"
         ;; "gv" #'vc-refresh-state
         ))
 
+;; Back to normal mode like ESC and jk
+(general-define-key
+ :keymaps '(insert visual normal)
+ "S-SPC" 'evil-force-normal-state)
 ;;; Personal keybindings
 (map! :leader
       (:prefix ("y" . "My keys")
