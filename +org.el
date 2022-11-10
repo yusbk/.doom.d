@@ -214,7 +214,13 @@
       deft-extensions '("org" "txt") ;which file extention to search
       ;; deft-auto-save-interval -1.0 ;disable auto-save
       deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
-      deft-recursive t) ;to be able searching in sub-directories
+      deft-recursive t ;to be able searching in sub-directories
+      ;; converts the filter string into a readable file-name using kebab-case:
+      deft-file-naming-rules
+      '((noslash . "-")
+        (nospace . "-")
+        (case-fn . downcase))
+      )
 
 ;; keybinding for deft not activated automatically
 ;; https://github.com/hlissner/doom-emacs/issues/2991
