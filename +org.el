@@ -212,6 +212,7 @@
 ;; For searching text for files in defined deft-directory
 (setq deft-directory my-org-roam
       deft-extensions '("org" "txt") ;which file extention to search
+      ;; deft-auto-save-interval -1.0 ;disable auto-save
       deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
       deft-recursive t) ;to be able searching in sub-directories
 
