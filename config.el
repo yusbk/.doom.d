@@ -336,6 +336,9 @@
 ;; as I have used it for a while now
 (use-package! undo-tree
   :config
+  ;; Enable globally
+  (global-undo-tree-mode)
+
   (defalias 'redo 'undo-tree-redo)
 
   (setq undo-tree-visualizer-timestamps t)
@@ -370,8 +373,6 @@
     (remove-hook 'write-file-functions #'undo-tree-save-history-hook)
     (remove-hook 'find-file-hook #'undo-tree-load-history-hook))
 
-  ;; ;; Aktifkan
-  (global-undo-tree-mode)
   )
 
 ;;; Config
