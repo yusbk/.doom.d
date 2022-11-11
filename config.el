@@ -72,14 +72,13 @@
   "Else use standard doom .cache")
 
 ;;;; OneDrive
-
 (when IS-LINUX
   (setq onedrive "/OneDrive"
         shortcutonedrive (concat fhi-dir-c "/OneDrive")))
 
 (when IS-WINDOWS
-  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"
-        shortcutonedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
+  (setq onedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet"
+        shortcutonedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet"))
 
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
@@ -119,6 +118,7 @@
 ;; Switch to the first theme in the list above
 (cycle-themes)
 
+;; This is now disabled
 (use-package! cycle-themes
   :custom
   (cycle-themes-theme-list '(
@@ -204,6 +204,7 @@
 
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
+;; This is now disabled since Doom has solaire-mode activate
 (use-package! dimmer
   :custom
   (dimmer-fraction 0.40)
