@@ -777,6 +777,9 @@ if there is displayed buffer that have shell it will use that window"
  :keymaps '(insert visual normal)
  "S-SPC" 'evil-force-normal-state)
 
+;; Selection like 'viw' but better
+(map! :nvig "C-'" #'er/expand-region)
+
 ;;;; Speed config
 ;; Configuration to speed up start up especially for Windows based on
 ;; https://discourse.doomemacs.org/t/why-is-emacs-doom-slow/83/3
