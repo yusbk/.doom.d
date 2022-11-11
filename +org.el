@@ -436,6 +436,16 @@ See `org-capture-templates' for more information."
 ;;   (setq org-pandoc-format-extensions '(markdown_github+pipe_tables+raw_html))
 ;;   )
 
+;; Define keybind instead of +prefix https://rameezkhan.me/posts/2020/2020-07-03--adding-keybindings-to-doom-emacs/
+;; Copy paste website when open within Emacs
+(use-package! org-download
+  :after org
+  :config
+  (map! :map org-mode-map
+        :localleader
+        (:prefix ("C" . "Screen capture")
+         :desc "Screenshot" "Y" #'org-download-screenshot
+         :desc "Yank screenshot" "y" #'org-download-yank)))
 
 ;;;; Global keys
 (map! :leader
