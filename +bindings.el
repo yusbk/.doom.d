@@ -30,7 +30,7 @@
        :desc "vectorise"
        "v" #'vectorise
        :desc "load-theme"
-       "t" #'cycle-my-theme
+       "t" #'cycle-themes
        :desc "maximize buffer/window"
        "w" #'toggle-frame-maximized
        :desc "shutdown-server"

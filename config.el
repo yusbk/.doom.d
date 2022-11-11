@@ -94,6 +94,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
+;; Ref https://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters/18796138#18796138
 (setq my-themes '(
                   doom-monokai-pro
                   doom-gruvbox
@@ -103,7 +104,7 @@
                   ))
 
 (setq my-cur-theme nil)
-(defun cycle-my-theme ()
+(defun cycle-themes ()
   "Cycle through a list of themes, my-themes"
   (interactive)
   (when my-cur-theme
@@ -114,8 +115,18 @@
   (message "Tema dipakai: %s" my-cur-theme))
 
 ;; Switch to the first theme in the list above
-(cycle-my-theme)
+(cycle-themes)
 
+(use-package! cycle-themes
+  :custom
+  (cycle-themes-theme-list '(
+                             doom-monokai-pro
+                             doom-gruvbox
+                             doom-gruvbox-light
+                             doom-plain-dark
+                             doom-plain
+                             ))
+  :config (cycle-themes-mode))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.

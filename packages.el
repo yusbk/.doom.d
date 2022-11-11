@@ -71,3 +71,6 @@
 ;; (package! simpleclip)
 
 (package! org-fragtog)
+
+(package! cycle-themes :disable t
+  :recipe (:host github :repo "toroidal-code/cycle-themes.el"))
