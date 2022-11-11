@@ -96,8 +96,8 @@
 
 ;; Ref https://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters/18796138#18796138
 (setq my-themes '(
-                  doom-monokai-pro
-                  ;; doom-gruvbox
+                  ;; doom-monokai-pro
+                  doom-gruvbox
                   doom-gruvbox-light
                   ;; doom-plain-dark
                   ;; doom-plain
