@@ -50,7 +50,7 @@
 ;(unpin! t)
 
 (package! aggressive-indent)
-(package! dimmer)
+(package! dimmer :disable t) ;Doom already use solaire-mode for this
 (package! beacon)
 (package! outshine)
 (package! rotate)
