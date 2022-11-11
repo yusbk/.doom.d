@@ -77,7 +77,7 @@
         shortcutonedrive (concat fhi-dir-c "/OneDrive")))
 
 (when IS-WINDOWS
-  (setq onedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet"
+  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"
         shortcutonedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet"))
 
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
