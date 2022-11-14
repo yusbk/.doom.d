@@ -1,6 +1,6 @@
 ;;; org.el -*- lexical-binding: t; -*-
 
-;;; Org extention
+;;; Directories
 ;; Other packages to make org-mode nicer
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -14,6 +14,20 @@
 
 (setq org-directory (concat org-onedrive "/org"))
 
+;; Need to create the org files manually with #+FILETAGES:
+(setq my-org-agenda-directory (file-truename (concat org-directory "/gtd/")))
+(defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
+  "Unstructured capture")
+(defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
+  "Work related")
+(defvar my-agenda-private (expand-file-name "private.org" my-org-agenda-directory)
+  "Private related")
+(defvar my-reminder-date (expand-file-name "misc/" org-directory)
+  "Dates to remember")
+(defvar my-org-roam (expand-file-name "org-roam/" org-directory)
+  "Notes and references using org-roam" )
+
+;;; General Settings
 (after! org
   ;; (add-hook! org-load
   (setq org-todo-keywords
@@ -81,7 +95,7 @@
       :desc "SRC block" "B" #'org-insert-structure-template)
 
 
-;;; Other org settings
+;;; Other settings
 ;; Add babel
 ;; ref https://dotdoom.rgoswami.me/config.html
 (after! org
@@ -129,19 +143,7 @@
       :desc "local TODO"
       "n T" #'org-show-todo-tree)
 
-;; Need to create the org files with #+FILETAGES:
-(setq my-org-agenda-directory (file-truename (concat org-directory "/gtd/")))
-(defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
-  "Unstructured capture")
-(defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
-  "Work related")
-(defvar my-agenda-private (expand-file-name "private.org" my-org-agenda-directory)
-  "Private related")
-(defvar my-reminder-date (expand-file-name "misc/" org-directory)
-  "Dates to remember")
-(defvar my-org-roam (expand-file-name "org-roam/" org-directory)
-  "Notes and references using org-roam" )
-
+;;; Agenda
 (setq org-agenda-files `(,my-org-agenda-directory
                          ,my-reminder-date
                          ,my-org-roam))
