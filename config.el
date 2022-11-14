@@ -119,6 +119,7 @@
 (cycle-themes)
 
 ;; This is now disabled
+;; It doesn't work the way I want it
 (use-package! cycle-themes
   :custom
   (cycle-themes-theme-list '(
