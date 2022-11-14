@@ -59,19 +59,22 @@
 (package! undo-tree)
 (package! reformatter)
 (package! ado-mode)
+
 (package! org-roam-bibtex
- :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+  :recipe (:host github :repo "org-roam/org-roam-bibtex"))
 (unpin! company-org-roam bibtex-completion helm-bibtex)
 (package! org-ref)
 (package! org-download)
+(package! org-fragtog) ;auto toggle LaTeX fragment previews
+(package! org-roam-ui
+  :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
+(unpin! company-org-roam bibtex-completion helm-bibtex)
 
 (when IS-WINDOWS (package! emacsql-sqlite))
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
 
 (package! quarto-mode)
 ;; (package! simpleclip)
-
-(package! org-fragtog)
 
 (package! cycle-themes :disable t
   :recipe (:host github :repo "toroidal-code/cycle-themes.el"))

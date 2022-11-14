@@ -88,6 +88,14 @@
                                        ("d" . "definition")
                                        ("t" . "theorem")
                                        ))
+
+  ;; Add babel
+  ;; ref https://dotdoom.rgoswami.me/config.html
+  (org-babel-do-load-languages 'org-babel-load-languages
+                               (append org-babel-load-languages
+                                       '((R . t))
+                                       '((ditaa . t))
+                                       ))
   )
 
 (map! :map org-mode-map
@@ -96,16 +104,6 @@
 
 
 ;;; Other settings
-;; Add babel
-;; ref https://dotdoom.rgoswami.me/config.html
-(after! org
-  (org-babel-do-load-languages 'org-babel-load-languages
-                               (append org-babel-load-languages
-                                       '((R . t))
-                                       '((ditaa . t))
-                                       ))
-  )
-
 (setq
  ;; org-babel-mathematica-command "~/.local/bin/mash"
  org-ditaa-jar-path (concat (getenv "HOME") "/.local/bin/ditaa0_9.jar")
@@ -194,16 +192,35 @@
 
 ;;; Notes taking
 ;; Take notes on pdf files
-(defvar my-reference-pdf (expand-file-name "pdf/" my-org-roam)
+(defvar my-reference-pdf (expand-file-name "references/" my-org-roam)
   "Reference files mostly as PDF")
 
 (after! org-noter
-  (setq org-noter-hide-other nil ;show whole file
-        org-noter-separate-notes-from-heading t)
+  (setq org-noter-notes-search-path my-reference-pdf
+        org-noter-hide-other nil ;show whole file
+        org-noter-separate-notes-from-heading t
+        org-noter-always-create-frame t)
 
   (map!
    :after org-noter
    :map org-noter-notes-mode-map
+   :desc "Insert note"
+   "C-M-i" #'org-noter-insert-note
+   :desc "Insert precise note"
+   "C-M-p" #'org-noter-insert-precise-note
+   :desc "Go to previous note"
+   "C-M-k" #'org-noter-sync-prev-note
+   :desc "Go to next note"
+   "C-M-j" #'org-noter-sync-next-note
+   :desc "Create skeleton"
+   "C-M-s" #'org-noter-create-skeleton
+   :desc "Kill session"
+   "C-M-q" #'org-noter-kill-session
+   )
+
+  (map!
+   :after org-noter
+   :map org-noter-doc-mode-map
    :desc "Insert note"
    "C-M-i" #'org-noter-insert-note
    :desc "Insert precise note"
@@ -236,6 +253,11 @@
 ;; keybinding for deft not activated automatically
 ;; https://github.com/hlissner/doom-emacs/issues/2991
 (after! deft
+  (setq deft-extensions '("org")
+        deft-directory my-org-roam
+        deft-recursive t
+        deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
+        deft-use-filename-as-title t)
   (map! :map deft-mode-map
         :n "gr"  #'deft-refresh
         :n "C-s" #'deft-filter
@@ -265,7 +287,7 @@
 
 
 ;;; Referencing
-;; Ref: http://www.wouterspekkink.org/academia/writing/tool/doom-emacs/2021/02/27/writing-academic-papers-with-org-mode.html
+;; Ref: https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
 (setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
 
 (use-package! helm-bibtex
@@ -282,6 +304,7 @@
 (use-package! org-ref
   :custom
   (org-ref-default-bibliography my-bibtex-file)
+  ;; How to cite http://merkel.texture.rocks/Latex/natbib.php
   (org-ref-default-citation-link "citep") ;Change default from cite:
   (org-ref-insert-link-function 'org-ref-insert-link-hydra/body)
   (org-ref-insert-cite-function 'org-ref-cite-insert-helm)
@@ -309,9 +332,65 @@
       (lambda (key) (car (bibtex-completion-find-pdf key)))
       org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
       ;; For pdf export engines
-      ;; org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
-      org-latex-pdf-process '("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+      org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
+      ;; org-latex-pdf-process '("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
       org-ref-notes-function 'orb-edit-notes)
+
+;; For exporting org to LaTeX with specified class to work
+;; Ref https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
+(after! org
+  (add-to-list 'org-latex-classes
+               '("apa6"
+                 "\\documentclass{apa6}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("report"
+                 "\\documentclass{report}"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("koma-article"
+                 "\\documentclass{scrartcl}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (add-to-list 'org-latex-classes
+               '("memoir"
+                 "\\documentclass{memoir}"
+                 ("\\book{%s}" . "\\book*{%s}")
+                 ("\\part{%s}" . "\\part*{%s}")
+                 ("\\chapter{%s} .\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("paper"
+                 "\\documentclass{paper}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+  (defun org-export-latex-no-toc (depth)
+    (when depth
+      (format "%% Org-mode is exporting headings to %s levels.\n"
+              depth)))
+
+  )
 
 ;;; Journal
 ;; Have to decide either to use org-roam or org-journal but have to find out
@@ -353,26 +432,39 @@
                  :unnarrowed t)
                 ("r" "bibliography reference" plain "%?"
                  :target
+                 ;; The folder as defined in my-reference-pdf
                  (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
 
+  ;; Function to capture quotes from pdf
+  (defun org-roam-capture-pdf-active-region ()
+    (let* ((pdf-buf-name (plist-get org-capture-plist :original-buffer))
+           (pdf-buf (get-buffer pdf-buf-name)))
+      (if (buffer-live-p pdf-buf)
+          (with-current-buffer pdf-buf
+            (car (pdf-view-active-region-text)))
+        (user-error "Buffer %S not alive" pdf-buf-name))))
+
+  ;; For org-roam-ui
+  (use-package! org-roam-ui)
+  (use-package! websocket)
+  (use-package! org-roam-ui
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t))
+
+  ;; Workaround for org-roam minibuffer issues
+  (defun my/org-roam-node-read--to-candidate (node template)
+    "Return a minibuffer completion candidate given NODE.
+  TEMPLATE is the processed template used to format the entry."
+    (let ((candidate-main (org-roam-node--format-entry
+                           template
+                           node
+                           (1- (frame-width)))))
+      (cons (propertize candidate-main 'node node) node)))
+  (advice-add 'org-roam-node-read--to-candidate :override #'my/org-roam-node-read--to-candidate)
   )
 
-;; (when IS-LINUX
-;;   (use-package! org-roam-server
-;;     :after org-roam
-;;     :config
-;;     (setq org-roam-server-host "127.0.0.1"
-;;           org-roam-server-port 8080
-;;           org-roam-server-authenticate nil
-;;           org-roam-server-export-inline-images t
-;;           org-roam-server-serve-files nil
-;;           org-roam-server-served-file-extensions '("pdf" "mp4" "ogv")
-;;           org-roam-server-network-poll t
-;;           org-roam-server-network-arrows nil
-;;           org-roam-server-network-label-truncate t
-;;           org-roam-server-network-label-truncate-length 60
-;;           org-roam-server-network-label-wrap-length 20))
-;;   )
 
 ;;;; org-journal
 (after! org-journal
@@ -389,6 +481,8 @@
   )
 
 ;;; latex preview
+;; Auto toggle org-mode latex fragment previews as the cursor enters and exits
+;; C-c C-x C-l to toggle
 (use-package! org-fragtog
   :after org
   :hook (org-mode . org-fragtog-mode))
