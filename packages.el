@@ -78,3 +78,5 @@
 
 (package! cycle-themes :disable t
   :recipe (:host github :repo "toroidal-code/cycle-themes.el"))
+
+(package! mixed-pitch)

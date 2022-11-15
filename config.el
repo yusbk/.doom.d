@@ -141,6 +141,18 @@
   (setq doom-font (font-spec :family "Consolas" :size 15)
         doom-big-font (font-spec :family "Consolas" :size 30)))
 
+
+;; ;; Set default, fixed and variabel pitch fonts
+;; ;; Use M-x menu-set-font to view available fonts
+;; (use-package! mixed-pitch
+;;   :hook
+;;   (text-mode . mixed-pitch-mode)
+;;   :config
+;;   (set-face-attribute 'default nil :font "Consolas" :height 120)
+;;   (set-face-attribute 'fixed-pitch nil :font "Consolas")
+;;   (set-face-attribute 'variable-pitch nil :family "Arial")
+;;   )
+
 ;;;; UI
 (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
 
