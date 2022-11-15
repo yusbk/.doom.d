@@ -25,6 +25,14 @@
 (defvar my-org-roam (expand-file-name "org-roam/" org-directory)
   "Notes and references using org-roam" )
 
+;; PDF files
+(defvar my-reference-pdf (expand-file-name "references/" my-org-roam)
+  "Reference files mostly as PDF")
+
+;; Take notes on pdf files
+(defvar my-reference-notes (expand-file-name "notes/" my-org-roam)
+  "Reference notes on PDF files")
+
 ;;; General Settings
 (after! org
   ;; (add-hook! org-load
@@ -225,14 +233,49 @@
         orb-file-field-extensions '("pdf"))
   )
 
-;;; Notes taking
-;; PDF files
-(defvar my-reference-pdf (expand-file-name "references/" my-org-roam)
-  "Reference files mostly as PDF")
+;;; Citations
+;; Ref: https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
+(setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
+(setq my-bibtex-notes (expand-file-name "bibnotes.org" my-reference-notes))
 
-;; Take notes on pdf files
-(defvar my-reference-notes (expand-file-name "notes/" my-org-roam)
-  "Reference notes on PDF files")
+;; Ref https://github.com/sunnyhasija/Academic-Doom-Emacs-Config#citations
+(use-package! org-ref
+  :config
+  (setq
+   org-ref-completion-library 'org-ref-ivy-cite
+   org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
+   bibtex-completion-bibliography (list my-bibtex-file)
+   bibtex-completion-notes (list my-bibtex-notes)
+   org-ref-note-title-format "* %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
+   org-ref-notes-directory (list my-reference-notes)
+   org-ref-notes-function 'orb-edit-notes
+   ))
+
+(after! org-ref
+  (setq
+   bibtex-completion-notes-path my-reference-notes
+   bibtex-completion-bibliography my-bibtex-file
+   bibtex-completion-pdf-field "file"
+   bibtex-completion-notes-template-multiple-files
+   (concat
+    "#+TITLE: ${title}\n"
+    "#+ROAM_KEY: cite:${=key=}\n"
+    "* TODO Notes\n"
+    ":PROPERTIES:\n"
+    ":Custom_ID: ${=key=}\n"
+    ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+    ":AUTHOR: ${author-abbrev}\n"
+    ":JOURNAL: ${journaltitle}\n"
+    ":DATE: ${date}\n"
+    ":YEAR: ${year}\n"
+    ":DOI: ${doi}\n"
+    ":URL: ${url}\n"
+    ":END:\n\n"
+    )
+   )
+  )
+
+;;; Notes taking
 
 (use-package! org-noter
   :after (:any org pdf-view)
@@ -335,9 +378,6 @@
         "t"   #'deft-toggle-incremental-search)
   )
 
-;;; Referencing
-;; Ref: https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
-(setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
 
 ;;; latex preview
 ;; Auto toggle org-mode latex fragment previews as the cursor enters and exits
