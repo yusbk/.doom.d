@@ -187,6 +187,44 @@
 
 (setq org-refile-target-verify-function 'ybk/verify-refile-target)
 
+;;; Org roam
+;; Need emacsql-sqlite to be installed. In Windows need extra work:
+;; Install msys2 via scoop
+;; Restart shell
+;; in msys2 install make and gcc
+;; pacman -S make gcc
+;; Go to ~/.emacs.d/.local/straight/build/emacsql-sqlite/sqlite
+;; Run this command: make emacsql-sqlite CC=gcc LDLIBS=
+;;
+;; Ref https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
+(after! org-roam
+  :init
+  (setq org-roam-directory my-org-roam)
+  :config
+  (add-hook! 'after-init-hook 'org-roam-mode)
+  (setq org-roam-capture-templates
+        (quote (("d" "default" plain
+                 "%?"
+                 :target
+                 (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n")
+                 :unnarrowed t)
+                ("r" "bibliography reference" plain "%?"
+                 :target
+                 (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
+  )
+
+(use-package! org-roam-bibtex
+  :after org-roam
+  :hook (org-mode . org-roam-bibtex-mode)
+  :config
+  (require 'org-ref)
+  (setq orb-preformat-keywords
+        '("citekey" "title" "url" "author-or-editor" "keywords" "file")
+        orb-process-file-keyword t
+        orb-file-field-extensions '("pdf"))
+  )
+
 ;;; Notes taking
 ;; PDF files
 (defvar my-reference-pdf (expand-file-name "references/" my-org-roam)
@@ -297,224 +335,9 @@
         "t"   #'deft-toggle-incremental-search)
   )
 
-
 ;;; Referencing
 ;; Ref: https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
 (setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
-
-(use-package! helm-bibtex
-  :custom
-  (bibtex-completion-notes-path my-reference-notes)
-  ;; default library file
-  (bibtex-completion-bibliography my-bibtex-file)
-  (reftex-default-bibliography my-bibtex-file)
-  ;; The line below tells helm-bibtex to find the path to the pdf
-  ;; in the "file" field in the .bib file.
-  (bibtex-completion-pdf-field "file")
-  :hook (Tex . (lambda () (define-key Tex-mode-map "\C-ch" 'helm-bibtex))))
-
-;; Set up org-ref stuff
-(use-package! org-ref
-  :custom
-  (org-ref-default-bibliography my-bibtex-file)
-  ;; How to cite http://merkel.texture.rocks/Latex/natbib.php
-  (org-ref-default-citation-link "citep") ;Change default from cite:
-  (org-ref-insert-link-function 'org-ref-insert-link-hydra/body)
-  (org-ref-insert-cite-function 'org-ref-cite-insert-helm)
-  (org-ref-insert-label-function 'org-ref-insert-label-link)
-  (org-ref-insert-ref-function 'org-ref-insert-ref-link)
-  (org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
-  (org-ref-notes-directory my-org-roam)
-
-  :config
-  (define-key org-mode-map (kbd "C-c r") 'org-ref-insert-link)
-  (define-key org-mode-map (kbd "C-c s") 'org-ref-insert-link-hydra/body)
-
-  ;; The function below allows me to consult the pdf of the citation I currently have my cursor on.
-  (defun my/org-ref-open-pdf-at-point ()
-    "Open the pdf for bibtex key under point if it exists."
-    (interactive)
-    (let* ((results (org-ref-get-bibtex-key-and-file))
-           (key (car results))
-           (pdf-file (funcall org-ref-get-pdf-filename-function key)))
-      (if (file-exists-p pdf-file)
-          (find-file pdf-file)
-        (message "No PDF found for %s" key))))
-
-  (setq org-ref-completion-library 'org-ref-ivy-cite
-        org-export-latex-format-toc-function 'org-export-latex-no-toc
-        org-ref-get-pdf-filename-function
-        (lambda (key) (car (bibtex-completion-find-pdf key)))
-        org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
-        ;; For pdf export engines
-        org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
-        ;; org-latex-pdf-process '("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-        org-ref-notes-function 'orb-edit-notes)
-  )
-
-(after! org-ref
-  (setq bibtex-completion-notes-template-multiple-files
-        (concat
-         "#+TITLE: ${title}\n"
-         "#+ROAM_KEY: cite:${=key=}\n"
-         "#+ROAM_TAGS: ${keywords}\n"
-         "* TODO Notes\n"
-         ":PROPERTIES:\n"
-         ":Custom_ID: ${=key=}\n"
-         ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
-         ":AUTHOR: ${author-abbrev}\n"
-         ":JOURNAL: ${journaltitle}\n"
-         ":DATE: ${date}\n"
-         ":YEAR: ${year}\n"
-         ":DOI: ${doi}\n"
-         ":URL: ${url}\n"
-         ":END:\n\n"
-         ))
-  )
-
-;; For exporting org to LaTeX with specified class to work
-;; Ref https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
-(after! org
-  (add-to-list 'org-latex-classes
-               '("apa6"
-                 "\\documentclass{apa6}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("report"
-                 "\\documentclass{report}"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("koma-article"
-                 "\\documentclass{scrartcl}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (add-to-list 'org-latex-classes
-               '("memoir"
-                 "\\documentclass{memoir}"
-                 ("\\book{%s}" . "\\book*{%s}")
-                 ("\\part{%s}" . "\\part*{%s}")
-                 ("\\chapter{%s} .\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("paper"
-                 "\\documentclass{paper}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-
-  (defun org-export-latex-no-toc (depth)
-    (when depth
-      (format "%% Org-mode is exporting headings to %s levels.\n"
-              depth)))
-
-  )
-
-;;; Journal
-;; Have to decide either to use org-roam or org-journal but have to find out
-;; how to add TODO to agenda
-;;
-;;;; org-roam
-;; I use multiple directories specified in .dir-locals.el
-;; Remember to run org-roam-db-build-cache from a file within specific diretory
-
-;; Need emacsql-sqlite to be installed. In Windows need extra work:
-;; Install msys2 via scoop
-;; Restart shell
-;; in msys2 install make and gcc
-;; pacman -S make gcc
-;; Go to ~/.emacs.d/.local/straight/build/emacsql-sqlite/sqlite
-;; Run this command: make emacsql-sqlite CC=gcc LDLIBS=
-
-(setq org-roam-directory my-org-roam)
-
-(after! org-roam
-  (add-hook 'after-init-hook 'org-roam-mode)
-
-  ;; org-roam-bibtex stuff
-  (use-package! org-roam-bibtex)
-  (org-roam-bibtex-mode)
-
-  (setq orb-preformat-keywords
-        '("citekey" "title" "url" "author-or-editor" "keywords" "file")
-        orb-process-file-keyword t
-        orb-file-field-extensions '("pdf"))
-
-  ;; Let's set up some org-roam capture templates
-  (setq org-roam-capture-templates
-        (quote (("d" "default" plain
-                 "%?"
-                 :target
-                 (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
-                            "#+title: ${title}\n")
-                 :unnarrowed t)
-                ("r" "bibliography reference" plain "%?"
-                 :target
-                 ;; The folder as defined in my-reference-notes
-                 (file+head "notes/${citekey}.org" "#+title: ${title}\n")))))
-
-  ;; Function to capture quotes from pdf
-  (defun org-roam-capture-pdf-active-region ()
-    (let* ((pdf-buf-name (plist-get org-capture-plist :original-buffer))
-           (pdf-buf (get-buffer pdf-buf-name)))
-      (if (buffer-live-p pdf-buf)
-          (with-current-buffer pdf-buf
-            (car (pdf-view-active-region-text)))
-        (user-error "Buffer %S not alive" pdf-buf-name))))
-
-  ;; For org-roam-ui
-  (use-package! org-roam-ui)
-  (use-package! websocket)
-  (use-package! org-roam-ui
-    :config
-    (setq org-roam-ui-sync-theme t
-          org-roam-ui-follow t
-          org-roam-ui-update-on-save t))
-
-  ;; Workaround for org-roam minibuffer issues
-  (defun my/org-roam-node-read--to-candidate (node template)
-    "Return a minibuffer completion candidate given NODE.
-  TEMPLATE is the processed template used to format the entry."
-    (let ((candidate-main (org-roam-node--format-entry
-                           template
-                           node
-                           (1- (frame-width)))))
-      (cons (propertize candidate-main 'node node) node)))
-  (advice-add 'org-roam-node-read--to-candidate :override #'my/org-roam-node-read--to-candidate)
-  )
-
-
-;;;; org-journal
-(after! org-journal
-  :init
-  (setq org-journal-dir (concat org-directory "Journal/")
-        org-journal-time-prefix "* " ;Start at first level heading
-        org-journal-date-prefix "#+TITLE: "
-        org-journal-file-format "%Y-%m-%d.org"
-        org-journal-date-format "%a, %Y-%m-%d")
-  :config
-  (map! :map org-journal-mode-map
-        :localleader
-        "S" #'evil-save-modified-and-close )
-  )
 
 ;;; latex preview
 ;; Auto toggle org-mode latex fragment previews as the cursor enters and exits
@@ -579,17 +402,3 @@ See `org-capture-templates' for more information."
          :desc "Screenshot" "Y" #'org-download-screenshot
          :desc "Yank screenshot" "y" #'org-download-yank)))
 
-;;; Viewing
-
-;;;; Global keys
-(map! :leader
-      :desc "Org noter"
-      "n p" #'org-noter)
-
-(map! :leader
-      :desc "Open literature database"
-      "o l" #'helm-bibtex)
-
-(map! :map helm-map
-      "C-j" #'helm-next-line
-      "C-k" #'helm-previous-line)
