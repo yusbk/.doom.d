@@ -193,14 +193,17 @@
   "Reference files mostly as PDF")
 
 ;; Take notes on pdf files
-(defvar my-reference-notes-file (expand-file-name "notes/bibnotes.org" my-org-roam)
+(defvar my-reference-notes (expand-file-name "notes/" my-org-roam)
   "Reference notes on PDF files")
 
-(after! org-noter
-  (setq org-noter-notes-search-path (list my-org-roam) ;related to main notes files
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq org-noter-notes-search-path (list my-reference-notes) ;related to main notes files
         org-noter-hide-other nil ;show whole file
         org-noter-separate-notes-from-heading t
-        org-noter-always-create-frame t)
+        org-noter-default-notes-file-names (list "notes.org")
+        org-noter-always-create-frame nil)
 
   (map!
    :after org-noter
@@ -236,6 +239,14 @@
    "C-M-q" #'org-noter-kill-session
    )
   )
+
+(use-package! org-pdftools
+  :hook (org-load . org-pdftools-setup-link))
+(use-package! org-noter-pdftools
+  :after org-noter
+  :config
+  (with-eval-after-load 'pdf-annot
+    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
 ;;; Deft for searcing notes
 ;; For searching text for files in defined deft-directory
@@ -293,7 +304,7 @@
 
 (use-package! helm-bibtex
   :custom
-  (bibtex-completion-notes-path my-reference-notes-file)
+  (bibtex-completion-notes-path my-reference-notes)
   ;; default library file
   (bibtex-completion-bibliography my-bibtex-file)
   (reftex-default-bibliography my-bibtex-file)

@@ -656,7 +656,8 @@ if there is displayed buffer that have shell it will use that window"
   ;; pdfs are fitted to width by default when openning pdf file
   (setq-default pdf-view-display-size 'fit-width)
   ;; automatically annotate highlights
-  (setq pdf-annot-activate-created-annotations t)
+  (setq pdf-annot-activate-created-annotations t
+        pdf-view-resize-factor 1.1)
 
   (map!
    :map pdf-view-mode-map
@@ -673,6 +674,7 @@ if there is displayed buffer that have shell it will use that window"
              ))
    )
   )
+
 
 ;;; Quarto
 ;; Replacement for Rmarkdown

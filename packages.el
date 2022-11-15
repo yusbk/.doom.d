@@ -66,6 +66,8 @@
 (package! org-ref)
 (package! org-download)
 (package! org-fragtog) ;auto toggle LaTeX fragment previews
+(package! org-noter-pdftools)
+(package! org-pdftools)
 (package! org-roam-ui
   :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (unpin! company-org-roam bibtex-completion helm-bibtex)
@@ -79,4 +81,4 @@
 (package! cycle-themes :disable t
   :recipe (:host github :repo "toroidal-code/cycle-themes.el"))
 
-(package! mixed-pitch)
+(package! mixed-pitch :disable t)
