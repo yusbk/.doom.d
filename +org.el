@@ -191,12 +191,16 @@
 (setq org-refile-target-verify-function 'ybk/verify-refile-target)
 
 ;;; Notes taking
-;; Take notes on pdf files
+;; PDF files
 (defvar my-reference-pdf (expand-file-name "references/" my-org-roam)
   "Reference files mostly as PDF")
 
+;; Take notes on pdf files
+(defvar my-reference-notes-file (expand-file-name "notes/bibnotes.org" my-org-roam)
+  "Reference notes on PDF files")
+
 (after! org-noter
-  (setq org-noter-notes-search-path my-reference-pdf
+  (setq org-noter-notes-search-path (list my-org-roam) ;related to main notes files
         org-noter-hide-other nil ;show whole file
         org-noter-separate-notes-from-heading t
         org-noter-always-create-frame t)
@@ -292,6 +296,7 @@
 
 (use-package! helm-bibtex
   :custom
+  (bibtex-completion-notes-path my-reference-notes-file)
   ;; default library file
   (bibtex-completion-bibliography my-bibtex-file)
   (reftex-default-bibliography my-bibtex-file)
@@ -310,31 +315,54 @@
   (org-ref-insert-cite-function 'org-ref-cite-insert-helm)
   (org-ref-insert-label-function 'org-ref-insert-label-link)
   (org-ref-insert-ref-function 'org-ref-insert-ref-link)
-  (org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body))))
+  (org-ref-cite-onclick-function (lambda (_) (org-ref-citation-hydra/body)))
+  (org-ref-notes-directory my-org-roam)
 
-(define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
-(define-key org-mode-map (kbd "s-[") 'org-ref-insert-link-hydra/body)
+  :config
+  (define-key org-mode-map (kbd "C-c r") 'org-ref-insert-link)
+  (define-key org-mode-map (kbd "C-c s") 'org-ref-insert-link-hydra/body)
 
-;; The function below allows me to consult the pdf of the citation I currently have my cursor on.
-(defun my/org-ref-open-pdf-at-point ()
-  "Open the pdf for bibtex key under point if it exists."
-  (interactive)
-  (let* ((results (org-ref-get-bibtex-key-and-file))
-         (key (car results))
-         (pdf-file (funcall org-ref-get-pdf-filename-function key)))
-    (if (file-exists-p pdf-file)
-        (find-file pdf-file)
-      (message "No PDF found for %s" key))))
+  ;; The function below allows me to consult the pdf of the citation I currently have my cursor on.
+  (defun my/org-ref-open-pdf-at-point ()
+    "Open the pdf for bibtex key under point if it exists."
+    (interactive)
+    (let* ((results (org-ref-get-bibtex-key-and-file))
+           (key (car results))
+           (pdf-file (funcall org-ref-get-pdf-filename-function key)))
+      (if (file-exists-p pdf-file)
+          (find-file pdf-file)
+        (message "No PDF found for %s" key))))
 
-(setq org-ref-completion-library 'org-ref-ivy-cite
-      org-export-latex-format-toc-function 'org-export-latex-no-toc
-      org-ref-get-pdf-filename-function
-      (lambda (key) (car (bibtex-completion-find-pdf key)))
-      org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
-      ;; For pdf export engines
-      org-latex-pdf-process (list "latexmk -pdflatex='%latex -shell-escape -interaction nonstopmode' -pdf -bibtex -f -output-directory=%o %f")
-      ;; org-latex-pdf-process '("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
-      org-ref-notes-function 'orb-edit-notes)
+  (setq org-ref-completion-library 'org-ref-ivy-cite
+        org-export-latex-format-toc-function 'org-export-latex-no-toc
+        org-ref-get-pdf-filename-function
+        (lambda (key) (car (bibtex-completion-find-pdf key)))
+        org-ref-open-pdf-function 'my/org-ref-open-pdf-at-point
+        ;; For pdf export engines
+        org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f")
+        ;; org-latex-pdf-process '("pdflatex -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f")
+        org-ref-notes-function 'orb-edit-notes)
+  )
+
+(after! org-ref
+  (setq bibtex-completion-notes-template-multiple-files
+        (concat
+         "#+TITLE: ${title}\n"
+         "#+ROAM_KEY: cite:${=key=}\n"
+         "#+ROAM_TAGS: ${keywords}\n"
+         "* TODO Notes\n"
+         ":PROPERTIES:\n"
+         ":Custom_ID: ${=key=}\n"
+         ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
+         ":AUTHOR: ${author-abbrev}\n"
+         ":JOURNAL: ${journaltitle}\n"
+         ":DATE: ${date}\n"
+         ":YEAR: ${year}\n"
+         ":DOI: ${doi}\n"
+         ":URL: ${url}\n"
+         ":END:\n\n"
+         ))
+  )
 
 ;; For exporting org to LaTeX with specified class to work
 ;; Ref https://jonathanabennett.github.io/blog/2019/05/29/writing-academic-papers-with-org-mode/
@@ -432,8 +460,8 @@
                  :unnarrowed t)
                 ("r" "bibliography reference" plain "%?"
                  :target
-                 ;; The folder as defined in my-reference-pdf
-                 (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
+                 ;; The folder as defined in my-reference-notes
+                 (file+head "notes/${citekey}.org" "#+title: ${title}\n")))))
 
   ;; Function to capture quotes from pdf
   (defun org-roam-capture-pdf-active-region ()
@@ -542,6 +570,8 @@ See `org-capture-templates' for more information."
         (:prefix ("C" . "Screen capture")
          :desc "Screenshot" "Y" #'org-download-screenshot
          :desc "Yank screenshot" "y" #'org-download-yank)))
+
+;;; Viewing
 
 ;;;; Global keys
 (map! :leader
