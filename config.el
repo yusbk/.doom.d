@@ -54,31 +54,31 @@
   (setq fhi-dir-h "/mnt/H")
   (setq fhi-dir-f "/mnt/F")
   (setq fhi-dir-n "/mnt/N")
-  (setq fhi-dir-c "~"))
+  (setq fhi-dir-c "~/"))
 
 (with-system windows-nt
   (setq fhi-dir-h "H:")
   (setq fhi-dir-f "F:")
   (setq fhi-dir-n "N:")
-  (setq fhi-dir-c "C:/Users/ybka"))
+  (setq fhi-dir-c "C:/Users/ybka/"))
 
 ;;;; Local folder
 ;; Create folder if it doesn't exist
-(defvar ybk/local-folder (concat fhi-dir-c "/emacs-local")
+(defvar ybk/local-folder (concat fhi-dir-c "emacs-local")
   (unless (file-exists-p ybk/local-folder)
     (make-directory ybk/local-folder)))
 
-(defvar ybk/local-cache (concat ybk/local-folder "/cache")
+(defvar ybk/local-cache (concat ybk/local-folder "cache")
   "Else use standard doom .cache")
 
 ;;;; OneDrive
 (when IS-LINUX
-  (setq onedrive "/OneDrive"
-        shortcutonedrive (concat fhi-dir-c "/OneDrive")))
+  (setq onedrive "OneDrive/"
+        shortcutonedrive (concat fhi-dir-c "OneDrive/")))
 
 (when IS-WINDOWS
-  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"
-        shortcutonedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet"))
+  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet/"
+        shortcutonedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet/"))
 
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 

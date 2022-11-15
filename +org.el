@@ -12,18 +12,16 @@
 (when IS-WINDOWS
   (setq org-onedrive onedrive))
 
-(setq org-directory (concat org-onedrive "/org"))
+(setq org-directory (concat org-onedrive "org/"))
 
 ;; Need to create the org files manually with #+FILETAGES:
-(setq my-org-agenda-directory (file-truename (concat org-directory "/gtd/")))
+(setq my-org-agenda-directory (file-truename (concat org-directory "gtd/")))
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
   "Unstructured capture")
 (defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
   "Work related")
 (defvar my-agenda-private (expand-file-name "private.org" my-org-agenda-directory)
   "Private related")
-(defvar my-reminder-date (expand-file-name "misc/" org-directory)
-  "Dates to remember")
 (defvar my-org-roam (expand-file-name "org-roam/" org-directory)
   "Notes and references using org-roam" )
 
@@ -143,7 +141,6 @@
 
 ;;; Agenda
 (setq org-agenda-files `(,my-org-agenda-directory
-                         ,my-reminder-date
                          ,my-org-roam))
 
 (setq org-agenda-prefix-format
