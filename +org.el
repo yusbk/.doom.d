@@ -250,10 +250,26 @@
 ;; Ref: https://kristofferbalintona.me/posts/202206141852/
 ;; Activate :tools biblio
 ;; Ref: https://github.com/doomemacs/doomemacs/tree/develop/modules/tools/biblio
+;; To place the references in orgfile add #+
 (setq! citar-bibliography (list my-bibtex-file )
        citar-library-paths (list my-reference-pdf )
        citar-notes-paths (list my-reference-notes))
 
+;; Setting in Zotero to access BetterBibTeX and CLS style
+;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
+;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
+(when IS-WINDOWS
+  (defvar my-zotero-styles "C:/Users/ybka/Zotero/styles"
+    "Default CLS folder for Zotero"))
+
+(when IS-LINUX
+  (defvar my-zotero-styles "~/Zotero/styles"
+    "Default CLS folder for Zotero"))
+
+(after! org-cite
+  :custom
+  (org-cite-csl-styles-dir my-zotero-styles)
+  )
 
 ;;; Visual
 ;; Distraction-free screen
