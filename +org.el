@@ -250,10 +250,36 @@
 ;; Ref: https://kristofferbalintona.me/posts/202206141852/
 ;; Activate :tools biblio
 ;; Ref: https://github.com/doomemacs/doomemacs/tree/develop/modules/tools/biblio
-;; To place the references in orgfile add #+
-(setq! citar-bibliography (list my-bibtex-file )
-       citar-library-paths (list my-reference-pdf )
-       citar-notes-paths (list my-reference-notes))
+;; To place the references in orgfile add #+PRINT_BIBLIOGRAPHY:
+
+;; Ref : https://hieuphay.com/doom-emacs-config/#citations
+(use-package! citar
+  :custom
+  (citar-bibliography (list my-bibtex-file))
+  (citar-library-paths (list my-reference-pdf))
+  (citar-notes-paths (list my-reference-notes))
+  (citar-file-variable "file")
+  (citar-symbols
+   `((file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-red :v-adjust -0.1) . " ")
+     (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+     (link ,(all-the-icons-material "link" :face 'all-the-icons-blue) . " ")))
+  :config
+  (setq org-cite-global-bibliography citar-bibliography)
+  ;; Search contents of PDFs
+  (after! (embark pdf-occur)
+    (defun citar/search-pdf-contents (keys-entries &optional str)
+      "Search pdfs."
+      (interactive (list (citar-select-refs)))
+      (let ((files (citar-file--files-for-multiple-entries
+                    (citar--ensure-entries keys-entries)
+                    citar-library-paths
+                    '("pdf")))
+            (search-str (or str (read-string "Search string: "))))
+        (pdf-occur-search files search-str t)))
+    ;; with this, you can exploit embark's multitarget actions, so that you can run `embark-act-all`
+    (add-to-list 'embark-multitarget-actions #'citar/search-pdf-contents))
+  )
+
 
 ;; Setting in Zotero to access BetterBibTeX and CLS style
 ;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
