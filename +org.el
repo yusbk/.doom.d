@@ -4,7 +4,6 @@
 ;; Other packages to make org-mode nicer
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-;;
 
 (when IS-LINUX
   (setq org-onedrive (concat fhi-dir-c onedrive)))
@@ -16,6 +15,8 @@
 
 ;; Need to create the org files manually with #+FILETAGES:
 (setq my-org-agenda-directory (file-truename (concat org-directory "gtd/")))
+
+;;; Global variables
 (defvar my-agenda-inbox (expand-file-name "inbox.org" my-org-agenda-directory)
   "Unstructured capture")
 (defvar my-agenda-work (expand-file-name "work.org" my-org-agenda-directory)
@@ -27,11 +28,12 @@
 
 ;; PDF files
 (defvar my-reference-pdf (expand-file-name "references/" my-org-roam)
-  "Reference files mostly as PDF")
-
-;; Take notes on pdf files
+  "Reference as PDF files")
 (defvar my-reference-notes (expand-file-name "notes/" my-org-roam)
   "Reference notes on PDF files")
+(defvar my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam)
+  "Reference library file")
+
 
 ;;; General Settings
 (after! org
@@ -203,146 +205,11 @@
 ;; pacman -S make gcc
 ;; Go to ~/.emacs.d/.local/straight/build/emacsql-sqlite/sqlite
 ;; Run this command: make emacsql-sqlite CC=gcc LDLIBS=
-;;
-;; Ref https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
-(after! org-roam
-  :init
-  (setq org-roam-directory my-org-roam)
-  :config
-  (add-hook! 'after-init-hook 'org-roam-mode)
-  (setq org-roam-capture-templates
-        (quote (("d" "default" plain
-                 "%?"
-                 :target
-                 (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
-                            "#+title: ${title}\n")
-                 :unnarrowed t)
-                ("r" "bibliography reference" plain "%?"
-                 :target
-                 (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
-  )
 
-(use-package! org-roam-bibtex
-  :after org-roam
-  :hook (org-mode . org-roam-bibtex-mode)
-  :config
-  (require 'org-ref)
-  (setq orb-preformat-keywords
-        '("citekey" "title" "url" "author-or-editor" "keywords" "file")
-        orb-process-file-keyword t
-        orb-file-field-extensions '("pdf"))
-  )
-
-;;; Citations
-;; Ref: https://github.com/WouterSpekkink/dotfiles/blob/master/doom/config.el
-(setq my-bibtex-file (expand-file-name "bibtex/library.bib" my-org-roam))
-(setq my-bibtex-notes (expand-file-name "bibnotes.org" my-reference-notes))
-
-;; Ref https://github.com/sunnyhasija/Academic-Doom-Emacs-Config#citations
-(use-package! org-ref
-  :config
-  (setq
-   org-ref-completion-library 'org-ref-ivy-cite
-   org-ref-get-pdf-filename-function 'org-ref-get-pdf-filename-helm-bibtex
-   bibtex-completion-bibliography (list my-bibtex-file)
-   bibtex-completion-notes (list my-bibtex-notes)
-   org-ref-note-title-format "* %y - %t\n :PROPERTIES:\n  :Custom_ID: %k\n  :NOTER_DOCUMENT: %F\n :ROAM_KEY: cite:%k\n  :AUTHOR: %9a\n  :JOURNAL: %j\n  :YEAR: %y\n  :VOLUME: %v\n  :PAGES: %p\n  :DOI: %D\n  :URL: %U\n :END:\n\n"
-   org-ref-notes-directory (list my-reference-notes)
-   org-ref-notes-function 'orb-edit-notes
-   ))
-
-(after! org-ref
-  (setq
-   bibtex-completion-notes-path my-reference-notes
-   bibtex-completion-bibliography my-bibtex-file
-   bibtex-completion-pdf-field "file"
-   bibtex-completion-notes-template-multiple-files
-   (concat
-    "#+TITLE: ${title}\n"
-    "#+ROAM_KEY: cite:${=key=}\n"
-    "* TODO Notes\n"
-    ":PROPERTIES:\n"
-    ":Custom_ID: ${=key=}\n"
-    ":NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n"
-    ":AUTHOR: ${author-abbrev}\n"
-    ":JOURNAL: ${journaltitle}\n"
-    ":DATE: ${date}\n"
-    ":YEAR: ${year}\n"
-    ":DOI: ${doi}\n"
-    ":URL: ${url}\n"
-    ":END:\n\n"
-    )
-   )
-  )
-
-;;; Notes taking
-
-(use-package! org-noter
-  :after (:any org pdf-view)
-  :config
-  (setq org-noter-notes-search-path (list my-reference-notes) ;related to main notes files
-        org-noter-hide-other nil ;show whole file
-        org-noter-separate-notes-from-heading t
-        org-noter-default-notes-file-names (list "notes.org")
-        org-noter-always-create-frame nil)
-
-  (map!
-   :after org-noter
-   :map org-noter-notes-mode-map
-   :desc "Insert note"
-   "C-M-i" #'org-noter-insert-note
-   :desc "Insert precise note"
-   "C-M-p" #'org-noter-insert-precise-note
-   :desc "Go to previous note"
-   "C-M-k" #'org-noter-sync-prev-note
-   :desc "Go to next note"
-   "C-M-j" #'org-noter-sync-next-note
-   :desc "Create skeleton"
-   "C-M-s" #'org-noter-create-skeleton
-   :desc "Kill session"
-   "C-M-q" #'org-noter-kill-session
-   )
-
-  (map!
-   :after org-noter
-   :map org-noter-doc-mode-map
-   :desc "Insert note"
-   "C-M-i" #'org-noter-insert-note
-   :desc "Insert precise note"
-   "C-M-p" #'org-noter-insert-precise-note
-   :desc "Go to previous note"
-   "C-M-k" #'org-noter-sync-prev-note
-   :desc "Go to next note"
-   "C-M-j" #'org-noter-sync-next-note
-   :desc "Create skeleton"
-   "C-M-s" #'org-noter-create-skeleton
-   :desc "Kill session"
-   "C-M-q" #'org-noter-kill-session
-   )
-  )
-
-(use-package! org-pdftools
-  :hook (org-load . org-pdftools-setup-link))
-(use-package! org-noter-pdftools
-  :after org-noter
-  :config
-  (with-eval-after-load 'pdf-annot
-    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+;; Define path before loading org-roam
+(setq org-roam-directory my-org-roam)
 
 ;;; Deft for searcing notes
-;; For searching text for files in defined deft-directory
-(setq deft-directory my-org-roam
-      deft-extensions '("org" "txt") ;which file extention to search
-      ;; deft-auto-save-interval -1.0 ;disable auto-save
-      deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
-      deft-recursive t ;to be able searching in sub-directories
-      ;; converts the filter string into a readable file-name using kebab-case:
-      deft-file-naming-rules
-      '((noslash . "-")
-        (nospace . "-")
-        (case-fn . downcase))
-      )
-
 ;; keybinding for deft not activated automatically
 ;; https://github.com/hlissner/doom-emacs/issues/2991
 (after! deft
@@ -376,6 +243,41 @@
         "r"   #'deft-rename-file
         "s"   #'deft-toggle-sort-method
         "t"   #'deft-toggle-incremental-search)
+  )
+
+;;; Citation
+;; Main ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#basic-usage
+;; Ref: https://kristofferbalintona.me/posts/202206141852/
+;; Activate :tools biblio
+;; Ref: https://github.com/doomemacs/doomemacs/tree/develop/modules/tools/biblio
+(setq! citar-bibliography (list my-bibtex-file )
+       citar-library-paths (list my-reference-pdf )
+       citar-notes-paths (list my-reference-notes))
+
+
+;;; Visual
+;; Distraction-free screen
+(use-package! olivetti
+  :init
+  (setq olivetti-body-width .67)
+  :config
+  (defun distraction-free ()
+    "Distraction-free writing environment"
+    (interactive)
+    (if (equal olivetti-mode nil)
+        (progn
+          (window-configuration-to-register 1)
+          (delete-other-windows)
+          (text-scale-increase 2)
+          (olivetti-mode t))
+      (progn
+        (jump-to-register 1)
+        (olivetti-mode 0)
+        (text-scale-decrease 2))))
+
+  (map! :niv
+        :desc "Disctraction free"
+        "<f9>" #'distraction-free)
   )
 
 

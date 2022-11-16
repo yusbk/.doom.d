@@ -63,11 +63,9 @@
 (package! org-roam-bibtex
   :recipe (:host github :repo "org-roam/org-roam-bibtex"))
 (unpin! company-org-roam bibtex-completion helm-bibtex)
-(package! org-ref)
 (package! org-download)
 (package! org-fragtog) ;auto toggle LaTeX fragment previews
-(package! org-noter-pdftools)
-(package! org-pdftools)
+(package! olivetti)
 (package! org-roam-ui
   :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")))
 (unpin! company-org-roam bibtex-completion helm-bibtex)
