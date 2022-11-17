@@ -328,7 +328,7 @@
     "Default CLS folder for Zotero"))
 
 (when IS-LINUX
-  (defvar my-zotero-styles "~/Zotero/styles"
+  (defvar my-zotero-styles "~/snap/zotero-snap/common/Zotero/styles"
     "Default CLS folder for Zotero"))
 
 (after! org-cite
