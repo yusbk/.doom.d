@@ -136,13 +136,13 @@
 (setq display-line-numbers-type 'relative)
 
 ;; Ref https://hieuphay.com/doom-emacs-config/
-;; Show * if file has changed
+;; Show * if file has changed and not saved
 (setq frame-title-format
       '(""
         (:eval
          (if (s-contains-p org-roam-directory (or buffer-file-name ""))
              (replace-regexp-in-string
-              ".*/[0-9]*-?" "? "
+              ".*/[0-9]*-?" "~ "
               (subst-char-in-string ?_ ?  buffer-file-name))
            "%b"))
         (:eval
