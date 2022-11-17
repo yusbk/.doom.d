@@ -69,7 +69,7 @@
   ;; Change separator from == to -
   (setq org-agenda-block-separator ?-)
 
-  (setq org-agenda-current-time-string "------------------------------------------| now |---")
+  (setq org-agenda-current-time-string "<---| now |------------------------------------------")
   ;; Make deadline and overdue stand out
   (setq org-agenda-deadline-leaders '("Deadline: " "In %d days: " "Overdue %d day: "))
   ;; Remove done from agenda
@@ -209,6 +209,57 @@
 ;; Define path before loading org-roam
 (setq org-roam-directory my-org-roam)
 
+(after! org-roam
+  :config
+
+  (setq org-roam-capture-templates
+        (quote (("d" "default" plain
+                 "%?"
+                 :target
+                 (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n")
+                 :unnarrowed t)
+                ("r" "bibliography reference" plain "%?"
+                 :target
+                 (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
+  )
+
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :commands (org-roam-ui-mode))
+
+;; Ref https://www.reddit.com/r/emacs/comments/m7ofbh/setting_up_orgroam_protocol_in_qutebrowser/
+(use-package! org-roam-protocol
+  :after (org-roam org-roam-dailies org-protocol)
+  :config
+  (add-to-list
+   'org-roam-capture-ref-templates
+   `(;; Browser bookletmark template:
+     ;; javascript:location.href =
+     ;; 'org-protocol://roam-ref?template=w&ref='
+     ;; + encodeURIComponent(location.href)
+     ;; + '&title='
+     ;; + encodeURIComponent(document.getElementsByTagName("h1")[0].innerText)
+     ;; + '&hostname='
+     ;; + encodeURIComponent(location.hostname)
+     ("w" "webref" entry "* ${title} ([[${ref}][${hostname}]])\n%?"
+      :target
+      (file+head
+       ,(concat my-reference-notes "%<%Y-%m>.org")
+       ,(string-join
+         '(":properties:"
+           ":roam_refs: %^{Key}"
+           ":end:"
+           "#+title: %<%Y-%m>"
+           "#+filetags: journal"
+           "#+startup: overview"
+           "#+created: %U"
+           "") "\n"))
+      :unnarrowed t))))
+
 ;;; Deft for searcing notes
 ;; keybinding for deft not activated automatically
 ;; https://github.com/hlissner/doom-emacs/issues/2991
@@ -310,6 +361,48 @@
         "<f9>" #'distraction-free)
   )
 
+;; Ref https://github.com/minad/org-modern
+;; This is diabled now
+(use-package! org-modern
+  :disabled t
+  :init
+  ;; Add frame borders and window dividers
+  (modify-all-frames-parameters
+   '((right-divider-width . 10)
+     (internal-border-width . 10)))
+  (dolist (face '(window-divider
+                  window-divider-first-pixel
+                  window-divider-last-pixel))
+    (face-spec-reset-face face)
+    (set-face-foreground face (face-attribute 'default :background)))
+  (set-face-background 'fringe (face-attribute 'default :background))
+
+  :config
+  (setq
+   ;; Edit settings
+   org-auto-align-tags nil
+   org-tags-column 0
+   org-catch-invisible-edits 'show-and-error
+   org-special-ctrl-a/e t
+   org-insert-heading-respect-content t
+
+   ;; Org styling, hide markup etc.
+   org-hide-emphasis-markers t
+   org-pretty-entities t
+   org-ellipsis "..."
+
+   ;; Agenda styling
+   org-agenda-tags-column 0
+   org-agenda-block-separator ?-
+   org-agenda-time-grid
+   '((daily today require-timed)
+     (800 1000 1200 1400 1600 1800 2000)
+     "....." ".................")
+   org-agenda-current-time-string
+   "<-- now -------------------------------------------------")
+
+  (global-org-modern-mode)
+  )
 
 ;;; latex preview
 ;; Auto toggle org-mode latex fragment previews as the cursor enters and exits
