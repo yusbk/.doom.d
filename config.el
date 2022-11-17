@@ -318,6 +318,13 @@
 ;;       (setq inferior-ess-r-program "C:/Users/ybka/scoop/apps/R/current/bin/R.exe")
 ;;     (error (setq inferior-ess-r-program "C:/Program Files/R/R-4.1.3/bin/R.exe")))
 ;;   )
+;; --- OR ---
+;; (if (and (string-match-p "Windows" (getenv "PATH")) (not IS-WINDOWS))
+;;     (setq onedrive-directory "/mnt/OneDrive/")
+;;   (setq onedrive-directory "~/OneDrive/"))
+
+;; (setq org-directory (concat onedrive-directory "Notes/"))
+
 
 ;;---- Note ----
 ;; Use simpleclip for copy-paste
