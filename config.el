@@ -777,6 +777,24 @@ if there is displayed buffer that have shell it will use that window"
 ;;; Misc
 ;; Different functions that helps my work
 
+;;;; popup
+;; This is when enable in :ui popup
+;; https://github.com/doomemacs/doomemacs/blob/develop/modules/ui/popup/README.org
+;; Close popup with ESC or C-g
+;; Select other popup with C-x p
+(set-popup-rules!
+  '(("^ \\*" :slot -1) ; fallback rule for special buffers
+    ("^\\*" :select t)
+    ("^\\*Completions" :slot -1 :ttl 0)
+    ("^\\*\\(?:scratch\\|Messages\\)" :ttl t)
+    ("^\\*Help" :slot -1 :size 0.2 :select t)
+    ("^\\*doom:"
+     :size 0.35 :select t :modeline t :quit t :ttl t)
+    ("^\\*R:*\\*$" :side right :size 0.5 :ttl nil)))
+
+;; show default mode-line in popup
+;; (plist-put +popup-defaults :modeline t)
+
 ;;;; Vectorise
 ;; Make words in several lines to be a vector
 ;; Ref: https://news.ycombinator.com/item?id=22129636
