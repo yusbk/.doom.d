@@ -336,6 +336,59 @@
   (org-cite-csl-styles-dir my-zotero-styles)
   )
 
+;;; Notes taking
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config
+  (setq org-noter-notes-search-path (list my-reference-notes) ;related to main notes files
+        org-noter-hide-other nil ;show whole file
+        org-noter-separate-notes-from-heading t
+        org-noter-default-notes-file-names (list "notes.org")
+        org-noter-always-create-frame nil)
+
+  (map!
+   :after org-noter
+   :map org-noter-notes-mode-map
+   :desc "Insert note"
+   "C-M-i" #'org-noter-insert-note
+   :desc "Insert precise note"
+   "C-M-p" #'org-noter-insert-precise-note
+   :desc "Go to previous note"
+   "C-M-k" #'org-noter-sync-prev-note
+   :desc "Go to next note"
+   "C-M-j" #'org-noter-sync-next-note
+   :desc "Create skeleton"
+   "C-M-s" #'org-noter-create-skeleton
+   :desc "Kill session"
+   "C-M-q" #'org-noter-kill-session
+   )
+
+  (map!
+   :after org-noter
+   :map org-noter-doc-mode-map
+   :desc "Insert note"
+   "C-M-i" #'org-noter-insert-note
+   :desc "Insert precise note"
+   "C-M-p" #'org-noter-insert-precise-note
+   :desc "Go to previous note"
+   "C-M-k" #'org-noter-sync-prev-note
+   :desc "Go to next note"
+   "C-M-j" #'org-noter-sync-next-note
+   :desc "Create skeleton"
+   "C-M-s" #'org-noter-create-skeleton
+   :desc "Kill session"
+   "C-M-q" #'org-noter-kill-session
+   )
+  )
+
+;; (use-package! org-pdftools
+;;   :hook (org-load . org-pdftools-setup-link))
+;; (use-package! org-noter-pdftools
+;;   :after org-noter
+;;   :config
+;;   (with-eval-after-load 'pdf-annot
+;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+
 ;;; Visual
 ;; Distraction-free screen
 (use-package! olivetti
