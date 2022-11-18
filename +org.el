@@ -302,11 +302,24 @@
   )
 
 ;;; Citation
+;; Setting in Zotero to access BetterBibTeX and CLS style
+;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
+;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
+(when IS-WINDOWS
+  (defvar my-zotero-styles "C:/Users/ybka/Zotero/styles"
+    "Default CLS folder for Zotero"))
+
+(when IS-LINUX
+  (defvar my-zotero-styles "~/snap/zotero-snap/common/Zotero/styles"
+    "Default CLS folder for Zotero"))
+
 ;; Main ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#basic-usage
 ;; Ref: https://kristofferbalintona.me/posts/202206141852/
 ;; Activate :tools biblio
 ;; Ref: https://github.com/doomemacs/doomemacs/tree/develop/modules/tools/biblio
 ;; To place the references in orgfile add #+PRINT_BIBLIOGRAPHY:
+;; To change reference style #+cite_export: csl vancouver.csl
+;; To use other bib file #+bibliography: newlibrary.bib
 
 ;; Ref : https://hieuphay.com/doom-emacs-config/#citations
 (use-package! citar
@@ -322,26 +335,11 @@
      (link ,(all-the-icons-material "link" :face 'all-the-icons-blue) . " ")))
   (citar-symbol-separator "  ")
   :config
-  (setq org-cite-global-bibliography citar-bibliography))
+  ;; org-cite
+  (setq org-cite-global-bibliography citar-bibliography)
+  (setq org-cite-csl-styles-dir my-zotero-styles))
 
-
-;; Setting in Zotero to access BetterBibTeX and CLS style
-;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
-;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
-(when IS-WINDOWS
-  (defvar my-zotero-styles "C:/Users/ybka/Zotero/styles"
-    "Default CLS folder for Zotero"))
-
-(when IS-LINUX
-  (defvar my-zotero-styles "~/snap/zotero-snap/common/Zotero/styles"
-    "Default CLS folder for Zotero"))
-
-(after! org-cite
-  :custom
-  (org-cite-csl-styles-dir my-zotero-styles)
-  )
-
-;;; Notes taking
+;;; Notes taking PDF file
 (use-package! org-noter
   :after (:any org pdf-view)
   :config
@@ -386,13 +384,13 @@
    )
   )
 
-;; (use-package! org-pdftools
-;;   :hook (org-load . org-pdftools-setup-link))
-;; (use-package! org-noter-pdftools
-;;   :after org-noter
-;;   :config
-;;   (with-eval-after-load 'pdf-annot
-;;     (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+(use-package! org-pdftools
+  :hook (org-load . org-pdftools-setup-link))
+(use-package! org-noter-pdftools
+  :after org-noter
+  :config
+  (with-eval-after-load 'pdf-annot
+    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 
 ;;; Visual
 ;; Distraction-free screen
