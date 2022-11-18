@@ -347,7 +347,7 @@
         org-noter-hide-other nil ;show whole file
         org-noter-separate-notes-from-heading t
         org-noter-default-notes-file-names (list "notes.org")
-        org-noter-always-create-frame nil)
+        org-noter-always-create-frame t) ;keep emacs after kill session
 
   (map!
    :after org-noter
