@@ -231,6 +231,11 @@
   :after org-roam
   :commands (org-roam-ui-mode))
 
+;; (use-package! org-roam-bibtex
+;;   :after org-roam
+;;   :config
+;;   (require 'org-cite)) ; optional
+                                        ;
 ;; Ref https://www.reddit.com/r/emacs/comments/m7ofbh/setting_up_orgroam_protocol_in_qutebrowser/
 (use-package! org-roam-protocol
   :after (org-roam org-roam-dailies org-protocol)
