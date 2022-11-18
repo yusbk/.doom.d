@@ -75,6 +75,8 @@
 (unpin! company-org-roam bibtex-completion helm-bibtex)
 (package! org-modern :disable t
   :recipe (:host github :repo "minad/org-modern"))
+(package! org-noter-pdftools)
+(package! org-pdftools)
 
 (when IS-WINDOWS (package! emacsql-sqlite))
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
