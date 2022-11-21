@@ -11,6 +11,8 @@
        "i" #'open-inbox-file
        :desc "file-other-window"
        "f" #'find-file-other-window
+       :desc "copy absolute path"
+       "p" #'ranger-copy-current-dir-path
        :desc "git-branch-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
        "g" #'vc-refresh-state
        :desc "Norsk"

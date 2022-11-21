@@ -780,17 +780,22 @@ if there is displayed buffer that have shell it will use that window"
 ;;;; popup
 ;; This is when enable in :ui popup
 ;; https://github.com/doomemacs/doomemacs/blob/develop/modules/ui/popup/README.org
+;; https://github.com/doomemacs/doomemacs/blob/fb13b902b01783ade0fafc78f0c5f7f786d5fce4/modules/ui/popup/autoload/settings.el
 ;; Close popup with ESC or C-g
 ;; Select other popup with C-x p
-(set-popup-rules!
-  '(("^ \\*" :slot -1) ; fallback rule for special buffers
-    ("^\\*" :select t)
-    ("^\\*Completions" :slot -1 :ttl 0)
-    ("^\\*\\(?:scratch\\|Messages\\)" :ttl t)
-    ("^\\*Help" :slot -1 :size 0.2 :select t)
-    ("^\\*doom:"
-     :size 0.35 :select t :modeline t :quit t :ttl t)
-    ("^\\*R:*\\*$" :side right :size 0.5 :ttl nil)))
+
+;; (set-popup-rules!
+;;   '(("^ \\*" :slot 1 :vslot -1 :size #'+popup-shrink-to-fit)
+;;     ("^\\*"  :slot 1 :vslot -1 :select t))
+;;   '(("^\\*Completions" :slot -1 :vslot -2 :ttl 0)
+;;     ("^\\*Compil\\(?:ation\\|e-Log\\)" :size 0.3 :ttl 0 :quit t))
+;;   '(("^\\*\\(?:scratch\\|Messages\\)" :ttl t)
+;;     ("^\\*Help" :slot -1 :size 0.2 :select t)
+;;     ("^\\*doom:"
+;;      :size 0.35 :select t :modeline t :quit t :ttl t))
+;;   ;; Mode specific
+;;   '(("^\\*R:*\\*$" :side 'right :ttl nil :select t :size #'+popup-shrink-to-fit))
+;;   )
 
 ;; show default mode-line in popup
 ;; (plist-put +popup-defaults :modeline t)

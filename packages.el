@@ -62,7 +62,11 @@
 
 ;; (package! org-roam-bibtex
 ;;   :recipe (:host github :repo "org-roam/org-roam-bibtex"))
-;; (unpin! company-org-roam bibtex-completion helm-bibtex)
+;; ;; When using org-roam via the `+roam` flag
+;; (unpin! org-roam)
+;; ;; When using bibtex-completion via the `biblio` module
+;; (unpin! bibtex-completion helm-bibtex ivy-bibtex)
+
 (package! org-download)
 (package! org-fragtog) ;auto toggle LaTeX fragment previews
 (package! olivetti)
@@ -71,6 +75,8 @@
 (unpin! company-org-roam bibtex-completion helm-bibtex)
 (package! org-modern :disable t
   :recipe (:host github :repo "minad/org-modern"))
+(package! org-noter-pdftools)
+(package! org-pdftools)
 
 (when IS-WINDOWS (package! emacsql-sqlite))
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
