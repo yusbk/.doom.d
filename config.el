@@ -281,6 +281,8 @@
                    "gf" "git fetch $1"
                    "gm" "git merge $1"
                    "gmf" "git merge --no-ff $1"
+                   "gpo" "git push origin"
+                   "gp" "git push origin $1"
                    "gps" "git push origin master --recurse-submodules=on-demand")
 
 ;; Change keyboard layout when using ssh
