@@ -707,16 +707,20 @@ if there is displayed buffer that have shell it will use that window"
 
 ;;; Flyspell
 ;; Check spelling error
+;; Both aspell and hunspell can be install via scoop on Windows. Else use the instruction below.
 (after! flyspell
   ;; This setting specifically for Windows
   ;; http://juanjose.garciaripoll.com/blog/my-emacs-windows-configuration/
   ;; https://www.reddit.com/r/emacs/comments/8by3az/how_to_set_up_sell_check_for_emacs_in_windows/
-  ;; general guide for downloading hundspell http://www.nextpoint.se/?p=656
+  ;; general guide for downloading hunspell http://www.nextpoint.se/?p=656
   ;; Dictionary https://github.com/LibreOffice/dictionaries
+  ;; Define dictionary path with DICPATH https://github.com/hunspell/hunspell/blob/master/src/tools/hunspell.cxx#L2040-L2072
   (when IS-WINDOWS
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
-    (setenv "DICTPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
-    (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
+    ;; copy all nb* files for Bokmål to DICPATH below
+    (setenv "DICPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
+    ;; (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
+    (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
     ;; ;;use the newest version installed via MSYS2
     ;; (ispell-program-name "C:/Users/ybka/scoop/apps/msys2/2020-09-03/mingw64/bin/hunspell.exe")
     (setq lang-norsk "nb_NO")
