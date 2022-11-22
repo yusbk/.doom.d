@@ -101,7 +101,8 @@
                   ;; doom-plain-dark
                   ;; doom-plain
                   tango
-                  tango-dark
+                  ;; tango-dark
+                  deeper-blue
                   ))
 
 (setq my-cur-theme nil)
