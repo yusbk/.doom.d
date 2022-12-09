@@ -721,7 +721,8 @@ if there is displayed buffer that have shell it will use that window"
   (when IS-WINDOWS
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
     ;; copy all nb* files for Bokmål to DICPATH below
-    (setenv "DICPATH" "~/.doom.d/hunspell")
+    ;; (setenv "DICPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
+    (setenv "DICPATH" (concat doom-user-dir "hunspell"))
     ;; (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
     (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
     ;; ;;use the newest version installed via MSYS2
