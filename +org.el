@@ -104,6 +104,18 @@
                                        '((R . t))
                                        '((ditaa . t))
                                        ))
+
+
+  ;; Org-capture fix
+  ;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
+  (advice-add #'org-capture :around
+              (lambda (fun &rest args)
+                (letf! ((#'+org--restart-mode-h #'ignore))
+                  (apply fun args))))
+
+  (add-to-list 'org-capture-templates
+               '("i" "Inbox" entry (file my-agenda-inbox)
+                 "* TODO %?\n\n /Created:/ %U"))
   )
 
 (map! :map org-mode-map
@@ -116,18 +128,6 @@
  ;; org-babel-mathematica-command "~/.local/bin/mash"
  org-ditaa-jar-path (concat (getenv "HOME") "/.local/bin/ditaa0_9.jar")
  )
-
-;; Org-capture fix
-;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
-(advice-add #'org-capture :around
-            (lambda (fun &rest args)
-              (letf! ((#'+org--restart-mode-h #'ignore))
-                (apply fun args))))
-
-(after! org-capture
-  (add-to-list 'org-capture-templates
-               '("i" "Inbox" entry (file my-agenda-inbox)
-                 "* TODO %?\n\n /Created:/ %U")))
 
 (defun my-org-capture-inbox ()
   "Capture to Inbox directly"
