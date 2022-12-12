@@ -671,6 +671,14 @@ if there is displayed buffer that have shell it will use that window"
 ;;; PDF
 ;; Install msys2 via scoop
 ;; In msys2, insall autotools "pacman -S autotools"
+;; Follow the steps here https://github.com/doomemacs/doomemacs/blob/develop/modules/tools/pdf/README.org
+;; pacman -Syu
+;; pacman -S base-devel
+;; pacman -S mingw-w64-x86_64-toolchain
+;; pacman -S mingw-w64-x86_64-zlib
+;; pacman -S mingw-w64-x86_64-libpng
+;; pacman -S mingw-w64-x86_64-poppler
+;; pacman -S mingw-w64-x86_64-imagemagick
 ;; If database is locked, delete file /var/lib/pacman/db.lck via Msys2 before running the commond below
 ;; Run 'M-x pdf-tools-install' first
 (use-package! pdf-tools
@@ -725,8 +733,8 @@ if there is displayed buffer that have shell it will use that window"
     ;; copy all nb* files for Bokmål to DICPATH below
     ;; (setenv "DICPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
     (setenv "DICPATH" (concat doom-user-dir "hunspell"))
-    ;; (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
-    (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
+    (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
+    ;; (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
     ;; ;;use the newest version installed via MSYS2
     ;; (ispell-program-name "C:/Users/ybka/scoop/apps/msys2/2020-09-03/mingw64/bin/hunspell.exe")
     (setq lang-norsk "nb_NO")
