@@ -718,6 +718,8 @@ if there is displayed buffer that have shell it will use that window"
   ;; general guide for downloading hunspell http://www.nextpoint.se/?p=656
   ;; Dictionary https://github.com/LibreOffice/dictionaries
   ;; Define dictionary path with DICPATH https://github.com/hunspell/hunspell/blob/master/src/tools/hunspell.cxx#L2040-L2072
+  ;; When installing via scoop, needs to install these as well.. via MSYS2
+  ;; pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool
   (when IS-WINDOWS
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
     ;; copy all nb* files for Bokmål to DICPATH below
