@@ -451,6 +451,8 @@
   )
 
 ;;; ESS
+;; ess-switch-process use to choose R process when eval codes with many running processes
+;; SPC-m-Shift-TAB or C-c C-s
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
   (map! (:map ess-mode-map
