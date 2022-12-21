@@ -499,6 +499,13 @@
         comint-scroll-to-bottom-on-output t
         comint-move-point-for-output t)
 
+  ;; Problem with color theme https://github.com/emacs-ess/ESS/issues/1193
+  ;; Should be a temporary solution
+  (defun my-inferior-ess-init ()
+    (setq-local ansi-color-for-comint-mode 'filter)
+    (smartparens-mode 1))
+  (add-hook 'inferior-ess-mode-hook 'my-inferior-ess-init)
+
   (setq inferior-R-args "--no-save")
   (setq ess-R-font-lock-keywords
         '((ess-R-fl-keyword:modifiers . t)
