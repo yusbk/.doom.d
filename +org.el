@@ -69,7 +69,7 @@
   ;; Change separator from == to -
   (setq org-agenda-block-separator ?-)
 
-  (setq org-agenda-current-time-string "<---| now |------------------------------------------")
+  (setq org-agenda-current-time-string "<---| now |")
   ;; Make deadline and overdue stand out
   (setq org-agenda-deadline-leaders '("Deadline: " "In %d days: " "Overdue %d day: "))
   ;; Remove done from agenda
