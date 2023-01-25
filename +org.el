@@ -163,8 +163,9 @@
 ;; Use SPC-m-r to refile inbox
 (setq org-agenda-custom-commands
       '(
-        ("r" tags "inbox")
-        ("w" "Work Agenda"
+        ("i" tags "inbox")
+        ("w" tags "work")
+        ("W" "WORK AGENDA"
          ((agenda "" nil)
           (todo "START"
                 ((org-agenda-max-entries 5)
