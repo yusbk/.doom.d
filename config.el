@@ -256,6 +256,9 @@
 ;; Ref https://www.linuxuprising.com/2020/02/how-to-keep-onedrive-in-sync-with.html
 ;; Use systemctl --user enable onedrive and then start the OneDrive systemd service
 ;; Usage for onedrive https://github.com/abraunegg/onedrive/blob/master/docs/USAGE.md
+;; Reauthorize ie. change password:
+;; Stop service if running as client with systemctl --user stop onedrive
+;; onedrive --reauth  and follow the instruction
 (when IS-LINUX
   (set-eshell-alias! "oe" "systemctl --user enable onedrive")
   (set-eshell-alias! "ok" "systemctl --user stop onedrive")
