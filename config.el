@@ -691,8 +691,10 @@ if there is displayed buffer that have shell it will use that window"
 ;; pacman -S mingw-w64-x86_64-libpng
 ;; pacman -S mingw-w64-x86_64-poppler
 ;; pacman -S mingw-w64-x86_64-imagemagick
+;;
 ;; Python2 is needed to compile and can be installed from https://repo.msys2.org/mingw/x86_64/
 ;; pacman -U http://repo.msys2.org/mingw/x86_64/mingw-w64-x86_64-python2-2.7.18-1-any.pkg.tar.xz
+;; or using scoop via bucket versions: scoop bucket add versions ; scoop install python27
 ;; If database is locked, delete file /var/lib/pacman/db.lck via Msys2 before running the commond below
 ;; Run 'M-x pdf-tools-install' first
 (use-package! pdf-tools
