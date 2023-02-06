@@ -214,20 +214,20 @@
   :config
   ;; Example for template https://github.com/sunnyhasija/Academic-Doom-Emacs-Config#org-roam-capture-templates
   (setq org-roam-capture-templates
-        (quote (("d" "default" plain
+        (quote (("n" "default" plain
                  "%?"
                  :if-new
-                 (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
+                 (file+head "notes/%<%Y-%m-%d-%H%M%S>-${slug}.org"
                             "#+title: ${title}\n#+filetags: ${tags}")
                  :unnarrowed t)
                 ("d" "definition" plain
                  "%?"
                  :if-new
-                 (file+head "${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
+                 (file+head "notes/${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
                  :unnarrowed t)
                 ("r" "ref" plain "%?"
                  :if-new
-                 (file+head "${citekey}.org"
+                 (file+head "references/${citekey}.org"
                             "#+title: ${slug}: ${title}\n
                              \n#+filetags: reference ${keywords} \n
                              \n* ${title}\n\n
