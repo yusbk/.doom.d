@@ -212,17 +212,33 @@
 
 (after! org-roam
   :config
-
+  ;; Example for template https://github.com/sunnyhasija/Academic-Doom-Emacs-Config#org-roam-capture-templates
   (setq org-roam-capture-templates
         (quote (("d" "default" plain
                  "%?"
-                 :target
+                 :if-new
                  (file+head "%<%Y-%m-%d-%H%M%S>-${slug}.org"
-                            "#+title: ${title}\n")
+                            "#+title: ${title}\n#+filetags: ${tags}")
                  :unnarrowed t)
-                ("r" "bibliography reference" plain "%?"
+                ("d" "definition" plain
+                 "%?"
+                 :if-new
+                 (file+head "${slug}.org" "#+title: ${title}\n#+filetags: definition \n\n* Definition\n\n\n* Examples\n")
+                 :unnarrowed t)
+                ("r" "ref" plain "%?"
+                 :if-new
+                 (file+head "${citekey}.org"
+                            "#+title: ${slug}: ${title}\n
+                             \n#+filetags: reference ${keywords} \n
+                             \n* ${title}\n\n
+                             \n* Summary
+                             \n\n\n* Rough note space\n")
+                 :unnarrowed t)
+                ("b" "bibliography reference" plain "%?"
                  :target
-                 (file+head "references/${citekey}.org" "#+title: ${title}\n")))))
+                 (file+head "references/${citekey}.org" "#+title: ${title}\n#+filetags: reference ${keywords}")))))
+
+  (setq citar-org-roam-note-title-template "${author} - ${title}\n#+filetags: ${tags}")
   )
 
 (use-package! websocket
@@ -230,7 +246,12 @@
 
 (use-package! org-roam-ui
   :after org-roam
-  :commands (org-roam-ui-mode))
+  :commands (org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-open-on-start nil)
+  (setq org-roam-ui-browser-function #'xwidget-webkit-browse-url)
+  )
+
 
 ;; (use-package! org-roam-bibtex
 ;;   :after org-roam
