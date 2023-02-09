@@ -105,6 +105,53 @@
                                        '((ditaa . t))
                                        ))
 
+  ;; https://emacs.stackexchange.com/questions/68188/org-mode-do-not-inheriting-unnumbered-property
+  ;; Break inheritance of UNNUMBERED in properties drawer ie. :UNNUMBERED: t
+  (defun org-export-numbered-headline-p (headline info)
+    "Return a non-nil value if HEADLINE element should be numbered.
+INFO is a plist used as a communication channel."
+    (unless (org-not-nil (org-export-get-node-property :UNNUMBERED headline  ))
+                                        ; removing `t` here ↑
+                                        ; removes inheritance
+      (let ((sec-num (plist-get info :section-numbers))
+            (level (org-export-get-relative-level headline info)))
+        (if (wholenump sec-num) (<= level sec-num) sec-num))))
+
+  ;; Numbering
+  (defun org-export-get-headline-number (headline info)
+    "Return numbered HEADLINE numbering as a list of numbers.
+INFO is a plist holding contextual information."
+    (and (org-export-numbered-headline-p headline info)
+         (let* (
+                (nums (cdr (assq headline (plist-get info :headline-numbering))))
+                (root-heading (let ((parent headline)(temp)) (while (and (setq temp (org-element-property :parent parent)) (eq 'headline (org-element-type temp))) (setq parent temp)) parent))
+                (appendix (member "appendix" (org-element-property :tags root-heading))))
+           (if (eq 1 (length nums))
+               ;; if it's a part get roman numbers
+               (list (nth (car nums) '("Z" "I" "II" "III" "IV" "V" "VI" "VII" "VIII" "IX" "X")))
+             (let ((nums (cdr nums))) ; remove part number
+               (cons (if appendix
+                         ;; appendix chapters in alpha
+                         (byte-to-string
+                          (-
+                           (+ ?A (car nums))
+                           (nth 1 (cdr (assq
+                                        (org-element-map root-heading 'headline (lambda (el) (when (org-export-numbered-headline-p el info) el)) nil t)
+                                        (plist-get info :headline-numbering)))) ; number of first appendix
+                           ))
+                       (+ (car nums) ; sum chapters of previous parts
+                          (-count 'identity
+                                  (org-element-map (org-element-property :parent root-heading) 'headline
+                                    (lambda (el)
+                                      (and
+                                       (eq 2 (org-element-property :level el))
+                                       (< (org-element-property :begin el) (org-element-property :begin root-heading))))))))
+                     (cdr nums))
+               )))))
+  (defun number-to-string (number)
+    (format "%s" number))
+
+
 
   ;; Org-capture fix
   ;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
@@ -116,7 +163,7 @@
   (add-to-list 'org-capture-templates
                '("i" "Inbox" entry (file my-agenda-inbox)
                  "* TODO %?\n\n /Created:/ %U"))
-  )
+)
 
 (map! :map org-mode-map
       :localleader
