@@ -747,9 +747,9 @@ if there is displayed buffer that have shell it will use that window"
   (when IS-WINDOWS
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
     ;; copy all nb* files for Bokmål to DICPATH below
-    ;; (setenv "DICPATH" "H:/Dropbox/hunspell-1.3.2-3-w32/share/hunspell")
+    ;; (setenv "DICPATH" "H:/dropbox/hunspell-1.3.2-3-w32/share/hunspell")
     (setenv "DICPATH" (concat doom-user-dir "hunspell"))
-    (setq ispell-program-name "H:/Dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
+    (setq ispell-program-name "C:/Users/ybka/Git-personal/dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
     ;; (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
     ;; ;;use the newest version installed via MSYS2
     ;; (ispell-program-name "C:/Users/ybka/scoop/apps/msys2/2020-09-03/mingw64/bin/hunspell.exe")
@@ -757,7 +757,7 @@ if there is displayed buffer that have shell it will use that window"
     (setq lang-eng "nb_GB")
     )
 
-  (setq cache-h-drive (concat fhi-dir-h "Dropbox/cache/"))
+  (setq cache-h-drive (concat fhi-dir-c "Git-personal/dropbox/cache/"))
 
   ;; (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
   ;;                           "--lang=en_GB"
