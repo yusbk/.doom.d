@@ -374,6 +374,10 @@ INFO is a plist holding contextual information."
 ;; Need to install BetterBibTex https://retorque.re/zotero-better-bibtex/
 ;; Setting in Zotero to access BetterBibTeX and CLS style can be read here:
 ;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
+
+;; Change path under "Filer og mapper" in Zetoro "Avansert" for Basismappe to:
+;; C:\Users\ybka\OneDrive - Folkehelseinstituttet\org\org-roam\references
+
 ;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
 (when IS-WINDOWS
   (defvar my-zotero-styles "C:/Users/ybka/Zotero/styles"
