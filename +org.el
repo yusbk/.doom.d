@@ -371,9 +371,10 @@ INFO is a plist holding contextual information."
   )
 
 ;;; Citation
-;; Need to install BetterBibTex https://retorque.re/zotero-better-bibtex/
+;; Need to install BetterBibTex .xpi extention https://retorque.re/zotero-better-bibtex/
 ;; Setting in Zotero to access BetterBibTeX and CLS style can be read here:
 ;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
+;; Install Zotfile to admin PDF ie. the .xpi extention here http://zotfile.com/index.html
 
 ;; Change path under "Filer og mapper" in Zetoro "Avansert" for Basismappe to:
 ;; C:\Users\ybka\OneDrive - Folkehelseinstituttet\org\org-roam\references
