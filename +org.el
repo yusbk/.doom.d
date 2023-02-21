@@ -371,7 +371,8 @@ INFO is a plist holding contextual information."
   )
 
 ;;; Citation
-;; Setting in Zotero to access BetterBibTeX and CLS style
+;; Need to install BetterBibTex https://retorque.re/zotero-better-bibtex/
+;; Setting in Zotero to access BetterBibTeX and CLS style can be read here:
 ;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
 ;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
 (when IS-WINDOWS
