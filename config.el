@@ -900,11 +900,14 @@ if there is displayed buffer that have shell it will use that window"
   (let ((cmd "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\""))
     (shell-command cmd)))
 
-;; Create a shortcut on desktop eg. EmacsServer. In Windows
+;; Guide to use Daemon and Client for Windows
+;; Create a EmacsClient shortcut on desktop eg. EmacsClient
 ;; Add in Target: C:\path\to\emacsclientw.exe -n -c --a ""
-;; Open shortcut folder with shell:startup in file explorer
+;; Alternatively add shortcut key with Ctrl + Alt + E
+;; Start in is where Emacs will start with dired or M-x find-file
 
-;; Create a new shortcut inside startup folder and rename to .bat ie. batch file
+;; Open startup folder by running the command shell:startup in file explorer
+;; Create a shortcut inside startup folder and rename to .bat ie. batch file
 ;; Add the codes below in the batch file where rem is "remark" for comment
 ;; rem Sets HOME for current shell
 ;; rem %APPDATA% is where C:\Users\<username>\AppData\Roaming is
