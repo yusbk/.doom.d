@@ -884,6 +884,7 @@ if there is displayed buffer that have shell it will use that window"
   (setq inhibit-compacting-font-caches nil)
   (setq doom-incremental-load-immediately nil))
 
+;;;; Daemon and client
 ;; define function to shutdown emacs server instance
 (defun server-shutdown ()
   "Save buffers, Quit, and Shutdown (kill) server"
@@ -891,3 +892,29 @@ if there is displayed buffer that have shell it will use that window"
   (save-some-buffers)
   (kill-emacs)
   )
+
+;; Guide on daemon and client https://emacs.stackexchange.com/a/69793/10811
+(defun emacs-sucide ()
+  "Kill all Emacs processes."
+  (interactive)
+  (let ((cmd "taskkill /f /fi \"IMAGENAME eq emacs.exe\" /fi \"MEMUSAGE gt 15000\""))
+    (shell-command cmd)))
+
+;; Create a shortcut on desktop eg. EmacsServer. In Windows
+;; Add in Target: C:\path\to\emacsclientw.exe -n -c --a ""
+;; Open shortcut folder with shell:startup in file explorer
+
+;; Create a new shortcut inside startup folder and rename to .bat ie. batch file
+;; Add the codes below in the batch file where rem is "remark" for comment
+;; rem Sets HOME for current shell
+;; rem %APPDATA% is where C:\Users\<username>\AppData\Roaming is
+;; set HOME=%HOME%
+
+;; rem Clean previous server file info first
+;; del /q ""%HOME%\\.emacs.d\\server\\*""
+
+;; rem Start the Emacs daemon/server with HOME as the default directory
+;; C:\Users\ybka\scoop\apps\emacs\current\bin\runemacs.exe --daemon
+
+;; rem Open a client frame
+;; start "" "C:\Users\%USERNAME%\Desktop\emacsclientw.exe - Shortcut.lnk"
