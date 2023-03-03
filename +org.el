@@ -206,6 +206,7 @@ INFO is a plist holding contextual information."
         (tags   . " %i %-12:c")
         (search . " %i %-12:c")))
 
+(setq org-agenda-hide-tags-regexp (regexp-opt '("work", "inbox", "personal")))
 
 ;; Use SPC-m-r to refile inbox
 (setq org-agenda-custom-commands
