@@ -211,8 +211,8 @@ INFO is a plist holding contextual information."
 (setq org-agenda-custom-commands
       '(
         ("i" tags "inbox")
-        ("w" tags "work")
-        ("W" "WORK AGENDA"
+        ("W" tags "work")
+        ("w" "WORK AGENDA"
          ((agenda "" nil)
           (todo "START"
                 ((org-agenda-max-entries 5)
