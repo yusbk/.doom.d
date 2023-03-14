@@ -154,7 +154,7 @@
 ;;;; Font
 (when IS-WINDOWS
   ;; Installed from https://github.com/be5invis/Iosevka
-  (setq doom-font (font-spec :family "Consolas" :size 15)
+  (setq doom-font (font-spec :family "Consolas" :size 17)
         doom-big-font (font-spec :family "Consolas" :size 30)))
 
 
