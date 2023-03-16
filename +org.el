@@ -221,7 +221,11 @@ INFO is a plist holding contextual information."
                  (org-agenda-overriding-header "Dagens oppgaver:")))
           (tags "inbox"
                 ((org-agenda-overriding-header "Refile SPC-m-r:")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "START" "CANCELLED")))))))
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "START" "CANCELLED")))))
+          (tags "work"
+                ((org-agenda-overriding-header "Work TODO:")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("DONE" "NEXT" "START" "CANCELLED")))))
+          ))
         ("d" "Deadlines"
          ((agenda ""
                   ((org-agenda-entry-types '(:deadline))
