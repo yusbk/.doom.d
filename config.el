@@ -289,7 +289,8 @@
                    "gmf" "git merge --no-ff $1"
                    "gpo" "git push origin"
                    "gp" "git push origin $1"
-                   "gps" "git push origin master --recurse-submodules=on-demand")
+                   "gpushs" "git push origin master --recurse-submodules=on-demand"
+                   "gpulls" "git pull --recurse-submodules")
 
 ;; Change keyboard layout when using ssh
 (set-eshell-alias! "kb" "setxkbmap no")
