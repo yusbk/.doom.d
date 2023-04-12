@@ -82,6 +82,9 @@
 (package! org-noter-pdftools)
 (package! org-pdftools)
 
+(package! ox-reveal
+  :recipe (:host github :repo "yjwen/org-reveal"))
+
 (when IS-WINDOWS (package! emacsql-sqlite))
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
 

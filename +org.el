@@ -601,3 +601,5 @@ See `org-capture-templates' for more information."
          :desc "Screenshot" "Y" #'org-download-screenshot
          :desc "Yank screenshot" "y" #'org-download-yank)))
 
+;;; presentation
+(use-package! ox-reveal)
