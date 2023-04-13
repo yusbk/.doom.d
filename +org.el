@@ -602,4 +602,14 @@ See `org-capture-templates' for more information."
          :desc "Yank screenshot" "y" #'org-download-yank)))
 
 ;;; presentation
-(use-package! ox-reveal)
+;; Root can use this as well
+;; #+REVEAL_ROOT: https://cdn.jsdelivr.net/npm/reveal.js
+;; #+REVEAL_REVEAL_JS_VERSION: 4
+(use-package! ox-reveal
+  :disabled t
+  :init
+  (setq org-reveal-root "file:///n:/Helseprofiler_SPULS/reveal.js"))
+
+(use-package! ox-re-reveal
+  :init
+  (setq org-reveal-root "file:///n:/Helseprofiler_SPULS/reveal.js"))
