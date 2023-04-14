@@ -82,16 +82,17 @@
 (package! org-noter-pdftools)
 (package! org-pdftools)
 
-(package! ox-reveal :disable t
+(package! ox-reveal
   :recipe (:host github :repo "yjwen/org-reveal"))
 
-(package! org-re-reveal
+(package! org-re-reveal :disable t
   :recipe (:host gitlab :repo "oer/org-re-reveal"))
 
 (when IS-WINDOWS (package! emacsql-sqlite))
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
 
-(package! quarto-mode)
+(when (package! quarto-mode)
+  (package! request)) ;; needed by quarto-mode
 ;; (package! simpleclip)
 
 (package! cycle-themes :disable t

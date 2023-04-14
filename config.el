@@ -733,7 +733,8 @@ if there is displayed buffer that have shell it will use that window"
 ;; Add to PATH in Windows to be able to compile
 ;; C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
 (use-package! quarto-mode
-  :when QUARTO-P)
+  :when QUARTO-P
+  :mode "\\.Rmd\\")
 
 ;;; Flyspell
 ;; Check spelling error
