@@ -92,7 +92,8 @@
 ;; (when IS-WINDOWS (package! emacsql-sqlite3))
 
 (when (package! quarto-mode)
-  (package! request)) ;; needed by quarto-mode
+  (package! request))
+
 ;; (package! simpleclip)
 
 (package! cycle-themes :disable t
