@@ -38,3 +38,17 @@
        :desc "shutdown-server"
        "q" #'server-shutdown)
       )
+
+;; Default is [ SPC or ] SPC
+(map! :leader
+      ;;; <leader> i --- insert
+      (:prefix-map ("i" . "insert")
+       :desc "Insert line above"  "k"   #'+evil/insert-newline-above
+       :desc "Insert line below"  "j"   #'+evil/insert-newline-below)
+      )
+
+;; Default to scale increase is C-=
+(map! :n "C-="    #'doom/reset-font-size
+      ;; Buffer-local font resizing
+      :n "C-+"    #'text-scale-increase
+      :n "C--"    #'text-scale-decrease)

@@ -682,6 +682,17 @@ if there is displayed buffer that have shell it will use that window"
 (setq +format-on-save-enabled-modes
       '(not ess-r-mode))
 
+;;; Quarto
+;; Replacement for Rmarkdown
+;; Add to PATH in Windows to be able to compile
+;; C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
+(use-package! quarto-mode
+  :when QUARTO-P)
+
+(map!
+ :map markdown-mode-map
+ :localleader
+ :n "v" #'quarto-preview)
 
 ;;; PDF
 ;; Install msys2 via scoop
@@ -727,13 +738,6 @@ if there is displayed buffer that have shell it will use that window"
    )
   )
 
-
-;;; Quarto
-;; Replacement for Rmarkdown
-;; Add to PATH in Windows to be able to compile
-;; C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
-(use-package! quarto-mode
-  :when QUARTO-P)
 
 ;;; Flyspell
 ;; Check spelling error
