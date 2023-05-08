@@ -71,6 +71,8 @@
 ;; ;; When using bibtex-completion via the `biblio` module
 ;; (unpin! bibtex-completion helm-bibtex ivy-bibtex)
 
+(package! sly) ; to run lisp code. Use for text color in org
+
 (package! org-download)
 (package! org-fragtog) ;auto toggle LaTeX fragment previews
 (package! olivetti)

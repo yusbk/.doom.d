@@ -617,3 +617,22 @@ See `org-capture-templates' for more information."
   :disabled t
   :init
   (setq org-reveal-root "file:///n:/Helseprofiler_SPULS/reveal.js"))
+
+;;; text color
+;; this is from here https://stackoverflow.com/a/65750225
+;; to use [[color:green][green text is here]]
+;; need to install sly package
+(org-add-link-type
+ "color"
+ (lambda (path)
+   (message (concat "color "
+                    (progn (add-text-properties
+                            0 (length path)
+                            (list 'face `((t (:foreground ,path))))
+                            path) path))))
+ (lambda (path desc format)
+   (cond
+    ((eq format 'html)
+     (format "<span style=\"color:%s;\">%s</span>" path desc))
+    ((eq format 'latex)
+     (format "{\\color{%s}%s}" path desc)))))
