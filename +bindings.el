@@ -36,7 +36,9 @@
        :desc "maximize buffer/window"
        "w" #'toggle-frame-maximized
        :desc "shutdown-server"
-       "q" #'server-shutdown)
+       "q" #'server-shutdown
+       :desc "kill-emacs"
+       "Q" #'kill-emacs)
       )
 
 ;; Default is [ SPC or ] SPC
