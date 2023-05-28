@@ -82,6 +82,19 @@
 
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
+;;;; GoogleDrive
+;; This option only applicable in Linux
+;; Mount with rclone
+;; sudo apt install rclone
+;; Create "GoogleDrive" directory ie. mkdir GoogleDrive
+;; cd GoogleDrive
+;; rclone config (New drive and select "drive" ie. Google Drive)
+;; Follow the instruction and use default
+;; rclone sync remote:"folerNameInGoogleDrive" if you one to sync for only a drive
+
+(when IS-LINUX
+  (set-eshell-alias! "gsync" "rclone sync remote: ~/GoogleDrive"))
+
 ;;;; External tools
 ;; Check tools that required
 (defconst QUARTO-P (executable-find "quarto"))
