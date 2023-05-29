@@ -285,12 +285,12 @@
 
 ;;;; Git alias
 (set-eshell-alias!
- "gw" (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a"))
- "gk" (concat "cd " (concat fhi-dir-c "/Git-kh && cd $1 && ls -a"))
- "gp" (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a"))
- "gwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
- "gkl" (concat "cd " (concat fhi-dir-c "/Git-kh && ls -a"))
- "gpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+ "cgw" (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a"))
+ "cgk" (concat "cd " (concat fhi-dir-c "/Git-kh && cd $1 && ls -a"))
+ "cgp" (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a"))
+ "cgwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
+ "cgkl" (concat "cd " (concat fhi-dir-c "/Git-kh && ls -a"))
+ "cgpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
 
 (set-eshell-alias! "gc" "git checkout $1"
                    "gcb" "git checkout -b $1"
