@@ -285,9 +285,9 @@
 
 ;;;; Git alias
 (set-eshell-alias!
- "cgw" (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a"))
- "cgk" (concat "cd " (concat fhi-dir-c "/Git-kh && cd $1 && ls -a"))
- "cgp" (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a"))
+ "cgw" (concat "cd " (concat fhi-dir-c "/Git-fhi/$1 && ls -a"))
+ "cgk" (concat "cd " (concat fhi-dir-c "/Git-kh/$1 && ls -a"))
+ "cgp" (concat "cd " (concat fhi-dir-c "/Git-personal/$1 && ls -a"))
  "cgwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
  "cgkl" (concat "cd " (concat fhi-dir-c "/Git-kh && ls -a"))
  "cgpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
