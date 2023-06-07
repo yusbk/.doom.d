@@ -274,11 +274,11 @@
 ;; onedrive --reauth  and follow the instruction
 (when IS-LINUX
   (set-eshell-alias! "oe" "systemctl --user enable onedrive")
-  (set-eshell-alias! "ok" "systemctl --user stop onedrive")
+  (set-eshell-alias! "ostop" "systemctl --user stop onedrive")
   (set-eshell-alias! "odown" "onedrive --synchronize")
   (set-eshell-alias! "oup" "onedrive --synchronize --local-first")
   (set-eshell-alias! "ostart" "systemctl --user start onedrive")
-  (set-eshell-alias! "ost" "systemctl status --user onedrive")
+  (set-eshell-alias! "ostatus" "systemctl status --user onedrive")
   (set-eshell-alias! "oss" "onedrive --display-sync-status")
   (set-eshell-alias! "ol" "journalctl --user-unit onedrive -f")
   )
