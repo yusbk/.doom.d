@@ -331,7 +331,18 @@
 ;; Load my custom org settings
 (load! "+bindings.el")
 (load! "+org.el") ; org-mode settigs
-(projectile-add-known-project (expand-file-name "Git-fhi/orgdata" fhi-dir-c))
+
+
+;;; Projectile
+;; Define project paths to discover with SPC p D
+(after! projectile
+  :config
+  (setq projectile-project-search-path '(("~/Git-fhi" . 1) ("~/Git-kh" . 1)))
+
+  ;; Standard project
+  (projectile-add-known-project (expand-file-name "Git-fhi/orgdata" fhi-dir-c))
+  )
+
 
 
 ;;; Outshine header
