@@ -381,9 +381,12 @@ INFO is a plist holding contextual information."
 
 ;; Change path under "Filer og mapper" in Zetoro "Avansert" for Basismappe to:
 ;; C:\Users\ybka\OneDrive - Folkehelseinstituttet\org\org-roam\references
+;; This is to ensure relative link to files especially when using a cloud or network drive
 
+;; Identify where your *.bib file is located ie. my-bibtex-file
 ;; Export zotero library *.bib to my-bibtex-file by selecting your library, right-click, Export Library,
 ;; Select Format "Better BibLaTeX" then tick "Use Journal Abbreviation" and "Keep updated"
+;; save file as library.bib in your defined my-bibtex-file location folder eg. ../bibtex/library.bib
 ;; Ref https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
 
 ;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
