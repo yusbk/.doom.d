@@ -73,6 +73,7 @@
 
 (package! sly) ; to run lisp code. Use for text color in org
 
+;; (unpin! org) ; tried to solve prob with ox-hugo compilation
 (package! org-download)
 (package! org-fragtog) ;auto toggle LaTeX fragment previews
 (package! olivetti)
