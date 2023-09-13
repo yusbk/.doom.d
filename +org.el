@@ -379,18 +379,19 @@ INFO is a plist holding contextual information."
 ;; Ref: https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
 ;; Install Zotfile to admin PDF ie. the .xpi extention here http://zotfile.com/index.html
 
-;; Change path under "Filer og mapper" in Zetoro "Avansert" for Basismappe to:
+;; Change path in "Innstillinger" under in Zotero. Go to "Avansert" -> "Filer og mapper" and in Basismappe:
 ;; C:\Users\ybka\OneDrive - Folkehelseinstituttet\org\org-roam\references
 ;; This is to ensure relative link to files especially when using a cloud or network drive
 
-;; Identify where your *.csl or *.bib file is located ie. my-bibtex-file
-;; .csl for all other type output and .bib for LaTeX file output reference file
-;; Export zotero library *.csl or *.bib to my-bibtex-file by selecting your library, right-click, Export Library,
+;; Identify where your *.bib file is located ie. variable my-bibtex-file in here,
+;; Export zotero library ie. file *.bib to my-bibtex-file by selecting your library, right-click, "Export samlinger",
 ;; Select Format "Better BibLaTeX" then tick "Use Journal Abbreviation" and "Keep updated"
 ;; save file as library.bib in your defined my-bibtex-file location folder eg. ../bibtex/library.bib
 ;; Ref https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
 
-;; To use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
+;; Citation Style Language (CSL) style is prefered than biblatex (only for LaTeX)
+;; Define export style with #+cite_export and the csl file can be found from folder ~/Zotero/styles
+;; eg. to use apa.cls style add in orgfile #+CITE_EXPORT: csl apa.csl
 (when IS-WINDOWS
   (defvar my-zotero-styles "C:/Users/ybka/Zotero/styles"
     "Default CLS folder for Zotero"))
@@ -403,9 +404,9 @@ INFO is a plist holding contextual information."
 ;; Ref: https://kristofferbalintona.me/posts/202206141852/
 ;; Activate :tools biblio
 ;; Ref: https://github.com/doomemacs/doomemacs/tree/develop/modules/tools/biblio
-;; To place the references in orgfile add #+PRINT_BIBLIOGRAPHY: path to .csl or .bib file
-;; To change reference style #+cite_export: csl vancouver.csl
 ;; To use other bib file #+bibliography: newlibrary.bib
+;; To change reference style #+cite_export: csl vancouver.csl
+;; To place the references in orgfile add #+PRINT_BIBLIOGRAPHY:
 
 ;; Ref : https://hieuphay.com/doom-emacs-config/#citations
 (use-package! citar
