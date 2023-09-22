@@ -415,12 +415,12 @@ INFO is a plist holding contextual information."
   (citar-library-paths (list my-reference-pdf))
   (citar-notes-paths (list my-reference-notes))
   (citar-file-variable "file")
-  ;; Icons
-  (citar-symbols
-   `(
-     (file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-red :v-adjust -0.1) . " ")
-     (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-     (link ,(all-the-icons-material "link" :face 'all-the-icons-blue) . " ")))
+  ;; ;; Icons
+  ;; (citar-symbols
+  ;;  `(
+  ;;    (file ,(all-the-icons-faicon "file-pdf-o" :face 'all-the-icons-red :v-adjust -0.1) . " ")
+  ;;    (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+  ;;    (link ,(all-the-icons-material "link" :face 'all-the-icons-blue) . " ")))
   (citar-symbol-separator "  ")
   :config
   ;; org-cite
