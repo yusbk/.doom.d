@@ -257,6 +257,7 @@
   )
 
 ;;; Shell and alias
+;; to use sh then need to install shfmt and shellcheck via scoop
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
 (set-eshell-alias! "cdc" fhi-dir-c)
