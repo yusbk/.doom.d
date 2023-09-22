@@ -217,6 +217,9 @@
         doom-modeline-minor-modes (featurep 'minions)))
 
 
+;;;; Focus
+;; Dims region that isn't focused
+(use-package! focus)
 ;;; Split windows
 (setq evil-vsplit-window-right t
       evil-split-window-below t)

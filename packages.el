@@ -105,4 +105,5 @@
 (package! mixed-pitch :disable t)
 
 ;; Misc
+(package! focus)
 (package! fireplace)
