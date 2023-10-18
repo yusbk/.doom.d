@@ -425,7 +425,14 @@ INFO is a plist holding contextual information."
   :config
   ;; org-cite
   (setq org-cite-global-bibliography citar-bibliography)
-  (setq org-cite-csl-styles-dir my-zotero-styles))
+  (setq org-cite-csl-styles-dir my-zotero-styles)
+
+  ;; Able to choose pdf or notes
+  (map! :leader
+        (:prefix "n") ;; notes
+        :desc "Open PDF or note"
+        "B" #'citar-open)
+  )
 
 ;;; Notes taking PDF file
 (use-package! org-noter
