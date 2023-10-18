@@ -429,9 +429,9 @@ INFO is a plist holding contextual information."
 
   ;; Able to choose pdf or notes
   (map! :leader
-        (:prefix "n") ;; notes
-        :desc "Open PDF or note"
-        "B" #'citar-open)
+        (:prefix-map ("n" . "notes") ;; notes
+         :desc "Open PDF or note"
+         "B" #'citar-open))
   )
 
 ;;; Notes taking PDF file
