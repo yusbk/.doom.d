@@ -104,6 +104,10 @@
 
 (package! mixed-pitch :disable t)
 
+;; Translate
+(package! google-translate)
+(package! go-translate)
+
 ;; Misc
 (package! focus)
 (package! fireplace)

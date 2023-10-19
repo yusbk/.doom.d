@@ -845,7 +845,6 @@ if there is displayed buffer that have shell it will use that window"
 
 ;;; Misc
 ;; Different functions that helps my work
-
 ;;;; popup
 ;; This is when enable in :ui popup
 ;; https://github.com/doomemacs/doomemacs/blob/develop/modules/ui/popup/README.org
@@ -891,6 +890,45 @@ if there is displayed buffer that have shell it will use that window"
           (split-string (buffer-substring start end)) ", ")))
     (delete-region start end)
     (insert insertion)))
+
+;;;; Translate language
+;; https://github.com/atykhonov/google-translate
+(use-package! google-translate)
+(use-package! google-translate-smooth-ui
+  :after google-translate
+  :config
+  (setq google-translate-translation-directions-alist
+        '(("en" . "no")
+          ("no" . "en")))
+  )
+
+;; https://github.com/lorniu/go-translate
+;; M-x gts-do-translate
+(use-package! go-translate
+  :config
+  (setq gts-translate-list
+        '(("en" . "no")
+          ("no" . "en")
+          ))
+
+  ;; config the default translator
+  (setq gts-default-translator
+        (gts-translator
+         :picker (gts-prompt-picker)
+         :engines (list (gts-bing-engine) (gts-google-engine))
+         :render (gts-buffer-render)))
+  )
+
+(map! :leader
+      (:prefix ("=" . "Translate")
+       :desc "google-translate"
+       "g" #'google-translate-smooth-translate
+       :desc "go-translate"
+       "t" #'gts-do-translate
+       :desc "other lang"
+       "l" #'google-translate-at-point
+       :desc "query translate"
+       "L" #'google-translate-query-translate))
 
 ;;; Extended keybindings
 (after! magit
