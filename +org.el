@@ -602,7 +602,7 @@ See `org-capture-templates' for more information."
   (setq easy-hugo-sshdomain "github")
   (setq easy-hugo-root (expand-file-name "Git-personal/" fhi-dir-c))
   (setq easy-hugo-previewtime "300")
-  (define-key global-map (kbd "C-c C-e") 'easy-hugo)
+  :bind ("C-c C-e" . easy-hugo)
   )
 
 ;;; ox-pandoc
