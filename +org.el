@@ -594,7 +594,16 @@ See `org-capture-templates' for more information."
 ;;;; easy-hugo
 ;; From https://github.com/masasam/emacs-easy-hugo
 ;; Some tweak can be read here https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/
-(use-package! easy-hugo)
+(use-package! easy-hugo
+  :init
+  ;; Main blog
+  (setq easy-hugo-basedir (expand-file-name "Git-personal/blog-raw/" fhi-dir-c))
+  (setq easy-hugo-url "https://yusbk.github.io")
+  (setq easy-hugo-sshdomain "github")
+  (setq easy-hugo-root (expand-file-name "Git-personal/" fhi-dir-c))
+  (setq easy-hugo-previewtime "300")
+  (define-key global-map (kbd "C-c C-e") 'easy-hugo)
+  )
 
 ;;; ox-pandoc
 ;; Already included in doom with +pandoc but keeping the settings below

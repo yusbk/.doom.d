@@ -25,6 +25,8 @@
        "l" #'latex-preview-pane
        :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
        "a" #'+fold/toggle     ;with similar keys but less explicit prefix
+       :desc "blog"
+       "b" #'easy-hugo
        :desc "fold/open-all"
        "r" #'+fold/open-all
        :desc "fold/close-all"
