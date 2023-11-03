@@ -163,7 +163,7 @@ INFO is a plist holding contextual information."
   (add-to-list 'org-capture-templates
                '("i" "Inbox" entry (file my-agenda-inbox)
                  "* TODO %?\n\n /Created:/ %U"))
-)
+  )
 
 (map! :map org-mode-map
       :localleader
@@ -562,7 +562,8 @@ INFO is a plist holding contextual information."
   :after org
   :hook (org-mode . org-fragtog-mode))
 
-;;; ox-hugo
+;;; Hugo
+;;;; ox-hugo
 ;; Activated by adding +hugo in init.el
 (defun org-hugo-new-subtree-post-capture-template ()
   "Returns `org-capture' template string for new Hugo post.
@@ -589,6 +590,11 @@ See `org-capture-templates' for more information."
                '("h" "Hugo Post" entry
                  (file+olp my-hugo-org-file "Posts")
                  (function org-hugo-new-subtree-post-capture-template))))
+
+;;;; easy-hugo
+;; From https://github.com/masasam/emacs-easy-hugo
+;; Some tweak can be read here https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/
+(use-package! easy-hugo)
 
 ;;; ox-pandoc
 ;; Already included in doom with +pandoc but keeping the settings below
