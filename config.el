@@ -304,8 +304,9 @@
                    "gf" "git fetch $1"
                    "gm" "git merge $1"
                    "gmf" "git merge --no-ff $1"
-                   "gpo" "git push origin"
-                   "gp" "git push origin $1"
+                   "gpusho" "git push origin"
+                   "gpush" "git push origin $1"
+                   "gpull" "git pull"
                    "gpushs" "git push origin master --recurse-submodules=on-demand"
                    "gpulls" "git pull --recurse-submodules")
 
