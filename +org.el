@@ -380,13 +380,13 @@ INFO is a plist holding contextual information."
 ;; Install Zotfile to admin PDF ie. the .xpi extention here http://zotfile.com/index.html
 
 ;; Change path in "Innstillinger" under in Zotero. Go to "Avansert" -> "Filer og mapper" and in Basismappe:
-;; C:\Users\ybka\OneDrive - Folkehelseinstituttet\org\org-roam\references
+;; C:\Users\ybka\OneDrive - Folkehelseinstituttet\org\org-roam\bibtex
 ;; This is to ensure relative link to files especially when using a cloud or network drive
 
 ;; Identify where your *.bib file is located ie. variable my-bibtex-file in here,
-;; Export zotero library ie. file *.bib to my-bibtex-file by selecting your library, right-click, "Export samlinger",
+;; Export zotero library ie. file *.bib to my-bibtex-file by selecting your library, right-click, "Export bibliotek...",
 ;; Select Format "Better BibLaTeX" then tick "Use Journal Abbreviation" and "Keep updated"
-;; save file as library.bib in your defined my-bibtex-file location folder eg. ../bibtex/library.bib
+;; save file as library.bib or as defined in your my-bibtex-file location folder eg. ../bibtex/library.bib
 ;; Ref https://blog.tecosaur.com/tmio/2021-07-31-citations.html#working-with-zotero
 
 ;; Citation Style Language (CSL) style is prefered than biblatex (only for LaTeX)
