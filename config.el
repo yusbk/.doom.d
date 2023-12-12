@@ -267,7 +267,7 @@
 (set-eshell-alias! "cdh" fhi-dir-h)
 (set-eshell-alias! "cdn" fhi-dir-n)
 (set-eshell-alias! "cdk" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
-(set-eshell-alias! "cdf" (concat fhi-dir-f "F:/Forskningsprosjekter/PDB 3327 - Skader i Norge analy_"))
+(set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/PDB 3327 - Skader i Norge analy_"))
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
