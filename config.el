@@ -949,6 +949,12 @@ if there is displayed buffer that have shell it will use that window"
 ;; Selection like 'viw' but better
 (map! :nvig "C-'" #'er/expand-region)
 
+;; https://micro.rousette.org.uk/2021/01/03/a-useful-binding.html
+(map!
+ (:map 'override
+  :v "v" #'er/expand-region
+  :v "V" #'er/contract-region))
+
 ;;;; Speed config
 ;; Configuration to speed up start up especially for Windows based on
 ;; https://discourse.doomemacs.org/t/why-is-emacs-doom-slow/83/3

@@ -63,6 +63,7 @@
 (package! undo-tree)
 (package! reformatter)
 (package! ado-mode)
+(package! expand-region)
 
 ;; (package! org-roam-bibtex
 ;;   :recipe (:host github :repo "org-roam/org-roam-bibtex"))
