@@ -27,6 +27,8 @@
        "a" #'+fold/toggle     ;with similar keys but less explicit prefix
        :desc "blog"
        "b" #'easy-hugo
+       :desc "org link display"
+       "d" #'org-toggle-link-display
        :desc "fold/open-all"
        "r" #'+fold/open-all
        :desc "fold/close-all"
