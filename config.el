@@ -446,7 +446,7 @@
                                      dir))
     (setq undo-tree-history-directory-alist `(("." . ,my-undo-tree-history-dir)))
 
-    (add-hook 'write-file-functions #'undo-tree-save-history-hook)
+    (add-hook 'write-file-functions #'undo-tree-save-history-hook)
     (add-hook 'find-file-hook #'undo-tree-load-history-hook))
 
   (defun my-undo-tree-disable-save-history ()
@@ -768,6 +768,17 @@ if there is displayed buffer that have shell it will use that window"
    )
   )
 
+;;; LaTeX
+;; Problem with processing using
+;; https://github.com/doomemacs/doomemacs/issues/235#issuecomment-334974537
+;; (add-hook! LaTeX-mode
+;;   (add-to-list TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t))
+;;   (setq TeX-command-default "XeLaTeX"
+;;         TeX-save-query nil
+;;         TeX-show-compilation t))
+
+;; (setq-default TeX-engine 'xetex
+;;               TeX-PDF-mode t)
 
 ;;; Flyspell
 ;; Check spelling error
