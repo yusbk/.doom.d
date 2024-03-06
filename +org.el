@@ -555,6 +555,14 @@ INFO is a plist holding contextual information."
   (global-org-modern-mode)
   )
 
+;;; Latex export
+;; Use xelatex instead of latex
+;; Need to install: apt install xetex
+(after! org
+  (setq org-latex-pdf-process '("xelatex -shell-escape %f"))
+  )
+
+
 ;;; latex preview
 ;; Auto toggle org-mode latex fragment previews as the cursor enters and exits
 ;; C-c C-x C-l to toggle
