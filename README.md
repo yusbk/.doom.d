@@ -27,4 +27,4 @@ rem Start the Emacs daemon/server with HOME as the default directory
 C:\Users\ybka\scoop\apps\emacs\current\bin\runemacs.exe --daemon
 ```
 
-- Better explain [here](https://emacs.stackexchange.com/questions/35545/setting-up-emacsclient-on-ms-windows "StackExchange").
+- Better explanation to be found [here](https://emacs.stackexchange.com/a/69793/10811 "StackExchange")
