@@ -673,3 +673,10 @@ See `org-capture-templates' for more information."
      (format "<span style=\"color:%s;\">%s</span>" path desc))
     ((eq format 'latex)
      (format "{\\color{%s}%s}" path desc)))))
+
+;;; Tips
+;; Structuring for heading can be found here https://orgmode.org/manual/Structure-Editing.html
+;; M-LEFT or M-Right (org-do-demote) to promote or demote current heading (or marked region) by one level
+;; M-UP or M-DOWN (org-move-subtree) to move subtree up or down
+;; C-c * (org-toggle-heading) to turn normal line or plain list item into a headline
+;; C-S-RET (org-insert-todo-heading)
