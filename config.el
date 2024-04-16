@@ -63,13 +63,13 @@
   (setq fhi-dir-c "C:/Users/ybka/"))
 
 ;;;; Local folder
-;; Create folder if it doesn't exist
-(defvar ybk/local-folder (concat fhi-dir-c "emacs-local")
-  (unless (file-exists-p ybk/local-folder)
-    (make-directory ybk/local-folder)))
+;; ;; Create folder if it doesn't exist
+;; (defvar ybk/local-folder (concat fhi-dir-c "emacs-local")
+;;   (unless (file-exists-p ybk/local-folder)
+;;     (make-directory ybk/local-folder)))
 
-(defvar ybk/local-cache (concat ybk/local-folder "cache")
-  "Else use standard doom .cache")
+;; (defvar ybk/local-cache (concat ybk/local-folder "cache")
+;;   "Else use standard doom .cache")
 
 ;;;; OneDrive
 (when IS-LINUX

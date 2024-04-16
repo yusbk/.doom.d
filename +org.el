@@ -103,6 +103,7 @@
                                (append org-babel-load-languages
                                        '((R . t))
                                        '((ditaa . t))
+                                       '((plantuml . t))
                                        ))
 
   ;; https://emacs.stackexchange.com/questions/68188/org-mode-do-not-inheriting-unnumbered-property
@@ -171,10 +172,13 @@ INFO is a plist holding contextual information."
 
 
 ;;; Other settings
-(setq
- ;; org-babel-mathematica-command "~/.local/bin/mash"
- org-ditaa-jar-path (concat (getenv "HOME") "/.local/bin/ditaa0_9.jar")
- )
+;; ditaa.jar can be downloaded from https://ditaa.sourceforge.net/
+(after! org
+  (setq
+   ;; org-babel-mathematica-command "~/.local/bin/mash"
+   ;; org-ditaa-jar-path (concat (getenv "HOME") "/.doom.d/bin/ditaa.jar")
+   org-ditaa-jar-path "~/.doom.d/bin/ditaa.jar"
+   ))
 
 (defun my-org-capture-inbox ()
   "Capture to Inbox directly"
@@ -279,10 +283,10 @@ INFO is a plist holding contextual information."
                  :if-new
                  (file+head "references/${citekey}.org"
                             "#+title: ${slug}: ${title}\n
-                             \n#+filetags: reference ${keywords} \n
-                             \n* ${title}\n\n
-                             \n* Summary
-                             \n\n\n* Rough note space\n")
+   \n#+filetags: reference ${keywords} \n
+   \n* ${title}\n\n
+   \n* Summary
+   \n\n\n* Rough note space\n")
                  :unnarrowed t)
                 ("b" "bibliography reference" plain "%?"
                  :target
@@ -575,7 +579,7 @@ INFO is a plist holding contextual information."
 ;; Activated by adding +hugo in init.el
 (defun org-hugo-new-subtree-post-capture-template ()
   "Returns `org-capture' template string for new Hugo post.
-See `org-capture-templates' for more information."
+   See `org-capture-templates' for more information."
   (let* (;;https://github.com/sunnyhasija/Academic-Doom-Emacs-Config#ox-hugo
          (date (format-time-string (org-time-stamp-format  :inactive) (org-current-time)))
          (title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
@@ -671,8 +675,8 @@ See `org-capture-templates' for more information."
    (cond
     ((eq format 'html)
      (format "<span style=\"color:%s;\">%s</span>" path desc))
-    ((eq format 'latex)
-     (format "{\\color{%s}%s}" path desc)))))
+   ((eq format 'latex)
+    (format "{\\color{%s}%s}" path desc)))))
 
 ;;; Tips
 ;; Structuring for heading can be found here https://orgmode.org/manual/Structure-Editing.html
