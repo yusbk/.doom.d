@@ -182,8 +182,9 @@
 ;;   (set-face-attribute 'variable-pitch nil :family "Arial")
 ;;   )
 
-;;;; UI
-(setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
+;;;; UI and logo
+;; (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
+(setq fancy-splash-image (expand-file-name "img/emacs-e.png" doom-user-dir))
 
 ;; Nice Academic settings here https://github.com/sunnyhasija/Academic-Doom-Emacs-Config
 (unless (equal "Battery status not available"
