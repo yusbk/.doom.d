@@ -52,6 +52,15 @@
                 ("CANCELLED" :foreground "gray" :weight bold)
                 )))
 
+  ;; ditaa.jar can be downloaded from https://ditaa.sourceforge.net/
+  (setq
+   ;; org-babel-mathematica-command "~/.local/bin/mash"
+   ;; org-ditaa-jar-path (concat (getenv "HOME") "/.doom.d/bin/ditaa.jar")
+   org-ditaa-jar-path "~/.doom.d/bin/ditaa.jar"
+   org-ditaa-eps-jar-path "~/.doom.d/bin/ditaa.jar"
+   plantuml-jar-path "~/.doom.d/bin/plantuml.jar"
+   )
+
   ;; save buffer after change todo state
   (add-hook! 'org-trigger-hook 'save-buffer)
 
@@ -104,6 +113,7 @@
                                        '((R . t))
                                        '((ditaa . t))
                                        '((plantuml . t))
+                                       '((latex . t))
                                        ))
 
   ;; https://emacs.stackexchange.com/questions/68188/org-mode-do-not-inheriting-unnumbered-property
@@ -172,13 +182,6 @@ INFO is a plist holding contextual information."
 
 
 ;;; Other settings
-;; ditaa.jar can be downloaded from https://ditaa.sourceforge.net/
-(after! org
-  (setq
-   ;; org-babel-mathematica-command "~/.local/bin/mash"
-   ;; org-ditaa-jar-path (concat (getenv "HOME") "/.doom.d/bin/ditaa.jar")
-   org-ditaa-jar-path "~/.doom.d/bin/ditaa.jar"
-   ))
 
 (defun my-org-capture-inbox ()
   "Capture to Inbox directly"
