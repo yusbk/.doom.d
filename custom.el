@@ -14,6 +14,7 @@
  '(jdee-db-active-breakpoint-face-colors (cons "#0d1011" "#fabd2f"))
  '(jdee-db-requested-breakpoint-face-colors (cons "#0d1011" "#b8bb26"))
  '(jdee-db-spec-breakpoint-face-colors (cons "#0d1011" "#928374"))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(objed-cursor-color "#fb4934")
  '(org-safe-remote-resources '("\\`https://fniessen\\.github\\.io\\(?:/\\|\\'\\)"))
  '(pdf-view-midnight-colors (cons "#ebdbb2" "#282828"))
@@ -40,7 +41,8 @@
     (cons 320 "#ac7464")
     (cons 340 "#7c6f64")
     (cons 360 "#7c6f64")))
- '(vc-annotate-very-old-color nil))
+ '(vc-annotate-very-old-color nil)
+ '(warning-suppress-types '((transient) (defvaralias))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

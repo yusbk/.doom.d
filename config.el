@@ -920,17 +920,20 @@ if there is displayed buffer that have shell it will use that window"
 ;; M-x gts-do-translate
 (use-package! go-translate
   :config
-  (setq gts-translate-list
-        '(("en" . "no")
-          ("no" . "en")
-          ))
+  ;; This configuration means:
+  ;; Initialize the default translator, let it translate between en and fr via Google Translate,
+  ;; and the result will be displayed in the Echo Area.
+  (setq gt-langs '(en no))
+  (setq gt-default-translator (gt-translator :engines (gt-google-engine)))
 
-  ;; config the default translator
-  (setq gts-default-translator
-        (gts-translator
-         :picker (gts-prompt-picker)
-         :engines (list (gts-bing-engine) (gts-google-engine))
-         :render (gts-buffer-render)))
+  ;; This configuration means:
+  ;; Initialize the default translator, let it send all paragraphs in the buffer to Bing and Google,
+  ;; and output the results with a new Buffer.
+  (setq gt-default-translator
+        (gt-translator
+         :taker   (gt-taker :text 'buffer :pick 'paragraph)  ; config the Taker
+         :engines (list (gt-bing-engine) (gt-google-engine)) ; specify the Engines
+         :render  (gt-buffer-render)))                       ; config the Render
   )
 
 (map! :leader
