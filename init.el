@@ -161,7 +161,7 @@
         +pretty
         +journal
         +noter
-        +roam2
+        ;; +roam2
         +pandoc
         +present
         +pomodoro
