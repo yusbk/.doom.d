@@ -33,7 +33,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+;; (setq doom-theme 'doom-one)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -85,3 +85,36 @@
 ;;;; UI and logo
 ;; (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
 (setq fancy-splash-image (expand-file-name "img/emacs-e.png" doom-user-dir))
+;;; Display and themes
+;;;; Themes
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+
+;; Ref https://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters/18796138#18796138
+(setq my-themes '(
+                  ;; doom-monokai-pro
+                  doom-gruvbox
+                  doom-gruvbox-light
+                  ;; doom-plain-dark
+                  ;; doom-plain
+                  tango
+                  ;; tango-dark
+                  deeper-blue
+                  doom-one
+                  ))
+
+(setq my-cur-theme nil)
+(defun cycle-themes ()
+  "Cycle through a list of themes, my-themes"
+  (interactive)
+  (when my-cur-theme
+    (disable-theme my-cur-theme)
+    (setq my-themes (append my-themes (list my-cur-theme))))
+  (setq my-cur-theme (pop my-themes))
+  (load-theme my-cur-theme :no-confirm)
+  (message "Tema dipakai: %s" my-cur-theme))
+
+;; Switch to the first theme in the list above
+(cycle-themes)
+
