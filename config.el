@@ -81,3 +81,7 @@
   ;; Installed from https://github.com/be5invis/Iosevka
   (setq doom-font (font-spec :family "Consolas" :size 17)
         doom-big-font (font-spec :family "Consolas" :size 30)))
+
+;;;; UI and logo
+;; (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
+(setq fancy-splash-image (expand-file-name "img/emacs-e.png" doom-user-dir))
