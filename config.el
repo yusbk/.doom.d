@@ -287,6 +287,19 @@
   :v "v" #'er/expand-region
   :v "V" #'er/contract-region))
 
+;; (package! rotate) needed to be added in init.el
+;; Use SPC w SPC to rotate if not using Doom default SPC w r/R
+(map! :map evil-window-map
+      "SPC" #'rotate-layout
+      ;; Swapping windows
+      "C-<left>"       #'+evil/window-move-left
+      "C-<down>"       #'+evil/window-move-down
+      "C-<up>"         #'+evil/window-move-up
+      "C-<right>"      #'+evil/window-move-right)
+
+;; Install beacon (package! beacon) in init.el
+(map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
+
 
 ;;; External settings
 ;; Load my custom org settings

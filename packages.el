@@ -54,3 +54,5 @@
 
 ;; Misc
 (package! focus)
+(package! beacon)
+(package! rotate)
