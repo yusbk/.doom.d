@@ -51,3 +51,6 @@
 ;; Translate
 (package! google-translate)
 (package! go-translate)
+
+;; Misc
+(package! focus)

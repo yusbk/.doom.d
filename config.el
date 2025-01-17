@@ -150,10 +150,19 @@
 ;; Switch to the first theme in the list above
 (cycle-themes)
 
-
-;;; External settings
-;; Load my custom org settings
-(load! "+bindings.el")
+;;;; Focus
+;; Dims region that isn't focused
+(use-package! focus)
+;;; Split windows
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  ;; (+ivy/switch-buffer)
+  (consult-buffer)
+  )
+;; (setq +ivy-buffer-preview t)
+(setq consult-buffer t)
 
 ;;; ESS
 ;; ess-switch-process use to choose R process when eval codes with many running processes
@@ -278,6 +287,10 @@
   :v "v" #'er/expand-region
   :v "V" #'er/contract-region))
 
+
+;;; External settings
+;; Load my custom org settings
+(load! "+bindings.el")
 
 
 ;; Guide to use Daemon and Client for Windows
