@@ -230,3 +230,13 @@
        "l" #'google-translate-at-point
        :desc "query translate"
        "L" #'google-translate-query-translate))
+
+;;;; Select region
+;; Selection like 'viw' but better
+(map! :nvig "C-'" #'er/expand-region)
+
+;; https://micro.rousette.org.uk/2021/01/03/a-useful-binding.html
+(map!
+ (:map 'override
+  :v "v" #'er/expand-region
+  :v "V" #'er/contract-region))
