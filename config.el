@@ -93,15 +93,10 @@
 
 ;; Ref https://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters/18796138#18796138
 (setq my-themes '(
-                  ;; doom-monokai-pro
                   doom-gruvbox
                   doom-gruvbox-light
-                  ;; doom-plain-dark
-                  ;; doom-plain
-                  tango
-                  ;; tango-dark
-                  deeper-blue
                   doom-one
+                  tango
                   ))
 
 (setq my-cur-theme nil)
@@ -117,4 +112,79 @@
 
 ;; Switch to the first theme in the list above
 (cycle-themes)
+
+
+;;; External settings
+;; Load my custom org settings
+(load! "+bindings.el")
+
+;;; ESS
+;; ess-switch-process use to choose R process when eval codes with many running processes
+;; SPC-m-Shift-TAB or C-c C-s
+(after! ess
+  (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
+  (map! (:map ess-mode-map
+         :localleader
+         "T" #'test-R-buffer
+         ;; :nv "v" nil
+         ;; "n" 'ess-dev-map ;; renamed from doom default ie. "v"
+         "s" #'ess-indent-region-with-styler
+         )
+        (:map ess-r-mode-map
+         :i "M--" #'ess-cycle-assign
+         :i "M-+" #'my-add-column
+         :i "M-'" #'my-add-match
+         :i "M-\\" #'my-add-pipe
+         )
+        (:map inferior-ess-r-mode-map
+         :i "M--" #'ess-cycle-assign
+         :i "M-+" #'my-add-column
+         :n "C-<up>" #'ess-readline
+         ))
+  :config
+
+  ;; data.table update
+  (defun my-add-column ()
+    "Adds a data.table update."
+    (interactive)
+    ;;(just-one-space 1) ;delete whitespace around cursor
+    (insert " := "))
+
+  ;; Match
+  (defun my-add-match ()
+    "Adds match."
+    (interactive)
+    (insert " %in% "))
+
+  ;; pipe
+  (defun my-add-pipe ()
+    "Adds a pipe operator %>% with one space to the left and then
+  starts a newline with proper indentation"
+    (interactive)
+    (just-one-space 1)
+    (insert "%>%")
+    (ess-newline-and-indent))
+
+  ;; Get commands run from script or console
+  ;; https://stackoverflow.com/questions/27307757/ess-retrieving-command-history-from-commands-entered-in-essr-inferior-mode-or
+  (defun ess-readline ()
+    "Move to previous command entered from script *or* R-process and copy
+     to prompt for execution or editing"
+    (interactive)
+    ;; See how many times function was called
+    (if (eq last-command 'ess-readline)
+        (setq ess-readline-count (1+ ess-readline-count))
+      (setq ess-readline-count 1))
+    ;; Move to prompt and delete current input
+    (comint-goto-process-mark)
+    ;; (end-of-buffer nil) ;; tweak here
+    (goto-char (point-max))
+    (comint-kill-input)
+    ;; Copy n'th command in history where n = ess-readline-count
+    (comint-previous-prompt ess-readline-count)
+    (comint-copy-old-input)
+    ;; Below is needed to update counter for sequential calls
+    (setq this-command 'ess-readline)
+    )
+  )
 
