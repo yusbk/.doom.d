@@ -188,3 +188,45 @@
     )
   )
 
+
+;;;; Translate language
+;; https://github.com/atykhonov/google-translate
+(use-package! google-translate)
+(use-package! google-translate-smooth-ui
+  :after google-translate
+  :config
+  (setq google-translate-translation-directions-alist
+        '(("en" . "no")
+          ("no" . "en")))
+  )
+
+;; https://github.com/lorniu/go-translate
+;; M-x gts-do-translate
+(use-package! go-translate
+  :config
+  ;; This configuration means:
+  ;; Initialize the default translator, let it translate between en and fr via Google Translate,
+  ;; and the result will be displayed in the Echo Area.
+  (setq gt-langs '(en no))
+  (setq gt-default-translator (gt-translator :engines (gt-google-engine)))
+
+  ;; This configuration means:
+  ;; Initialize the default translator, let it send all paragraphs in the buffer to Bing and Google,
+  ;; and output the results with a new Buffer.
+  (setq gt-default-translator
+        (gt-translator
+         :taker   (gt-taker :text 'buffer :pick 'paragraph)  ; config the Taker
+         :engines (list (gt-bing-engine) (gt-google-engine)) ; specify the Engines
+         :render  (gt-buffer-render)))                       ; config the Render
+  )
+
+(map! :leader
+      (:prefix ("=" . "Translate")
+       :desc "google-translate"
+       "g" #'google-translate-smooth-translate
+       :desc "go-translate"
+       "t" #'gts-do-translate
+       :desc "other lang"
+       "l" #'google-translate-at-point
+       :desc "query translate"
+       "L" #'google-translate-query-translate))

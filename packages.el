@@ -48,3 +48,6 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
+;; Translate
+(package! google-translate)
+(package! go-translate)
