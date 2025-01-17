@@ -76,6 +76,43 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;;;; Directory
+(when IS-LINUX
+  (setq fhi-dir-h "/mnt/H")
+  (setq fhi-dir-f "/mnt/F")
+  (setq fhi-dir-n "/mnt/N")
+  (setq fhi-dir-c "~/"))
+
+(when IS-WINDOWS
+  (setq fhi-dir-h "H:")
+  (setq fhi-dir-f "F:")
+  (setq fhi-dir-n "N:")
+  (setq fhi-dir-c "C:/Users/ybka/"))
+
+;;;; OneDrive
+(when IS-LINUX
+  (setq onedrive "OneDrive/"
+        shortcutonedrive (concat fhi-dir-c "OneDrive/")))
+
+(when IS-WINDOWS
+  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet/"
+        shortcutonedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet/"))
+
+(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
+
+;;; Shell and alias
+;; eshell under :term in init.el need to be activated
+;; to use sh then need to install shfmt and shellcheck via scoop
+(map! :leader "o x" #'+eshell/frame) ;open shell at doc path
+(set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
+(set-eshell-alias! "cdc" fhi-dir-c)
+(set-eshell-alias! "cdh" fhi-dir-h)
+(set-eshell-alias! "cdn" fhi-dir-n)
+(set-eshell-alias! "cdk" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
+(set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 3327 - Skader i Norge analy_'"))
+(set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
+(set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
+
 ;;;; Font
 (when IS-WINDOWS
   ;; Installed from https://github.com/be5invis/Iosevka
