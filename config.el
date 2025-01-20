@@ -354,7 +354,10 @@
     (flyspell-buffer))
   )
 
-
+;;; Outshine header
+;; For nativation like Org major-mode. Use <S-Tab> or <C-M i> on the header to fold
+(use-package! outshine
+  :hook (emacs-lisp-mode . outshine-mode))
 
 ;;; External settings
 ;; Load my custom org settings
