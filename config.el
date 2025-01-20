@@ -359,6 +359,7 @@
 ;;; External settings
 ;; Load my custom org settings
 (load! "+bindings.el")
+(load! "+org.el")
 
 
 ;; Guide to use Daemon and Client for Windows
