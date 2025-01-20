@@ -1,6 +1,13 @@
 # .doom.d
 Setup for Doom Emacs
 
+Ensure **org-directory** is defined and created eg `~/org/`
+
+Install external prog directly or via scoop:
+- flyspell
+- git
+
+
 # Update
 Can read directly https://github.com/hlissner/doom-emacs#install
 
