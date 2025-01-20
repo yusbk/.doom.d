@@ -300,6 +300,61 @@
 ;; Install beacon (package! beacon) in init.el
 (map! :leader "c b" #'beacon-blink) ;makes cursor blink when needed
 
+;;; Flyspell
+;; Activate in init.el under :checkers (spell +flyspell)
+;; Check spelling error
+;; Both aspell and hunspell can be installed via scoop on Windows. Else use the instruction below.
+(after! flyspell
+  ;; This setting specifically for Windows
+  ;; http://juanjose.garciaripoll.com/blog/my-emacs-windows-configuration/
+  ;; https://www.reddit.com/r/emacs/comments/8by3az/how_to_set_up_sell_check_for_emacs_in_windows/
+  ;; general guide for downloading hunspell http://www.nextpoint.se/?p=656
+  ;; Dictionary https://github.com/LibreOffice/dictionaries
+  ;; Define dictionary path with DICPATH https://github.com/hunspell/hunspell/blob/master/src/tools/hunspell.cxx#L2040-L2072
+  ;; When installing via scoop, needs to install these as well.. via MSYS2
+  ;; pacman -S base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-libtool
+  (when IS-WINDOWS
+    ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
+    ;; copy all nb* files for Bokmål to DICPATH below
+    ;; (setenv "DICPATH" "H:/dropbox/hunspell-1.3.2-3-w32/share/hunspell")
+    (setenv "DICPATH" (concat doom-user-dir "hunspell"))
+    ;; (setq ispell-program-name "C:/Users/ybka/Git-personal/dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
+    (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
+    (setq lang-norsk "nb_NO")
+    (setq lang-eng "en_GB")
+    )
+
+  ;; Install language from Config language-support if using hunspell ie. standard
+  ;; If language support not able to find dictonary, run
+  ;; sudo apt install $(check-language-support)
+  ;; If using Aspell as here then need to download the language first from
+  ;; https://ftp.gnu.org/gnu/aspell/dict/0index.html
+  ;; Then install manually with the following command from ~/Downloads
+  ;; bzip2 -d aspell6-no-6.0.tar.bz2
+  ;; tar -xvf aspell6-no-6.0.tar
+  ;; cd aspell6-no-6.0/
+  ;; ./configure
+  ;; make
+  ;; sudo make install
+  (when IS-LINUX
+    (setq ispell-program-name "aspell")
+    (setq lang-norsk "norsk")
+    (setq lang-eng "english"))
+
+  (defun lang-norsk ()
+    "Change to Norwegian."
+    (interactive)
+    (ispell-change-dictionary lang-norsk)
+    (flyspell-buffer))
+
+  (defun lang-eng ()
+    "Change to English."
+    (interactive)
+    (ispell-change-dictionary lang-eng)
+    (flyspell-buffer))
+  )
+
+
 
 ;;; External settings
 ;; Load my custom org settings
