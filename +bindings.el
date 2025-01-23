@@ -9,8 +9,10 @@
       (:prefix ("y" . "My keys")
        :desc "Inbox"
        "i" #'open-inbox-file
-       :desc "file-other-window"
-       "f" #'find-file-other-window
+       ;; :desc "file-other-window"
+       ;; "f" #'find-file-other-window
+       :desc "focus"
+       "f" #'focus-mode
        :desc "copy absolute path"
        "p" #'ranger-copy-current-dir-path
        :desc "git-branch-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
