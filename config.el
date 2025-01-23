@@ -359,6 +359,30 @@
 (use-package! outshine
   :hook (emacs-lisp-mode . outshine-mode))
 
+;;;; Git alias
+(set-eshell-alias!
+ "cgw" (concat "cd " (concat fhi-dir-c "/Git-fhi/$1 && ls -a"))
+ "cgk" (concat "cd " (concat fhi-dir-c "/Git-kh/$1 && ls -a"))
+ "cgp" (concat "cd " (concat fhi-dir-c "/Git-personal/$1 && ls -a"))
+ "cgwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
+ "cgkl" (concat "cd " (concat fhi-dir-c "/Git-kh && ls -a"))
+ "cgpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+
+(set-eshell-alias! "gc" "git checkout $1"
+                   "gcb" "git checkout -b $1"
+                   "gb" "git branch"
+                   "gbd" "git branch -d $1" ;delete branch
+                   "gbD" "git branch -D $1" ;force delete branch
+                   "gf" "git fetch $1"
+                   "gm" "git merge $1"
+                   "gmf" "git merge --no-ff $1" ;merge fast forward
+                   "gpusho" "git push origin"
+                   "gpush" "git push origin $1"
+                   "gpull" "git pull"
+                   "gpushs" "git push origin master --recurse-submodules=on-demand"
+                   "gpulls" "git pull --recurse-submodules")
+
+
 ;;; External settings
 ;; Load my custom org settings
 (load! "+bindings.el")
