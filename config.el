@@ -303,7 +303,7 @@
 
 ;;; Flyspell
 ;; Activate in init.el under :checkers (spell +flyspell)
-;; Check spelling error
+;; Check spelling error. Start by activating (Space t s) then change lang as needed (Space y n/e)
 ;; Both aspell and hunspell can be installed via scoop on Windows. Else use the instruction below.
 (after! flyspell
   ;; This setting specifically for Windows
