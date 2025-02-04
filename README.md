@@ -7,6 +7,7 @@ Install external prog directly or via scoop:
 - flyspell
 - git
 
+Guides to [install Doom in Windows]( https://gist.github.com/hunterlawson/acf4f65f30867d1642926ad91bc9839d ) 
 
 # Update
 Can read directly https://github.com/hlissner/doom-emacs#install
