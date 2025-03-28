@@ -57,3 +57,6 @@
 (package! beacon)
 (package! rotate)
 (package! outshine)
+
+(when (package! quarto-mode)
+  (package! request))

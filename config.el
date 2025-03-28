@@ -236,6 +236,22 @@
   )
 
 
+;;; Quarto
+;; Check tools that required
+(defconst QUARTO-P (executable-find "quarto"))
+
+;; Replacement for Rmarkdown
+;; Add to PATH in Windows to be able to compile
+;; C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
+(use-package! quarto-mode
+  :when QUARTO-P)
+
+(map!
+ :map markdown-mode-map
+ :localleader
+ :n "v" #'quarto-preview)
+
+
 ;;;; Translate language
 ;; https://github.com/atykhonov/google-translate
 (use-package! google-translate)
