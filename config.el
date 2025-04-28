@@ -121,7 +121,7 @@
 
 ;;;; UI and logo
 ;; (setq fancy-splash-image (expand-file-name "img/doom-emacs-cute.png" doom-user-dir))
-(setq fancy-splash-image (expand-file-name "img/emacs-e.png" doom-user-dir))
+(setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir))
 ;;; Display and themes
 ;;;; Themes
 ;; There are two ways to load a theme. Both assume the theme is installed and
