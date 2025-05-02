@@ -251,6 +251,28 @@
  :localleader
  :n "v" #'quarto-preview)
 
+;;; Stata
+(use-package! ado-mode
+  ;; :load-path "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/lisp"
+  :mode (("\\.do" . ado-mode)
+         ("\\.ado" . ado-mode))
+  ;; :hook (ado-mode . auto-complete-mode)
+  :hook (ado-mode . rainbow-delimiters-mode)
+  :hook (ado-mode . smartparens-mode)
+  :hook (ado-mode . smartparens-strict-mode)
+  :custom
+  (ado-mode-home
+   "C:/Users/ykama/.config/emacs/private-pkg/ado-mode"
+   )
+  (ado-script-dir
+   "C:/Emacstillegg/send2stata"
+   )
+  (ado-site-template-dir
+   "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/templates"
+   )
+  :config
+  (setq ado-stata-home "C:/Program Files/Stata18")
+  )
 
 ;;;; Translate language
 ;; https://github.com/atykhonov/google-translate

@@ -58,5 +58,9 @@
 (package! rotate)
 (package! outshine)
 
+(package! ado-mode
+  :recipe (:host github :repo "louabill/ado-mode"
+                 :files ("lisp/*.el" "lisp/*.elc")))
+
 (when (package! quarto-mode)
   (package! request))
