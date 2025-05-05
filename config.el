@@ -358,7 +358,8 @@
     ;; (setenv "DICPATH" "H:/dropbox/hunspell-1.3.2-3-w32/share/hunspell")
     (setenv "DICPATH" (concat doom-user-dir "hunspell"))
     ;; (setq ispell-program-name "C:/Users/ybka/Git-personal/dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
-    (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
+    ;; (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
+    (setq ispell-program-name "C:/Emacstillegg/hunspell-msvc-Release-x64/hunspell.exe")
     (setq lang-norsk "nb_NO")
     (setq lang-eng "en_GB")
     )
