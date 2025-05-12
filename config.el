@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Yusman Kamaleri"
-      buser-mail-address "ybkamaleri@gmail.com")
+      buser-mail-address "ykamamaleri@gmail.com")
 
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
@@ -41,7 +41,7 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+;; (setq org-directory "~/org/")
 
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
@@ -78,40 +78,42 @@
 
 ;;;; Directory
 (when IS-LINUX
-  (setq fhi-dir-h "/mnt/H")
-  (setq fhi-dir-f "/mnt/F")
-  (setq fhi-dir-n "/mnt/N")
-  (setq fhi-dir-c "~/"))
+  (setq hdir-dir-o "/mnt/o")
+  (setq hdir-dir-h "/mnt/H")
+  (setq hdir-dir-c "~/"))
 
 (when IS-WINDOWS
-  (setq fhi-dir-h "H:")
-  (setq fhi-dir-f "F:")
-  (setq fhi-dir-n "N:")
-  (setq fhi-dir-c "C:/Users/ybka/"))
+  (setq hdir-dir-o "O:")
+  (setq hdir-dir-h "H:")
+  (setq hdir-dir-c "C:/Users/ykama/"))
 
 ;;;; OneDrive
 (when IS-LINUX
   (setq onedrive "OneDrive/"
-        shortcutonedrive (concat fhi-dir-c "OneDrive/")))
+        shortcutonedrive (concat hdir-dir-c "OneDrive/")))
 
 (when IS-WINDOWS
-  (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet/"
-        shortcutonedrive "C:/Users/ybka/OneDrive\\ -\\ Folkehelseinstituttet/"))
+  (setq onedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"
+        shortcutonedrive "C:/Users/ykama/OneDrive\\ -\\ Helsedirektoratet/"))
 
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
+
+;;; Use bash
+(setq explicit-shell-file-name "C:/Program Files/Git/bin/bash.exe") ; Path to Bash
+(setq shell-file-name explicit-shell-file-name)
+(add-to-list 'exec-path "C:/Program Files/Git/bin") ; Add Git Bash to PATH
 
 ;;; Shell and alias
 ;; eshell under :term in init.el need to be activated
 ;; to use sh then need to install shfmt and shellcheck via scoop
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
-(set-eshell-alias! "cdc" fhi-dir-c)
-(set-eshell-alias! "cdh" fhi-dir-h)
-(set-eshell-alias! "cdn" fhi-dir-n)
-(set-eshell-alias! "cdk" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
-(set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 3327 - Skader i Norge analy_'"))
-(set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
-(set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
+(set-eshell-alias! "cdc" (concat "cd " hdir-dir-c " && ls -a"))
+(set-eshell-alias! "cdo" (concat "cd " hdir-dir-o " && ls -a"))
+(set-eshell-alias! "cdp" (concat hdir-dir-o "/Prosjekt/Rusdata && ls -a"))
+(set-eshell-alias! "cd1" (concat shortcutonedrive " && ls -a"))
+;; (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
+;; (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
 ;;;; Font
 (when IS-WINDOWS
@@ -256,7 +258,7 @@
   ;; :load-path "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/lisp"
   :mode (("\\.do" . ado-mode)
          ("\\.ado" . ado-mode))
-  ;; :hook (ado-mode . auto-complete-mode)
+  :hook (ado-mode . company-mode)
   :hook (ado-mode . rainbow-delimiters-mode)
   :hook (ado-mode . smartparens-mode)
   :hook (ado-mode . smartparens-strict-mode)
@@ -401,12 +403,12 @@
 
 ;;;; Git alias
 (set-eshell-alias!
- "cgw" (concat "cd " (concat fhi-dir-c "/Git-fhi/$1 && ls -a"))
- "cgk" (concat "cd " (concat fhi-dir-c "/Git-kh/$1 && ls -a"))
- "cgp" (concat "cd " (concat fhi-dir-c "/Git-personal/$1 && ls -a"))
- "cgwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
- "cgkl" (concat "cd " (concat fhi-dir-c "/Git-kh && ls -a"))
- "cgpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+ "cgw" (concat "cd " (concat hdir-dir-c "/Git-hdir/$1 && ls -a"))
+ "cgk" (concat "cd " (concat hdir-dir-c "/Git-kh/$1 && ls -a"))
+ "cgp" (concat "cd " (concat hdir-dir-c "/Git-personal/$1 && ls -a"))
+ "cgwl" (concat "cd " (concat hdir-dir-c "/Git-hdir && ls -a"))
+ "cgkl" (concat "cd " (concat hdir-dir-c "/Git-kh && ls -a"))
+ "cgpl" (concat "cd " (concat hdir-dir-c "/Git-personal && ls -a")))
 
 (set-eshell-alias! "gc" "git checkout $1"
                    "gcb" "git checkout -b $1"

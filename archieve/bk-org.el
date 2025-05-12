@@ -7,7 +7,7 @@
 ;;
 
 (when IS-LINUX
-  (setq org-onedrive (concat fhi-dir-c onedrive)))
+  (setq org-onedrive (concat hdir-dir-c onedrive)))
 
 (when IS-WINDOWS
   (setq org-onedrive onedrive))
@@ -423,7 +423,7 @@ See `org-capture-templates' for more information."
                  "%?\n")          ;Place the cursor here
                "\n")))
 
-(setq my-hugo-org-file (expand-file-name "Git-personal/blog-raw/org/blog-harbor.org" fhi-dir-c))
+(setq my-hugo-org-file (expand-file-name "Git-personal/blog-raw/org/blog-harbor.org" hdir-dir-c))
 
 (after! org-capture
   (add-to-list 'org-capture-templates

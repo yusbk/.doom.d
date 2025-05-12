@@ -35,16 +35,16 @@
      ,@body))
 
 (with-system gnu/linux
-  (setq fhi-dir-h "/mnt/H")
-  (setq fhi-dir-f "/mnt/F")
-  (setq fhi-dir-n "/mnt/N")
-  (setq fhi-dir-c "~"))
+  (setq hdir-dir-h "/mnt/H")
+  (setq hdir-dir-f "/mnt/F")
+  (setq hdir-dir-n "/mnt/N")
+  (setq hdir-dir-c "~"))
 
 (with-system windows-nt
-  (setq fhi-dir-h "H:")
-  (setq fhi-dir-f "F:")
-  (setq fhi-dir-n "N:")
-  (setq fhi-dir-c "C:/Users/ybka"))
+  (setq hdir-dir-h "H:")
+  (setq hdir-dir-f "F:")
+  (setq hdir-dir-n "N:")
+  (setq hdir-dir-c "C:/Users/ybka"))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -111,7 +111,7 @@
 
 ;;;; Local folder
 ;; Create folder if it doesn't exist
-(defvar ybk/local-folder (concat fhi-dir-c "/emacs-local")
+(defvar ybk/local-folder (concat hdir-dir-c "/emacs-local")
   (unless (file-exists-p ybk/local-folder)
     (make-directory ybk/local-folder)))
 
@@ -225,10 +225,10 @@
 ;;; Shell
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
-(set-eshell-alias! "cdc" fhi-dir-c)
-(set-eshell-alias! "cdh" fhi-dir-h)
-(set-eshell-alias! "cdn" fhi-dir-n)
-(set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
+(set-eshell-alias! "cdc" hdir-dir-c)
+(set-eshell-alias! "cdh" hdir-dir-h)
+(set-eshell-alias! "cdn" hdir-dir-n)
+(set-eshell-alias! "cdf" (concat hdir-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
@@ -241,7 +241,7 @@
 (with-system windows-nt
   (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
 
-(when IS-LINUX (setq shortcutonedrive (concat fhi-dir-c "/OneDrive")))
+(when IS-LINUX (setq shortcutonedrive (concat hdir-dir-c "/OneDrive")))
 (when IS-WINDOWS (setq shortcutonedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet"))
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
@@ -261,13 +261,13 @@
 
 ;;;; Git shortcuts
 (set-eshell-alias! "gw"
-                   (concat "cd " (concat fhi-dir-c "/Git-fhi && cd $1 && ls -a")))
+                   (concat "cd " (concat hdir-dir-c "/Git-fhi && cd $1 && ls -a")))
 (set-eshell-alias! "gp"
-                   (concat "cd " (concat fhi-dir-c "/Git-personal && cd $1 && ls -a")))
+                   (concat "cd " (concat hdir-dir-c "/Git-personal && cd $1 && ls -a")))
 (set-eshell-alias! "gwl"
-                   (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a")))
+                   (concat "cd " (concat hdir-dir-c "/Git-fhi && ls -a")))
 (set-eshell-alias! "gpl"
-                   (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+                   (concat "cd " (concat hdir-dir-c "/Git-personal && ls -a")))
 (set-eshell-alias! "gc" "git checkout $1")
 (set-eshell-alias! "gcb" "git checkout -b $1")
 (set-eshell-alias! "gb" "git branch")
@@ -331,7 +331,7 @@
 ;; Load my custom org settings
 (load! "+bindings.el")
 (load! "+org.el") ; org-mode settigs
-(projectile-add-known-project (expand-file-name "Git-fhi/orgdata" fhi-dir-c))
+(projectile-add-known-project (expand-file-name "Git-fhi/orgdata" hdir-dir-c))
 
 
 ;;; Outshine header
@@ -739,7 +739,7 @@ if there is displayed buffer that have shell it will use that window"
     (setq lang-eng "nb_GB")
     )
 
-  (setq cache-h-drive (concat fhi-dir-h "Dropbox/cache/"))
+  (setq cache-h-drive (concat hdir-dir-h "Dropbox/cache/"))
 
   ;; (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
   ;;                           "--lang=en_GB"

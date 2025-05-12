@@ -51,20 +51,20 @@
      ,@body))
 
 (with-system gnu/linux
-  (setq fhi-dir-h "/mnt/H")
-  (setq fhi-dir-f "/mnt/F")
-  (setq fhi-dir-n "/mnt/N")
-  (setq fhi-dir-c "~/"))
+  (setq hdir-dir-h "/mnt/H")
+  (setq hdir-dir-f "/mnt/F")
+  (setq hdir-dir-n "/mnt/N")
+  (setq hdir-dir-c "~/"))
 
 (with-system windows-nt
-  (setq fhi-dir-h "H:")
-  (setq fhi-dir-f "F:")
-  (setq fhi-dir-n "N:")
-  (setq fhi-dir-c "C:/Users/ybka/"))
+  (setq hdir-dir-h "H:")
+  (setq hdir-dir-f "F:")
+  (setq hdir-dir-n "N:")
+  (setq hdir-dir-c "C:/Users/ybka/"))
 
 ;;;; Local folder
 ;; ;; Create folder if it doesn't exist
-;; (defvar ybk/local-folder (concat fhi-dir-c "emacs-local")
+;; (defvar ybk/local-folder (concat hdir-dir-c "emacs-local")
 ;;   (unless (file-exists-p ybk/local-folder)
 ;;     (make-directory ybk/local-folder)))
 
@@ -74,7 +74,7 @@
 ;;;; OneDrive
 (when IS-LINUX
   (setq onedrive "OneDrive/"
-        shortcutonedrive (concat fhi-dir-c "OneDrive/")))
+        shortcutonedrive (concat hdir-dir-c "OneDrive/")))
 
 (when IS-WINDOWS
   (setq onedrive "C:/Users/ybka/OneDrive - Folkehelseinstituttet/"
@@ -264,11 +264,11 @@
 ;; to use sh then need to install shfmt and shellcheck via scoop
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
 (set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
-(set-eshell-alias! "cdc" fhi-dir-c)
-(set-eshell-alias! "cdh" fhi-dir-h)
-(set-eshell-alias! "cdn" fhi-dir-n)
-(set-eshell-alias! "cdk" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
-(set-eshell-alias! "cdf" (concat fhi-dir-f "/Forskningsprosjekter/'PDB 3327 - Skader i Norge analy_'"))
+(set-eshell-alias! "cdc" hdir-dir-c)
+(set-eshell-alias! "cdh" hdir-dir-h)
+(set-eshell-alias! "cdn" hdir-dir-n)
+(set-eshell-alias! "cdk" (concat hdir-dir-f "/Forskningsprosjekter/'PDB 2455 - Helseprofiler og til_'"))
+(set-eshell-alias! "cdf" (concat hdir-dir-f "/Forskningsprosjekter/'PDB 3327 - Skader i Norge analy_'"))
 (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
@@ -291,12 +291,12 @@
 
 ;;;; Git alias
 (set-eshell-alias!
- "cgw" (concat "cd " (concat fhi-dir-c "/Git-fhi/$1 && ls -a"))
- "cgk" (concat "cd " (concat fhi-dir-c "/Git-kh/$1 && ls -a"))
- "cgp" (concat "cd " (concat fhi-dir-c "/Git-personal/$1 && ls -a"))
- "cgwl" (concat "cd " (concat fhi-dir-c "/Git-fhi && ls -a"))
- "cgkl" (concat "cd " (concat fhi-dir-c "/Git-kh && ls -a"))
- "cgpl" (concat "cd " (concat fhi-dir-c "/Git-personal && ls -a")))
+ "cgw" (concat "cd " (concat hdir-dir-c "/Git-fhi/$1 && ls -a"))
+ "cgk" (concat "cd " (concat hdir-dir-c "/Git-kh/$1 && ls -a"))
+ "cgp" (concat "cd " (concat hdir-dir-c "/Git-personal/$1 && ls -a"))
+ "cgwl" (concat "cd " (concat hdir-dir-c "/Git-fhi && ls -a"))
+ "cgkl" (concat "cd " (concat hdir-dir-c "/Git-kh && ls -a"))
+ "cgpl" (concat "cd " (concat hdir-dir-c "/Git-personal && ls -a")))
 
 (set-eshell-alias! "gc" "git checkout $1"
                    "gcb" "git checkout -b $1"
@@ -347,7 +347,7 @@
   (setq projectile-project-search-path '(("~/Git-fhi" . 1) ("~/Git-kh" . 1)))
 
   ;; Standard project
-  (projectile-add-known-project (expand-file-name "Git-fhi/orgdata" fhi-dir-c))
+  (projectile-add-known-project (expand-file-name "Git-fhi/orgdata" hdir-dir-c))
   )
 
 
@@ -806,7 +806,7 @@ if there is displayed buffer that have shell it will use that window"
     (setq lang-eng "nb_GB")
     )
 
-  (setq cache-h-drive (concat fhi-dir-c "Git-personal/dropbox/cache/"))
+  (setq cache-h-drive (concat hdir-dir-c "Git-personal/dropbox/cache/"))
 
   ;; (setq ispell-extra-args '("--sug-mode=ultra" ;normal|fast|ultra for speed
   ;;                           "--lang=en_GB"

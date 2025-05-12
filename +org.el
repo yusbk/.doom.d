@@ -5,13 +5,7 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 
-(when IS-LINUX
-  (setq org-onedrive (concat fhi-dir-c onedrive)))
-
-(when IS-WINDOWS
-  (setq org-onedrive onedrive))
-
-(setq org-directory (concat org-onedrive "org/"))
+(setq org-directory (concat onedrive "org/"))
 
 ;; Need to create the org files manually with #+FILETAGES:
 (setq my-org-agenda-directory (file-truename (concat org-directory "gtd/")))

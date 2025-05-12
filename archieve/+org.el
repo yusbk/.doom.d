@@ -6,7 +6,7 @@
 ;; change `org-directory'. It must be set before org loads!
 
 (when IS-LINUX
-  (setq org-onedrive (concat fhi-dir-c onedrive)))
+  (setq org-onedrive (concat hdir-dir-c onedrive)))
 
 (when IS-WINDOWS
   (setq org-onedrive onedrive))
@@ -598,7 +598,7 @@ INFO is a plist holding contextual information."
                  "%?\n")          ;Place the cursor here
                "\n")))
 
-(setq my-hugo-org-file (expand-file-name "Git-personal/blog-raw/org/blog-harbor.org" fhi-dir-c))
+(setq my-hugo-org-file (expand-file-name "Git-personal/blog-raw/org/blog-harbor.org" hdir-dir-c))
 
 (after! org
   (add-to-list 'org-capture-templates
@@ -612,10 +612,10 @@ INFO is a plist holding contextual information."
 (use-package! easy-hugo
   :init
   ;; Main blog
-  (setq easy-hugo-basedir (expand-file-name "Git-personal/blog-raw/" fhi-dir-c))
+  (setq easy-hugo-basedir (expand-file-name "Git-personal/blog-raw/" hdir-dir-c))
   (setq easy-hugo-url "https://yusbk.github.io")
   (setq easy-hugo-sshdomain "github")
-  (setq easy-hugo-root (expand-file-name "Git-personal/" fhi-dir-c))
+  (setq easy-hugo-root (expand-file-name "Git-personal/" hdir-dir-c))
   (setq easy-hugo-previewtime "300")
   )
 
