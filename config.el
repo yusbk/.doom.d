@@ -149,14 +149,16 @@
 
 (setq my-cur-theme nil)
 (defun cycle-themes ()
-  "Cycle through a list of themes, my-themes"
+  "Cycle through a list of themes, my-themes."
   (interactive)
-  (when my-cur-theme
-    (disable-theme my-cur-theme)
-    (setq my-themes (append my-themes (list my-cur-theme))))
-  (setq my-cur-theme (pop my-themes))
-  (load-theme my-cur-theme :no-confirm)
-  (message "Tema dipakai: %s" my-cur-theme))
+  (if (null my-themes)
+      (message "No themes available to cycle.")
+    (when my-cur-theme
+      (disable-theme my-cur-theme)
+      (setq my-themes (append my-themes (list my-cur-theme))))
+    (setq my-cur-theme (pop my-themes))
+    (load-theme my-cur-theme :no-confirm)
+    (message "Tema dipakai: %s" my-cur-theme)))
 
 ;; Switch to the first theme in the list above
 (cycle-themes)
