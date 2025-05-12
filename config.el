@@ -202,28 +202,29 @@
          :n "C-<up>" #'ess-readline
          ))
   :config
+  (defun my-ess-helpers ()
+    "Custom helpers for ESS."
+    ;; data.table update
+    (defun my-add-column ()
+      "Adds a data.table update."
+      (interactive)
+      ;;(just-one-space 1) ;delete whitespace around cursor
+      (insert " := "))
 
-  ;; data.table update
-  (defun my-add-column ()
-    "Adds a data.table update."
-    (interactive)
-    ;;(just-one-space 1) ;delete whitespace around cursor
-    (insert " := "))
+    ;; Match
+    (defun my-add-match ()
+      "Adds match."
+      (interactive)
+      (insert " %in% "))
 
-  ;; Match
-  (defun my-add-match ()
-    "Adds match."
-    (interactive)
-    (insert " %in% "))
-
-  ;; pipe
-  (defun my-add-pipe ()
-    "Adds a pipe operator %>% with one space to the left and then
+    ;; pipe
+    (defun my-add-pipe ()
+      "Adds a pipe operator %>% with one space to the left and then
   starts a newline with proper indentation"
-    (interactive)
-    (just-one-space 1)
-    (insert "%>%")
-    (ess-newline-and-indent))
+      (interactive)
+      (just-one-space 1)
+      (insert "%>%")
+      (ess-newline-and-indent)))
 
   ;; Get commands run from script or console
   ;; https://stackoverflow.com/questions/27307757/ess-retrieving-command-history-from-commands-entered-in-essr-inferior-mode-or
@@ -267,25 +268,17 @@
 ;;; Stata
 (use-package! ado-mode
   ;; :load-path "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/lisp"
-  :mode (("\\.do" . ado-mode)
-         ("\\.ado" . ado-mode))
-  :hook (ado-mode . company-mode)
-  :hook (ado-mode . rainbow-delimiters-mode)
-  :hook (ado-mode . smartparens-mode)
-  :hook (ado-mode . smartparens-strict-mode)
+  :mode ("\\.do\\'" "\\.ado\\'")
+  :hook ((ado-mode . company-mode)
+         (ado-mode . rainbow-delimiters-mode)
+         (ado-mode . smartparens-mode)
+         (ado-mode . smartparens-strict-mode))
   :custom
-  (ado-mode-home
-   "C:/Users/ykama/.config/emacs/private-pkg/ado-mode"
-   )
-  (ado-script-dir
-   "C:/Emacstillegg/send2stata"
-   )
-  (ado-site-template-dir
-   "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/templates"
-   )
+  (ado-mode-home "C:/Users/ykama/.config/emacs/private-pkg/ado-mode")
+  (ado-script-dir "C:/Emacstillegg/send2stata")
+  (ado-site-template-dir "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/templates")
   :config
-  (setq ado-stata-home "C:/Program Files/Stata18")
-  )
+  (setq ado-stata-home "C:/Program Files/Stata18"))
 
 ;;;; Translate language
 ;; https://github.com/atykhonov/google-translate
@@ -436,11 +429,11 @@
                    "gpulls" "git pull --recurse-submodules")
 
 
-;;; Lisp mode
-;; Ensure these extentions use lisp-mode
-;; else it's using ado-mode. There is misconfiguration somewhere :-(
-(dolist (ext '("\\.lisp\\'" "\\.el\\'"))
-  (add-to-list 'auto-mode-alist (cons ext 'lisp-mode)))
+;; ;;; Lisp mode
+;; ;; Ensure these extentions use lisp-mode
+;; ;; else it's using ado-mode. There is misconfiguration somewhere :-(
+;; (dolist (ext '("\\.lisp\\'" "\\.el\\'"))
+;;   (add-to-list 'auto-mode-alist (cons ext 'lisp-mode)))
 
 
 ;;; External settings
