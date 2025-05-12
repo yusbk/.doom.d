@@ -106,12 +106,21 @@
 ;;; Shell and alias
 ;; eshell under :term in init.el need to be activated
 ;; to use sh then need to install shfmt and shellcheck via scoop
+
 (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
-(set-eshell-alias! "dsync" "~/.emacs.d/bin/doom sync")
-(set-eshell-alias! "cdc" (concat "cd " hdir-dir-c " && ls -a"))
-(set-eshell-alias! "cdo" (concat "cd " hdir-dir-o " && ls -a"))
-(set-eshell-alias! "cdp" (concat hdir-dir-o "/Prosjekt/Rusdata && ls -a"))
-(set-eshell-alias! "cd1" (concat shortcutonedrive " && ls -a"))
+(dolist (alias `(("dsync" "~/.emacs.d/bin/doom sync")
+                 ("cdc" ,(concat "cd " hdir-dir-c " && ls -a"))
+                 ("cdo" ,(concat "cd " hdir-dir-o " && ls -a"))
+                 ("cdp" ,(concat hdir-dir-o "/Prosjekt/Rusdata && ls -a"))
+                 ("cd1" ,(concat shortcutonedrive " && ls -a"))))
+  (set-eshell-alias! (car alias) (cadr alias)))
+
+;; (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
+;; (set-eshell-alias! "dsync" "~/.config/emacs/bin/doom sync")
+;; (set-eshell-alias! "cdc" (concat "cd " hdir-dir-c " && ls -a"))
+;; (set-eshell-alias! "cdo" (concat "cd " hdir-dir-o " && ls -a"))
+;; (set-eshell-alias! "cdp" (concat hdir-dir-o "/Prosjekt/Rusdata && ls -a"))
+;; (set-eshell-alias! "cd1" (concat shortcutonedrive " && ls -a"))
 ;; (set-eshell-alias! "cdss" "ssh -i ~/.ssh/id_rsa_work ybk@shiny.fhi-api.com")
 ;; (set-eshell-alias! "cds" "/ssh:shiny:/home/ybk/ShinyApps")
 
@@ -423,6 +432,13 @@
                    "gpull" "git pull"
                    "gpushs" "git push origin master --recurse-submodules=on-demand"
                    "gpulls" "git pull --recurse-submodules")
+
+
+;;; Lisp mode
+;; Ensure these extentions use lisp-mode
+;; else it's using ado-mode. There is misconfiguration somewhere :-(
+(dolist (ext '("\\.lisp\\'" "\\.el\\'"))
+  (add-to-list 'auto-mode-alist (cons ext 'lisp-mode)))
 
 
 ;;; External settings
