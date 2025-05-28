@@ -266,19 +266,7 @@
  :n "v" #'quarto-preview)
 
 ;;; Stata
-(use-package! ado-mode
-  ;; :load-path "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/lisp"
-  :mode ("\\.do\\'" "\\.ado\\'")
-  :hook ((ado-mode . company-mode)
-         (ado-mode . rainbow-delimiters-mode)
-         (ado-mode . smartparens-mode)
-         (ado-mode . smartparens-strict-mode))
-  :custom
-  (ado-mode-home "C:/Users/ykama/.config/emacs/private-pkg/ado-mode")
-  (ado-script-dir "C:/Emacstillegg/send2stata")
-  (ado-site-template-dir "C:/Users/ykama/.config/emacs/private-pkg/ado-mode/templates")
-  :config
-  (setq ado-stata-home "C:/Program Files/Stata18"))
+(use-package! ado-mode)
 
 ;;;; Translate language
 ;; https://github.com/atykhonov/google-translate
@@ -351,6 +339,7 @@
 ;; Both aspell and hunspell can be installed via scoop on Windows. Else use the instruction below.
 (after! flyspell
   ;; This setting specifically for Windows
+  ;; Download hunspell and zip to to anyway from here https://sourceforge.net/projects/ezwinports/files/
   ;; http://juanjose.garciaripoll.com/blog/my-emacs-windows-configuration/
   ;; https://www.reddit.com/r/emacs/comments/8by3az/how_to_set_up_sell_check_for_emacs_in_windows/
   ;; general guide for downloading hunspell http://www.nextpoint.se/?p=656
@@ -362,10 +351,10 @@
     ;; Dictionary folder. Download from https://github.com/LibreOffice/dictionaries
     ;; copy all nb* files for Bokmål to DICPATH below
     ;; (setenv "DICPATH" "H:/dropbox/hunspell-1.3.2-3-w32/share/hunspell")
-    (setenv "DICPATH" (concat doom-user-dir "hunspell"))
+    (setenv "DICPATH" "C:/Emacstillegg/dictionaries")
     ;; (setq ispell-program-name "C:/Users/ybka/Git-personal/dropbox/hunspell-1.3.2-3-w32/bin/hunspell.exe")
     ;; (setq ispell-program-name "C:/Users/ybka/scoop/apps/hunspell/current/bin/hunspell.exe") ;use prog installed via scoop
-    (setq ispell-program-name "C:/Emacstillegg/hunspell-msvc-Release-x64/hunspell.exe")
+    (setq ispell-program-name "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe")
     (setq lang-norsk "nb_NO")
     (setq lang-eng "en_GB")
     )
@@ -399,6 +388,7 @@
     (ispell-change-dictionary lang-eng)
     (flyspell-buffer))
   )
+
 
 ;;; Outshine header
 ;; For nativation like Org major-mode. Use <S-Tab> or <C-M i> on the header to fold
