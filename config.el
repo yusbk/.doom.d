@@ -98,10 +98,15 @@
 
 (set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
-;;; Use bash
+;;; Use other functions in Git eg. bash, ediff etc
 (setq explicit-shell-file-name "C:/Program Files/Git/bin/bash.exe") ; Path to Bash
 (setq shell-file-name explicit-shell-file-name)
-(add-to-list 'exec-path "C:/Program Files/Git/bin") ; Add Git Bash to PATH
+;; (add-to-list 'exec-path "C:/Program Files/Git/bin") ; Add Git Bash to PATH
+
+;; Add diff.exe directory to exec-path
+(add-to-list 'exec-path "C:/Program Files/Git/usr/bin")
+;; Add diff.exe directory to PATH environment variable
+(setenv "PATH" (concat "C:/Program Files/Git/usr/bin;" (getenv "PATH")))
 
 ;;; Shell and alias
 ;; eshell under :term in init.el need to be activated
