@@ -57,6 +57,7 @@
 (package! beacon)
 (package! rotate)
 (package! outshine)
+(package! rainbow-delimiters)
 
 (package! ado-mode)
 ;; (package! ado-mode
