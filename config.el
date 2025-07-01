@@ -274,7 +274,9 @@
  :n "v" #'quarto-preview)
 
 ;;; Stata
-(use-package! ado-mode)
+(use-package! ado-mode
+  :config
+  (setq ado-stata-home "C:/Program Files/Stata18"))
 
 ;;;; Translate language
 ;; https://github.com/atykhonov/google-translate
