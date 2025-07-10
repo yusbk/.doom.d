@@ -186,6 +186,12 @@
 ;; (setq +ivy-buffer-preview t)
 (setq consult-buffer t)
 
+;;; Evil related and general tings
+;; Activate jk key
+(after! evil-escape
+  (setq evil-escape-key-sequence "jk"
+        evil-escape-delay 0.2))  ;; Adjust delay as needed
+
 ;;; ESS
 ;; ess-switch-process use to choose R process when eval codes with many running processes
 ;; SPC-m-Shift-TAB or C-c C-s
