@@ -265,9 +265,12 @@
 
 ;;; Stata
 (use-package! ado-mode
-  (add-hook! 'ado-mode-hook #'font-lock-mode)
   :config
+  (dolist (pattern '(("\\.do\\'" . ado-mode)
+                     ("\\.ado\\'" . ado-mode)))
+    (add-to-list 'auto-mode-alist pattern))
   (setq ado-stata-home "C:/Program Files/Stata18"))
+
 
 ;;;; Translate language
 ;; https://github.com/atykhonov/google-translate
@@ -395,6 +398,9 @@
 ;; For nativation like Org major-mode. Use <S-Tab> or <C-M i> on the header to fold
 (use-package! outshine
   :hook (emacs-lisp-mode . outshine-mode))
+
+;;;; Alias
+(set-eshell-alias! "cdl" "cd $1; ls")
 
 ;;;; Git alias
 (set-eshell-alias!
