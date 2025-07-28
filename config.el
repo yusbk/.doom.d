@@ -110,7 +110,19 @@
 (setq shell-file-name explicit-shell-file-name)
 ;; (add-to-list 'exec-path "C:/Program Files/Git/bin") ; Add Git Bash to PATH
 
+;;; General
+;;;; Undo
+(setq evil-want-fine-undo t)
 
+;;;; Company
+;; Delay suggestion
+(setq company-idle-delay 0.5)
+
+;;;; Save
+;; Save when in visual mode
+(map! :leader
+    (:desc "Save" :n "j"  (lambda () (interactive) (evil-normal-state) (save-buffer)))
+)
 ;;; Shell and alias
 ;; eshell under :term in init.el need to be activated
 ;; to use sh then need to install shfmt and shellcheck via scoop
@@ -191,6 +203,7 @@
 (after! evil-escape
   (setq evil-escape-key-sequence "jk"
         evil-escape-delay 0.2))  ;; Adjust delay as needed
+
 
 ;;; ESS
 ;; ess-switch-process use to choose R process when eval codes with many running processes
