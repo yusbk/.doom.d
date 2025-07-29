@@ -114,9 +114,13 @@
 ;;;; Undo
 (setq evil-want-fine-undo t)
 
-;;;; Company
-;; Delay suggestion
-(setq company-idle-delay 0.5)
+;;;; Auto-complete
+;; Delay suggestion or disabled
+(after! corfu
+  ;; (setq corfu-auto nil)                     ;; disable auto popup
+  (setq corfu-auto-delay 0.5)            ;; or use this instead for delay
+  ;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
+  )
 
 ;;;; Save
 ;; Save when in visual mode
