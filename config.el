@@ -118,15 +118,20 @@
 ;; Delay suggestion or disabled
 (after! corfu
   ;; (setq corfu-auto nil)                     ;; disable auto popup
-  (setq corfu-auto-delay 0.5)            ;; or use this instead for delay
+  (setq corfu-auto-delay 0.2)            ;; or use this instead for delay
   ;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
   )
 
 ;;;; Save
+;; Enable format-on-save globally
+;; Alternative is to use aggresive-indent
+(setq +format-on-save t)
+
 ;; Save when in visual mode
 (map! :leader
-    (:desc "Save" :n "j"  (lambda () (interactive) (evil-normal-state) (save-buffer)))
-)
+      (:desc "Save" :n "j"  (lambda () (interactive) (evil-normal-state) (save-buffer)))
+      )
+
 ;;; Shell and alias
 ;; eshell under :term in init.el need to be activated
 ;; to use sh then need to install shfmt and shellcheck via scoop
@@ -213,6 +218,14 @@
 ;; ess-switch-process use to choose R process when eval codes with many running processes
 ;; SPC-m-Shift-TAB or C-c C-s
 
+;; Check R version
+(defun check-r-version ()
+  "Check the R version used by Emacs."
+  (interactive)
+  (let ((output (shell-command-to-string "R --version")))
+    (message "R version: %s" (car (split-string output "\n")))))
+
+
 ;; Define helper functions first
 (defun my-add-column ()
   "Adds a data.table update."
@@ -249,6 +262,7 @@
 ;; Now configure ESS and keybindings
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
+  (add-hook! 'ess-mode-hook #'run-ess-r-newest)
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
@@ -266,19 +280,21 @@
 
 
 ;;; Quarto
-;; Check tools that required
-(defconst QUARTO-P (executable-find "quarto"))
+;; Quarto is already included in Doom settings for ESS
 
-;; Replacement for Rmarkdown
-;; Add to PATH in Windows to be able to compile
-;; C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
-(use-package! quarto-mode
-  :when QUARTO-P)
+;; ;; Check tools that required
+;; (defconst QUARTO-P (executable-find "quarto"))
 
-(map!
- :map markdown-mode-map
- :localleader
- :n "v" #'quarto-preview)
+;; ;; Replacement for Rmarkdown
+;; ;; Add to PATH in Windows to be able to compile
+;; ;; C:\Users\ybka\scoop\apps\quarto\current\bin\quarto.cmd
+;; (use-package! quarto-mode
+;;   :when QUARTO-P)
+
+(after! ess
+  (map! (:map markdown-mode-map
+         :localleader
+         :n "v" #'quarto-preview)))
 
 ;;; Stata
 (use-package! ado-mode
