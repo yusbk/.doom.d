@@ -262,11 +262,12 @@
 ;; Now configure ESS and keybindings
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
-  (add-hook! 'ess-mode-hook #'run-ess-r-newest)
+  ;; (add-hook! 'ess-mode-hook #'run-ess-r-newest)
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
-         "s" #'ess-indent-region-with-styler)
+         "s" #'ess-indent-region-with-styler
+         "g" #'run-ess-r-newest)
         (:map ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
