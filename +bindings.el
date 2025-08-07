@@ -14,7 +14,8 @@
        :desc "focus"
        "f" #'focus-mode
        :desc "copy absolute path"
-       "p" #'ranger-copy-current-dir-path
+       "p" #'xah-copy-file-path
+       ;; "p" #'ranger-copy-current-dir-path
        :desc "git-branch-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
        "g" #'vc-refresh-state
        :desc "Norsk"
