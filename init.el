@@ -49,9 +49,9 @@
        (vc-gutter +pretty) ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        (window-select     ; visually switch windows
-         +numbers
-         +switch-window)
-        workspaces        ; tab emulation, persistence & separate workspaces
+        +numbers
+        +switch-window)
+       workspaces        ; tab emulation, persistence & separate workspaces
        ;;zen               ; distraction-free coding or writing
 
        :editor
@@ -85,8 +85,8 @@
        :checkers
        syntax            ; tasing you for every semicolon you forget
        (spell             ; tasing you for misspelling mispelling
-         +flyspell)
-        ;;grammar           ; tasing grammar mistake every you make
+        +flyspell)
+       ;;grammar           ; tasing grammar mistake every you make
 
        :tools
        ;;ansible
@@ -131,9 +131,9 @@
        emacs-lisp        ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
        (ess               ; emacs speaks statistics
-        +stan
+        ;; +stan
         +tree-sitter)
-        ;;factor
+       ;;factor
        ;;faust             ; dsp, but you get to keep your soul
        ;;fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
        ;;fsharp            ; ML stands for Microsoft's Language
