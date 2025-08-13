@@ -50,7 +50,7 @@
 
 ;; Translate
 (package! google-translate)
-(package! go-translate)
+(package! gt)
 
 ;; Misc
 (package! focus)
