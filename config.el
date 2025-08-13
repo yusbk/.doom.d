@@ -319,7 +319,7 @@
 
 ;; https://github.com/lorniu/go-translate
 ;; M-x gts-do-translate
-(use-package! go-translate
+(use-package! gt
   :config
   ;; This configuration means:
   ;; Initialize the default translator, let it translate between en and fr via Google Translate,
@@ -341,7 +341,7 @@
       (:prefix ("=" . "Translate")
        :desc "google-translate"
        "g" #'google-translate-smooth-translate
-       :desc "go-translate"
+       :desc "gt"
        "t" #'gts-do-translate
        :desc "other lang"
        "l" #'google-translate-at-point
