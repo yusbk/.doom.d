@@ -116,11 +116,11 @@
 
 ;;;; Auto-complete
 ;; Delay suggestion or disabled
-(after! corfu
-  ;; (setq corfu-auto nil)                     ;; disable auto popup
-  (setq corfu-auto-delay 0.2)            ;; or use this instead for delay
-  ;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
-  )
+;; (after! corfu
+;;   ;; (setq corfu-auto nil)                     ;; disable auto popup
+;;   (setq corfu-auto-delay 0.2)            ;; or use this instead for delay
+;;   ;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
+;;   )
 
 ;;;; Save
 ;; Enable format-on-save globally
@@ -140,6 +140,7 @@
 (dolist (alias `(("dsync" "~/.emacs.d/bin/doom sync")
                  ("cdc" ,(concat "cd " hdir-dir-c " && ls -a"))
                  ("cdo" ,(concat "cd " hdir-dir-o " && ls -a"))
+                 ("cdh" ,(concat "cd " hdir-dir-h " && ls -a"))
                  ("cdp" ,(concat hdir-dir-o "/Prosjekt/Rusdata && ls -a"))
                  ("cd1" ,(concat shortcutonedrive " && ls -a"))))
   (set-eshell-alias! (car alias) (cadr alias)))
@@ -170,8 +171,8 @@
 
 ;; Ref https://stackoverflow.com/questions/9900232/changing-color-themes-emacs-24-order-matters/18796138#18796138
 (setq my-themes '(
-                  doom-gruvbox
                   doom-gruvbox-light
+                  doom-gruvbox
                   doom-one
                   tango
                   ))
@@ -225,6 +226,11 @@
   (let ((output (shell-command-to-string "R --version")))
     (message "R version: %s" (car (split-string output "\n")))))
 
+;; ;; Deactivate temporarily due to error message ‘ess--idle-timer-function’
+;; (setq ess-use-idle-timer nil)
+
+;; Line number can make you mad
+(setq-hook! 'inferior-ess-mode-hook display-line-numbers nil)
 
 ;; Define helper functions first
 (defun my-add-column ()
