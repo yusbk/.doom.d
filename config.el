@@ -114,13 +114,35 @@
 ;;;; Undo
 (setq evil-want-fine-undo t)
 
-;;;; Auto-complete
+;;;; Corfu
 ;; Delay suggestion or disabled
 ;; (after! corfu
 ;;   ;; (setq corfu-auto nil)                     ;; disable auto popup
 ;;   (setq corfu-auto-delay 0.2)            ;; or use this instead for delay
 ;;   ;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
 ;;   )
+
+(setq corfu-auto-delay 0.5)
+
+;; Enable corfu in the minibuffer
+(use-package! corfu
+  :config
+  (defun corfu-enable-in-minibuffer ()
+    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+    (when (where-is-internal #'completion-at-point (list (current-local-map)))
+      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+                  corfu-popupinfo-delay nil)
+      (corfu-mode 1)))
+  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
+
+;; orderless matching styles to include char-fold-to-regexp
+(use-package! orderless
+  :config
+  (add-to-list 'orderless-matching-styles 'char-fold-to-regexp))
+
+;; smaller popup
+(custom-set-faces! '((corfu-popupinfo) :height 0.9))
 
 ;;;; Save
 ;; Enable format-on-save globally
