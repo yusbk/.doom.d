@@ -123,10 +123,10 @@
 ;;   )
 
 (setq corfu-auto-delay 0.5)
+(map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
 
 ;; Enable corfu in the minibuffer
 (use-package! corfu
-  (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
   :config
   (defun corfu-enable-in-minibuffer ()
     "Enable Corfu in the minibuffer if `completion-at-point' is bound."
