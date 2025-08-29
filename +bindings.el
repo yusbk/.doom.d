@@ -7,39 +7,41 @@
 ;;; Personal keybindings
 (map! :leader
       (:prefix ("y" . "My keys")
+       :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
+       "a" #'+fold/toggle     ;with similar keys but less explicit prefix
+       :desc "blog"
+       "b" #'easy-hugo
+       :desc "Encoding" ;Need when pasting from external
+       "c" #'set-clipboard-coding-system
+       :desc "copy absolute dir path"
+       "d" #'xah-copy-file-path
+       :desc "English"
+       "e" #'lang-eng
        :desc "Inbox"
        "i" #'open-inbox-file
        ;; :desc "file-other-window"
        ;; "f" #'find-file-other-window
        :desc "focus"
        "f" #'focus-mode
-       :desc "copy absolute path"
-       "p" #'xah-copy-file-path
        ;; "p" #'ranger-copy-current-dir-path
        :desc "git-branch-refresh"  ;refresh branch name in modeline. Now use Magit "gv"
        "g" #'vc-refresh-state
-       :desc "Norsk"
-       "n" #'lang-norsk
-       :desc "English"
-       "e" #'lang-eng
-       :desc "Encoding" ;Need when pasting from external
-       "c" #'set-clipboard-coding-system
        :desc "LaTeX preview"
        "l" #'latex-preview-pane
-       :desc "fold/toggle"    ;folds keys accessable with z in normal mode too
-       "a" #'+fold/toggle     ;with similar keys but less explicit prefix
-       :desc "blog"
-       "b" #'easy-hugo
-       :desc "org link display"
-       "d" #'org-toggle-link-display
-       :desc "fold/open-all"
-       "r" #'+fold/open-all
        :desc "fold/close-all"
        "m" #'+fold/close-all
-       :desc "vectorise"
-       "v" #'vectorise
+       :desc "Norsk"
+       "n" #'lang-norsk
+       :desc "org-present"
+       "p" #'org-present
+       :desc "fold/open-all"
+       "r" #'+fold/open-all
+       :desc "org link show"
+       "s" #'org-toggle-link-display
        :desc "load-theme"
        "t" #'cycle-themes
+       :desc "vectorise"
+       "v" #'vectorise
        :desc "maximize buffer/window"
        "w" #'toggle-frame-maximized
        :desc "shutdown-server"

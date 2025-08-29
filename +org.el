@@ -155,8 +155,6 @@ INFO is a plist holding contextual information."
   (defun number-to-string (number)
     (format "%s" number))
 
-
-
   ;; Org-capture fix
   ;; ref https://github.com/hlissner/doom-emacs/issues/4832#issuecomment-831538124
   (advice-add #'org-capture :around
@@ -173,8 +171,10 @@ INFO is a plist holding contextual information."
       :localleader
       :desc "SRC block" "B" #'org-insert-structure-template)
 
-
 ;;; Other settings
+
+;; Enable variable-pitch-mode automatically for org buffers
+(add-hook 'org-mode-hook #'variable-pitch-mode)
 
 (defun my-org-capture-inbox ()
   "Capture to Inbox directly"
@@ -247,6 +247,72 @@ INFO is a plist holding contextual information."
   (not (member (nth 2 (org-heading-components)) org-done-keywords)))
 
 (setq org-refile-target-verify-function 'ybk/verify-refile-target)
+
+;; -------------------------------------------------------
+;; Visual Fill Column (Center Org Documents)
+;; -------------------------------------------------------
+
+;; (use-package! visual-fill-column
+;;   ;; :hook (org-present-mode . visual-fill-column-mode)
+;;   :config
+;;   (setq visual-fill-column-width 110
+;;         visual-fill-column-center-text t))
+
+;;; Presentation
+;; ----------------------------------------
+;; Org-Present + Olivetti Integration
+;; ----------------------------------------
+;; C-c C-n Next slide
+;; C-c C-p Previous slide
+;; C-c C-q Quit presentation
+
+(use-package! org-present
+  :hook ((org-present-mode . my/org-present-start)
+         (org-present-mode-quit . my/org-present-end)
+         (org-present-after-navigate-functions . my/org-present-prepare-slide))
+  :config
+  (defun my/org-present-prepare-slide (_buffer _heading)
+    ;; Show only top-level headlines
+    (org-overview)
+    ;; Unfold current entry
+    (org-show-entry)
+    ;; Show direct children but keep them collapsed
+    (org-show-children))
+
+  (defun my/org-present-start ()
+    ;; Enable olivetti for nice centering
+    (olivetti-mode 1)
+    ;; Optional: set olivetti width for slides
+    (setq olivetti-body-width 90)
+
+    ;; Increase font sizes for better readability
+    (setq-local face-remapping-alist
+                '((default (:height 1.6) variable-pitch)
+                  (org-document-title (:height 1.8) org-document-title)
+                  (org-level-1 (:height 1.5) org-level-1)
+                  (org-level-2 (:height 1.3) org-level-2)
+                  (org-code (:height 1.25) org-code)
+                  (org-verbatim (:height 1.25) org-verbatim)
+                  (org-block (:height 1.15) org-block)))
+
+    ;; Show inline images
+    (org-display-inline-images)
+    (org-present-hide-cursor)
+    ;; Better centering + wrapping
+    (visual-fill-column-mode 1)
+    (visual-line-mode 1))
+
+  (defun my/org-present-end ()
+    ;; Reset fonts
+    (setq-local face-remapping-alist nil)
+    ;; Disable olivetti when quitting org-present
+    (olivetti-mode -1)
+    ;; Remove inline images
+    (org-remove-inline-images)
+    (org-present-show-cursor)
+    ;; Stop centering
+    (visual-fill-column-mode 0)
+    (visual-line-mode 0)))
 
 
 ;;; Tips

@@ -58,6 +58,9 @@
 (package! rotate)
 (package! outshine)
 (package! rainbow-delimiters)
+(package! org-present)
+(package! visual-fill-column)
+(package! olivetti) ;resize window margin
 
 (package! ado-mode)
 ;; (package! ado-mode
