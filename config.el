@@ -122,25 +122,25 @@
 ;;   ;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
 ;;   )
 
-(setq corfu-auto-delay 0.5)
-(map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
+;; (setq corfu-auto-delay 0.5)
+;; (map! :i "M-SPC" #'completion-at-point)   ;; manual trigger
 
-;; Enable corfu in the minibuffer
-(use-package! corfu
-  :config
-  (defun corfu-enable-in-minibuffer ()
-    "Enable Corfu in the minibuffer if `completion-at-point' is bound."
-    (when (where-is-internal #'completion-at-point (list (current-local-map)))
-      ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
-      (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
-                  corfu-popupinfo-delay nil)
-      (corfu-mode 1)))
-  (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
+;; ;; Enable corfu in the minibuffer
+;; (use-package! corfu
+;;   :config
+;;   (defun corfu-enable-in-minibuffer ()
+;;     "Enable Corfu in the minibuffer if `completion-at-point' is bound."
+;;     (when (where-is-internal #'completion-at-point (list (current-local-map)))
+;;       ;; (setq-local corfu-auto nil) ;; Enable/disable auto completion
+;;       (setq-local corfu-echo-delay nil ;; Disable automatic echo and popup
+;;                   corfu-popupinfo-delay nil)
+;;       (corfu-mode 1)))
+;;   (add-hook 'minibuffer-setup-hook #'corfu-enable-in-minibuffer))
 
-;; orderless matching styles to include char-fold-to-regexp
-(use-package! orderless
-  :config
-  (add-to-list 'orderless-matching-styles 'char-fold-to-regexp))
+;; ;; orderless matching styles to include char-fold-to-regexp
+;; (use-package! orderless
+;;   :config
+;;   (add-to-list 'orderless-matching-styles 'char-fold-to-regexp))
 
 ;; smaller popup
 (custom-set-faces! '((corfu-popupinfo) :height 0.9))
@@ -292,6 +292,7 @@
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
   ;; (add-hook! 'ess-mode-hook #'run-ess-r-newest)
+
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
@@ -308,6 +309,62 @@
          :n "C-<up>" #'ess-readline))
   )
 
+;; Enable outline-based folding for ESS R buffers and integrate with Doom's fold system
+;; Fold include ## comments
+
+;; (after! ess-r-mode
+;;   ;; Enable outline-minor-mode
+;;   (add-hook 'ess-r-mode-hook #'outline-minor-mode)
+
+;;   ;; Make outline settings buffer-local
+;;   (add-hook 'ess-r-mode-hook
+;;     (lambda ()
+;;       (setq-local outline-regexp "##+\\s-*")
+;;       (setq-local outline-level
+;;                   (lambda ()
+;;                     (length (match-string 0))))
+;;       ;; Tell Doom to use outline as the folding provider
+;;       (setq-local +fold-provider-text 'outline)))
+;;   )
+
+;; ;; --- Doom Folding Integration for R and Markdown ---
+;; --- Custom Folding for R, Markdown, and Comment Headings ---
+(after! evil
+  ;; Universal function to enable outline folding
+  (defun +custom/enable-outline-folding ()
+    "Enable outline-minor-mode with custom settings for comment headings."
+    (outline-minor-mode 1)
+    ;; Match headings like ##, ###, #### with optional space
+    (setq-local outline-regexp "##+\\s-*")
+    ;; Compute heading level based on number of #
+    (setq-local outline-level
+                (lambda ()
+                  (length (match-string 0))))
+    ;; Tell Doom to use outline as the folding provider
+    (setq-local +fold-provider-text 'outline))
+
+  ;; Apply to ESS R mode
+  (add-hook 'ess-r-mode-hook #'+custom/enable-outline-folding)
+
+  ;; Apply to Markdown mode
+  (add-hook 'markdown-mode-hook
+            (lambda ()
+              (outline-minor-mode 1)
+              (setq-local outline-regexp "#+\\s-*")
+              (setq-local outline-level
+                          (lambda ()
+                            (length (match-string 0))))
+              (setq-local +fold-provider-text 'outline)))
+
+  ;; Optional: Add Doom-style keybindings for outline folding
+  (map! :map outline-minor-mode-map
+        :n "z a" #'outline-toggle-children
+        :n "z c" #'outline-hide-subtree
+        :n "z o" #'outline-show-subtree
+        :n "z m" #'outline-hide-body
+        :n "z r" #'outline-show-all))
+
+
 
 ;;; Quarto
 ;; Quarto is already included in Doom settings for ESS
@@ -321,6 +378,16 @@
 ;; (use-package! quarto-mode
 ;;   :when QUARTO-P)
 
+;; Enable tree-sitter globally
+;; Alternative to font-lock
+;; (setq +tree-sitter-enabled-modes '(poly-quarto-mode)) ;instead of font-lock
+
+;; (use-package! quarto-mode
+;;   :config
+;;   (setq +tree-sitter-enabled-modes '(poly-quarto-mode)) ;instead of font-lock
+;;   )
+
+;; alternative to running "quarto preview your-file.qmd"
 (after! ess
   (map! (:map markdown-mode-map
          :localleader
@@ -333,6 +400,9 @@
                      ("\\.ado\\'" . ado-mode)))
     (add-to-list 'auto-mode-alist pattern))
   (setq ado-stata-home "C:/Program Files/Stata18"))
+
+
+
 
 
 ;;;; Translate language
