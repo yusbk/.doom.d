@@ -289,11 +289,11 @@ INFO is a plist holding contextual information."
     (setq-local face-remapping-alist
                 '((default (:height 1.6) variable-pitch)
                   (org-document-title (:height 1.8) org-document-title)
-                  (org-level-1 (:height 1.5) org-level-1)
-                  (org-level-2 (:height 1.3) org-level-2)
-                  (org-code (:height 1.25) org-code)
-                  (org-verbatim (:height 1.25) org-verbatim)
-                  (org-block (:height 1.15) org-block)))
+                  (org-level-1 (:height 1.7) org-level-1)
+                  (org-level-2 (:height 1.5) org-level-2)
+                  (org-code (:height 1.3) org-code)
+                  (org-verbatim (:height 1.3) org-verbatim)
+                  (org-block (:height 1.2) org-block)))
 
     ;; Show inline images
     (org-display-inline-images)
