@@ -32,12 +32,13 @@
 (after! org
   ;; (add-hook! org-load
   (setq org-todo-keywords
-        '((sequence "TODO(t)" "NEXT(n)" "START(s)" "|" "DONE(d)")
+        '((sequence "TODO(t)" "IN-PROGRESS(i)" "NEXT(n)" "START(s)" "|" "DONE(d)")
           (sequence "HOLD(h@/!)" "|" "CANCELLED(c@/!)")))
 
   ;;Tetapkan warna keyword
   (setq org-todo-keyword-faces
         (quote (("TODO" :foreground "red" :weight bold)
+                ("IN-PROGRESS" :foreground "pink" :weight bold)
                 ("START" :foreground "orange" :weight bold)
                 ("NEXT" :foreground "purple" :weight bold)
                 ("DONE" :foreground "forest green" :weight bold)
