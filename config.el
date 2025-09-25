@@ -165,7 +165,9 @@
                  ("cdo" ,(concat "cd " hdir-dir-o " && ls -a"))
                  ("cdh" ,(concat "cd " hdir-dir-h " && ls -a"))
                  ("cdp" ,(concat hdir-dir-o "/Prosjekt/Rusdata && ls -a"))
-                 ("cd1" ,(concat shortcutonedrive " && ls -a"))))
+                 ("cd1" ,(concat shortcutonedrive " && ls -a"))
+                 ("cdm" ,(concat "cd " hdir-dir-h "/meetings && ls -a"))
+                 ))
   (set-eshell-alias! (car alias) (cadr alias)))
 
 ;; (map! :leader "o x" #'+eshell/frame) ;open shell at doc path
