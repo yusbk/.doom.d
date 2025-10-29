@@ -292,6 +292,37 @@
   (comint-copy-old-input)
   (setq this-command 'ess-readline))
 
+;; ;; Set default ESS R session to the default org-mode R session
+;; ;; https://www.fredgruber.org/post/ess_emacs_default_r_sessionv2/
+;; (defun get-org-current-rsession()
+;;   "When you are in an org file get the current R session based on global header, subtree, property or source code :session property whichever is relevant"
+;;   (interactive)
+;;   (let*
+;;       ((mylist (org-babel-get-src-block-info))
+;;        (prop (nth 2 mylist))
+;;        )
+;;     (progn
+;;       (setq lang (nth 0 mylist))
+;;       (when (string= "R" lang)
+;;         (setq session_name (cdr (assq :session prop)))
+;;         (message "R session name: %s" session_name)
+;;         (set-other-window-func session_name)
+;;         )
+;;       )
+;;     )
+;;   )
+
+;; (defun set-ess-R-process()
+;;   "set the process to session stored in session_name variable"
+;;   (when (string= "R" lang)
+;;     (message "Setting R session to %s" session_name)
+;;     (setq ess-local-process-name (process-name (get-buffer-process session_name)))
+;;     )
+;;   )
+
+;; (advice-add 'org-edit-special :before #'get-org-current-rsession)
+;; (advice-add 'org-edit-special :after #'set-ess-R-process)
+
 ;; Now configure ESS and keybindings
 (after! ess
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -301,12 +332,18 @@
          :localleader
          "T" #'test-R-buffer
          "s" #'ess-indent-region-with-styler
-         "g" #'run-ess-r-newest)
+         "g" #'run-ess-r-newest
+         "c '" #'polymode-toggle-chunk-narrowing
+         )
         (:map ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
          :i "M-'" #'my-add-match
-         :i "M-\\" #'my-add-pipe)
+         :i "M-\\" #'my-add-pipe
+         ;; Same function with M-n C-t
+         :i "C-c '" #'polymode-toggle-chunk-narrowing
+         :n "C-c '" #'polymode-toggle-chunk-narrowing
+         )
         (:map inferior-ess-r-mode-map
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
