@@ -82,7 +82,7 @@
         org-agenda-hide-tags-regexp "."
         )
 
-  ;; Shortcuts for codeblock using C-c C-,
+  ;; Alternative is to use shortcuts for codeblock using C-c C-,
   (setq org-structure-template-alist '(("a" . "export ascii")
                                        ("c" . "center")
                                        ("C" . "comment")
@@ -91,8 +91,8 @@
                                        ("h" . "export html")
                                        ("l" . "export latex")
                                        ("q" . "quote")
-                                       ("r" . "SRC R")
-                                       ("s" . "SRC")
+                                       ("r" . "src R")
+                                       ("s" . "src")
                                        ("S" . "src sh")
                                        ("v" . "verse")
                                        ("el" . "src emacs-lisp")
