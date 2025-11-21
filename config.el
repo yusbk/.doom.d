@@ -556,9 +556,8 @@
           (clojure-mode    . 2)
           (emacs-lisp-mode . 2)))
   :config
-  ;; your keybindings etc...
   (map! :map copilot-completion-map
-        :i "C-<return>" #'copilot-accept-completion       ; Alternative: more explicit
+        :i "C-<return>" #'copilot-accept-completion
         :i "M-<return>" #'copilot-accept-completion-by-word
         :i "C-'"        #'copilot-accept-completion-by-line
         :i "M-["        #'copilot-next-completion
