@@ -22,7 +22,7 @@
 
        :completion
        (company           ; the ultimate code completion backend
-        ;; +childframe
+        +childframe
         +tng              ; Enables completion using only TAB
         )
        (corfu +orderless)  ; complete with cap(f), cape and a flying feather!

@@ -472,3 +472,34 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
        (progn
          (message "File path copied: %s" fpath)
          fpath)))))
+
+
+;;; =============================
+;;; GitHub Copilot Integration
+;;; =============================
+;; Ensure Node.js is install by typing node -v
+;; run this to install copilot-language-server
+;; npm install @github/copilot-language-server
+;; Then M-x copilot-login
+;; https://github.com/copilot-emacs/copilot.el
+;; Activate (company +childframe)
+
+;; accept completion from copilot and fallback to company
+
+(use-package! copilot
+  :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)
+              ("C-n" . 'copilot-next-completion)
+              ("C-p" . 'copilot-previous-completion))
+
+  :config
+  ;; Set indentation levels for various modes
+  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+  (add-to-list 'copilot-indentation-alist '(org-mode 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode 2))
+  (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))

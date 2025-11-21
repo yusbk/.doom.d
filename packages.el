@@ -62,6 +62,12 @@
 (package! visual-fill-column)
 (package! olivetti) ;resize window margin
 
+;; Copilot
+;; (package! copilot :recipe (:host github :repo "zerolfx/copilot.el"))
+(package! copilot
+  :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
+
+
 (package! ado-mode)
 ;; (package! ado-mode
 ;;   :recipe (:host github :repo "louabill/ado-mode"
