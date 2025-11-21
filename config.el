@@ -328,6 +328,9 @@
   (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
   ;; (add-hook! 'ess-mode-hook #'run-ess-r-newest)
 
+  ;; Don't ask to save workspace image
+  (setq inferior-R-args "--no-save --no-restore-history")
+
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
