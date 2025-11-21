@@ -7,7 +7,7 @@
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
 (setq user-full-name "Yusman Kamaleri"
-      buser-mail-address "ykamamaleri@gmail.com")
+      user-mail-address "ykamamaleri@gmail.com")
 
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
@@ -105,40 +105,24 @@
 ;;; =============================
 ;;; Git and Shell Configuration
 ;;; =============================
-(after! exec-path
-  ;; Add Git binaries to exec-path and PATH for subprocesses
-  (add-to-list 'exec-path "C:/Program Files/Git/usr/bin")
-  (setenv "PATH" (concat "C:/Program Files/Git/usr/bin;" (getenv "PATH"))))
+;; Use Error Handling to avoid issues if Git or Bash paths do not exist
+(when IS-WINDOWS
+  (after! exec-path
+    (let ((git-bin "C:/Program Files/Git/usr/bin"))
+      (when (file-directory-p git-bin)
+        (add-to-list 'exec-path git-bin)
+        (setenv "PATH" (concat git-bin ";" (getenv "PATH"))))))
 
-(after! eshell
-  ;; Configure Bash shell for Windows
-  (setq explicit-shell-file-name "C:/Program Files/Git/bin/bash.exe"
-        shell-file-name explicit-shell-file-name))
+  (after! eshell
+    (let ((bash-path "C:/Program Files/Git/bin/bash.exe"))
+      (when (file-executable-p bash-path)
+        (setq explicit-shell-file-name bash-path
+              shell-file-name bash-path)))))
 
 ;;; =============================
 ;;; General Settings
 ;;; =============================
 (setq evil-want-fine-undo t) ; Fine-grained undo in Evil mode
-
-;;; =============================
-;;; Smart TAB
-;;; ============================
-
-(defun my/smart-tab ()
-  "Confirm Corfu if visible; else accept Copilot; else indent."
-  (interactive)
-  (cond
-   ((and (bound-and-true-p corfu-mode)
-         (or (fboundp 'corfu-popup-visible-p) ; newer corfu
-             (boundp 'corfu--candidates)))    ; fallback for older
-    (corfu-insert))
-   ((and (boundp 'copilot--overlay) copilot--overlay)
-    (copilot-accept-completion))
-   (t
-    (indent-for-tab-command))))
-
-;; Bind globally if desired (you can comment this out if you prefer separate keys)
-(map! :i "<tab>" #'my/smart-tab)
 
 ;;; =============================
 ;;; Format on Save (Selective)
@@ -373,7 +357,7 @@
   :commands (er/expand-region er/contract-region)
   :config
   ;; Better selection than viw
-  (map! :nvig "C-'" #'er/expand-region)
+  (map! :nvig "C-=" #'er/expand-region)
   (map! (:map 'override
          :v "v" #'er/expand-region
          :v "V" #'er/contract-region)))
@@ -401,32 +385,69 @@
 ;;; =============================
 ;;; Flyspell Configuration
 ;;; =============================
+;; (after! flyspell
+;;   ;; Windows-specific settings
+;;   (when IS-WINDOWS
+;;     (setenv "DICPATH" "C:/Emacstillegg/dictionaries")
+;;     (setq ispell-program-name "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe"
+;;           lang-norsk "nb_NO"
+;;           lang-eng "en_GB"))
+
+;;   ;; Linux-specific settings
+;;   (when IS-LINUX
+;;     (setq ispell-program-name "aspell"
+;;           lang-norsk "norsk"
+;;           lang-eng "english"))
+
+;;   ;; Functions to switch language
+;;   (defun lang-norsk ()
+;;     "Switch Flyspell to Norwegian."
+;;     (interactive)
+;;     (ispell-change-dictionary lang-norsk)
+;;     (flyspell-buffer))
+
+;;   (defun lang-eng ()
+;;     "Switch Flyspell to English."
+;;     (interactive)
+;;     (ispell-change-dictionary lang-eng)
+;;     (flyspell-buffer)))
+
+;; Flyspell with error handling and better keybindings
 (after! flyspell
-  ;; Windows-specific settings
   (when IS-WINDOWS
-    (setenv "DICPATH" "C:/Emacstillegg/dictionaries")
-    (setq ispell-program-name "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe"
-          lang-norsk "nb_NO"
-          lang-eng "en_GB"))
+    (let ((dict-path "C:/Emacstillegg/dictionaries")
+          (hunspell-path "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe"))
+      (when (and (file-directory-p dict-path)
+                 (file-executable-p hunspell-path))
+        (setenv "DICPATH" dict-path)
+        (setq ispell-program-name hunspell-path
+              ispell-local-dictionary "nb_NO"
+              ispell-local-dictionary-alist
+              '(("nb_NO" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "nb_NO") nil utf-8))))))
 
-  ;; Linux-specific settings
   (when IS-LINUX
-    (setq ispell-program-name "aspell"
-          lang-norsk "norsk"
-          lang-eng "english"))
+    (setq ispell-program-name "aspell"))
 
-  ;; Functions to switch language
-  (defun lang-norsk ()
+  ;; Better language switching functions
+  (defun my/flyspell-norwegian ()
     "Switch Flyspell to Norwegian."
     (interactive)
-    (ispell-change-dictionary lang-norsk)
-    (flyspell-buffer))
+    (ispell-change-dictionary (if IS-WINDOWS "nb_NO" "norsk"))
+    (flyspell-buffer)
+    (message "Flyspell language: Norwegian"))
 
-  (defun lang-eng ()
+  (defun my/flyspell-english ()
     "Switch Flyspell to English."
     (interactive)
-    (ispell-change-dictionary lang-eng)
-    (flyspell-buffer)))
+    (ispell-change-dictionary (if IS-WINDOWS "en_GB" "english"))
+    (flyspell-buffer)
+    (message "Flyspell language: English"))
+
+  ;; Add keybindings
+  (map! :leader
+        (:prefix ("t" . "toggle")
+         :desc "Norwegian spell" "sn" #'my/flyspell-norwegian
+         :desc "English spell" "se" #'my/flyspell-english)))
 
 ;;; =============================
 ;;; Outshine for Emacs Lisp Navigation
@@ -464,28 +485,9 @@
  "gpulls" "git pull --recurse-submodules")
 
 ;;; =============================
-;;; Misc: Copy Current File Path
-;;; =============================
-(defun xah-copy-file-path (&optional dir-path-only-p)
-  "Copy current buffer's file path or directory to kill-ring.
-If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
-  (interactive "P")
-  (let ((fpath (if (eq major-mode 'dired-mode)
-                   (mapconcat 'identity (dired-get-marked-files) "\n")
-                 (or (buffer-file-name) default-directory))))
-    (kill-new
-     (if dir-path-only-p
-         (progn
-           (message "Directory path copied: %s" (file-name-directory fpath))
-           (file-name-directory fpath))
-       (progn
-         (message "File path copied: %s" fpath)
-         fpath)))))
-
-
-;;; =============================
 ;;; Corfu (modern CAPF completion)
 ;;; =============================
+
 (use-package! corfu
   :init
   (setq corfu-auto t
@@ -493,27 +495,29 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
         corfu-auto-prefix 1
         corfu-cycle t
         corfu-preselect 'valid
-        corfu-quit-no-match t
-        corfu-quit-at-boundary nil
+        corfu-quit-no-match 'separator  ; Better: quit only at separator
+        corfu-quit-at-boundary 'separator
         corfu-scroll-margin 2
         corfu-popupinfo-delay 0.2)
   :config
   (global-corfu-mode 1)
   (corfu-popupinfo-mode 1)
 
-  ;; Avoid TAB; keep Copilot on its own keys
+  ;; Keep Corfu separate from Copilot - use different keys
   (map! :map corfu-map
-        :i "RET"   #'corfu-insert
-        :i "C-n"   #'corfu-next
-        :i "C-p"   #'corfu-previous
-        :i "M-/"   #'corfu-info
-        :i "C-g"   #'corfu-quit)
+        :i "RET"     #'corfu-insert
+        :i "<tab>"   #'corfu-next          ; Alternative navigation
+        :i "<backtab>" #'corfu-previous
+        :i "M-d"     #'corfu-info-documentation
+        :i "M-l"     #'corfu-info-location
+        :i "C-g"     #'corfu-quit)
 
-  ;; If you use Evil, intercept to keep corfu responsive in insert mode
   (after! evil
     (add-hook 'corfu-mode-hook
-              (lambda () (evil-make-intercept-map corfu-map))))
-  )
+              (lambda ()
+                (evil-make-intercept-map corfu-map)
+                ;; Ensure TAB works in corfu popup
+                (evil-normalize-keymaps)))))
 
 (custom-set-faces!
   '((corfu-popupinfo) :height 0.9))
@@ -540,36 +544,104 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
 ;; Then M-x copilot-login
 ;; https://github.com/copilot-emacs/copilot.el
 ;; Activate (company +childframe)
+
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
+  :init
+  ;; Make sure this is defined before copilot-mode runs ie. indentation 2 spaces
+  (setq copilot-indentation-alist
+        '((prog-mode       . 2)
+          (org-mode        . 2)
+          (text-mode       . 2)
+          (clojure-mode    . 2)
+          (emacs-lisp-mode . 2)))
   :config
+  ;; your keybindings etc...
   (map! :map copilot-completion-map
-        :i "C-;"   #'copilot-accept-completion
-        :i "C-:"   #'copilot-accept-completion-by-word
-        :i "C-'"   #'copilot-accept-completion-by-line
-        :i "C-n"   #'copilot-next-completion
-        :i "C-p"   #'copilot-previous-completion)
-
-  ;; Keep your indentation preferences
-  (dolist (pair '((prog-mode . 2)
-                  (org-mode . 2)
-                  (text-mode . 2)
-                  (clojure-mode . 2)
-                  (emacs-lisp-mode . 2)))
-    (add-to-list 'copilot-indentation-alist pair))
+        :i "C-<return>" #'copilot-accept-completion       ; Alternative: more explicit
+        :i "M-<return>" #'copilot-accept-completion-by-word
+        :i "C-'"        #'copilot-accept-completion-by-line
+        :i "M-["        #'copilot-next-completion
+        :i "M-]"        #'copilot-previous-completion)
   )
 
-;; Optional: smart TAB (only if you want TAB to integrate Corfu + Copilot)
-;; (defun my/smart-tab ()
-;;   "Confirm Corfu if visible; else accept Copilot; else indent."
-;;   (interactive)
-;;   (cond
-;;    ((and (bound-and-true-p corfu-mode)
-;;          (or (fboundp 'corfu-popup-visible-p)
-;;              (boundp 'corfu--candidates)))
-;;     (corfu-insert))
-;;    ((and (boundp 'copilot--overlay) copilot--overlay)
-;;     (copilot-accept-completion))
-;;    (t
-;;     (indent-for-tab-command))))
+;;; =============================
+;;; Smart TAB with Better Corfu Detection
+;;; =============================
+(defun my/smart-tab ()
+  "Confirm Corfu if visible; else accept Copilot; else indent."
+  (interactive)
+  (cond
+   ;; Check if corfu popup is actually visible
+   ((and (bound-and-true-p corfu-mode)
+         (frame-live-p corfu--frame))
+    (corfu-insert))
+   ;; Check if copilot has a suggestion
+   ((and (bound-and-true-p copilot-mode)
+         (boundp 'copilot--overlay)
+         copilot--overlay)
+    (copilot-accept-completion))
+   ;; Default: indent
+   (t
+    (indent-for-tab-command))))
 
+(map! :i "<tab>" #'my/smart-tab)
+
+;;; =============================
+;;; ADDITIONAL: Useful Helper Function
+;;; =============================
+(defun my/show-keybinding-conflicts ()
+  "Show potential keybinding conflicts in current buffer."
+  (interactive)
+  (let ((conflicts '()))
+    (message "Check *Messages* buffer for keybinding information")
+    (describe-bindings)))
+
+;;; =============================
+;;; Misc: Copy Current File Path
+;;; =============================
+(defun xah-copy-file-path (&optional dir-path-only-p)
+  "Copy current buffer's file path or directory to kill-ring.
+If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
+  (interactive "P")
+  (let ((fpath (if (eq major-mode 'dired-mode)
+                   (mapconcat 'identity (dired-get-marked-files) "\n")
+                 (or (buffer-file-name) default-directory))))
+    (kill-new
+     (if dir-path-only-p
+         (progn
+           (message "Directory path copied: %s" (file-name-directory fpath))
+           (file-name-directory fpath))
+       (progn
+         (message "File path copied: %s" fpath)
+         fpath)))))
+
+;;; ============================
+;;; External settings
+;;; ============================
+;; Load my custom org settings
+(load! "+bindings.el")
+(load! "+org.el")
+
+
+;; Guide to use Daemon and Client for Windows
+;; Create a EmacsClient shortcut on desktop eg. EmacsClient
+;; Add in Target: C:\path\to\emacsclientw.exe -n -c --a ""
+;; Alternatively add shortcut key with Ctrl + Alt + E
+;; Start in is where Emacs will start with dired or M-x find-file
+
+;; Open startup folder by running the command shell:startup in file explorer
+;; Create a shortcut inside startup folder and rename to .bat ie. batch file
+;; Add the codes below in the batch file where rem is "remark" for comment
+;; rem Sets HOME for current shell
+;; rem %APPDATA% is where C:\Users\<username>\AppData\Roaming is
+;; set HOME=%HOME%
+
+;; rem Clean previous server file info first
+;; del /q ""%HOME%\\.emacs.d\\server\\*""
+
+;; rem Start the Emacs daemon/server with HOME as the default directory
+;; C:\Users\ybka\scoop\apps\emacs\current\bin\runemacs.exe --daemon
+
+;; rem Open a client frame
+;; start "" "C:\Users\%USERNAME%\Desktop\emacsclientw.exe - Shortcut.lnk"

@@ -16,7 +16,7 @@
        :desc "copy absolute dir path"
        "d" #'xah-copy-file-path
        :desc "English"
-       "e" #'lang-eng
+       "e" #'my/flyspell-english
        :desc "Inbox"
        "i" #'open-inbox-file
        ;; :desc "file-other-window"
@@ -31,7 +31,7 @@
        :desc "fold/close-all"
        "m" #'+fold/close-all
        :desc "Norsk"
-       "n" #'lang-norsk
+       "n" #'my/flyspell-norwegian
        :desc "org-present"
        "p" #'org-present
        :desc "fold/open-all"
