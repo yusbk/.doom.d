@@ -21,16 +21,16 @@
        ;;layout            ; auie,ctsrnm is the superior home row
 
        :completion
-       (company           ; the ultimate code completion backend
-        +childframe
-        +tng              ; Enables completion using only TAB
-        )
+       ;; (company           ; the ultimate code completion backend
+       ;;  +childframe
+       ;;  +tng              ; Enables completion using only TAB
+       ;;  )
        (corfu +orderless)  ; complete with cap(f), cape and a flying feather!
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
-       vertico           ; the search engine of the future
-
+       (vertico           ; the search engine of the future
+        +icons)
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does

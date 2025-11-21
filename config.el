@@ -121,15 +121,24 @@
 (setq evil-want-fine-undo t) ; Fine-grained undo in Evil mode
 
 ;;; =============================
-;;; Corfu Completion (Lazy Loading)
-;;; =============================
-(use-package! corfu
-  :hook (prog-mode . corfu-mode)
-  :config
-  (setq corfu-auto t
-        corfu-auto-delay 0.2))
+;;; Smart TAB
+;;; ============================
 
-(custom-set-faces! '((corfu-popupinfo) :height 0.9))
+(defun my/smart-tab ()
+  "Confirm Corfu if visible; else accept Copilot; else indent."
+  (interactive)
+  (cond
+   ((and (bound-and-true-p corfu-mode)
+         (or (fboundp 'corfu-popup-visible-p) ; newer corfu
+             (boundp 'corfu--candidates)))    ; fallback for older
+    (corfu-insert))
+   ((and (boundp 'copilot--overlay) copilot--overlay)
+    (copilot-accept-completion))
+   (t
+    (indent-for-tab-command))))
+
+;; Bind globally if desired (you can comment this out if you prefer separate keys)
+(map! :i "<tab>" #'my/smart-tab)
 
 ;;; =============================
 ;;; Format on Save (Selective)
@@ -475,7 +484,55 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
 
 
 ;;; =============================
-;;; GitHub Copilot Integration
+;;; Corfu (modern CAPF completion)
+;;; =============================
+(use-package! corfu
+  :init
+  (setq corfu-auto t
+        corfu-auto-delay 0.15
+        corfu-auto-prefix 1
+        corfu-cycle t
+        corfu-preselect 'valid
+        corfu-quit-no-match t
+        corfu-quit-at-boundary nil
+        corfu-scroll-margin 2
+        corfu-popupinfo-delay 0.2)
+  :config
+  (global-corfu-mode 1)
+  (corfu-popupinfo-mode 1)
+
+  ;; Avoid TAB; keep Copilot on its own keys
+  (map! :map corfu-map
+        :i "RET"   #'corfu-insert
+        :i "C-n"   #'corfu-next
+        :i "C-p"   #'corfu-previous
+        :i "M-/"   #'corfu-info
+        :i "C-g"   #'corfu-quit)
+
+  ;; If you use Evil, intercept to keep corfu responsive in insert mode
+  (after! evil
+    (add-hook 'corfu-mode-hook
+              (lambda () (evil-make-intercept-map corfu-map))))
+  )
+
+(custom-set-faces!
+  '((corfu-popupinfo) :height 0.9))
+
+;;; =============================
+;;; Cape (optional extra CAPF sources)
+;;; =============================
+;; Option A: install cape (declare in packages.el and doom sync), then:
+(use-package! cape
+  :init
+  ;; Keep it simple and robust
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  ;; Uncomment only if ispell is configured:
+  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
+  )
+
+;;; =============================
+;;; GitHub Copilot (no TAB conflicts)
 ;;; =============================
 ;; Ensure Node.js is install by typing node -v
 ;; run this to install copilot-language-server
@@ -483,23 +540,36 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
 ;; Then M-x copilot-login
 ;; https://github.com/copilot-emacs/copilot.el
 ;; Activate (company +childframe)
-
-;; accept completion from copilot and fallback to company
-
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
-  :bind (:map copilot-completion-map
-              ("<tab>" . 'copilot-accept-completion)
-              ("TAB" . 'copilot-accept-completion)
-              ("C-TAB" . 'copilot-accept-completion-by-word)
-              ("C-<tab>" . 'copilot-accept-completion-by-word)
-              ("C-n" . 'copilot-next-completion)
-              ("C-p" . 'copilot-previous-completion))
-
   :config
-  ;; Set indentation levels for various modes
-  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
-  (add-to-list 'copilot-indentation-alist '(org-mode 2))
-  (add-to-list 'copilot-indentation-alist '(text-mode 2))
-  (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
+  (map! :map copilot-completion-map
+        :i "C-;"   #'copilot-accept-completion
+        :i "C-:"   #'copilot-accept-completion-by-word
+        :i "C-'"   #'copilot-accept-completion-by-line
+        :i "C-n"   #'copilot-next-completion
+        :i "C-p"   #'copilot-previous-completion)
+
+  ;; Keep your indentation preferences
+  (dolist (pair '((prog-mode . 2)
+                  (org-mode . 2)
+                  (text-mode . 2)
+                  (clojure-mode . 2)
+                  (emacs-lisp-mode . 2)))
+    (add-to-list 'copilot-indentation-alist pair))
+  )
+
+;; Optional: smart TAB (only if you want TAB to integrate Corfu + Copilot)
+;; (defun my/smart-tab ()
+;;   "Confirm Corfu if visible; else accept Copilot; else indent."
+;;   (interactive)
+;;   (cond
+;;    ((and (bound-and-true-p corfu-mode)
+;;          (or (fboundp 'corfu-popup-visible-p)
+;;              (boundp 'corfu--candidates)))
+;;     (corfu-insert))
+;;    ((and (boundp 'copilot--overlay) copilot--overlay)
+;;     (copilot-accept-completion))
+;;    (t
+;;     (indent-for-tab-command))))
+

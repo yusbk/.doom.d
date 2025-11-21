@@ -67,6 +67,8 @@
 (package! copilot
   :recipe (:host github :repo "copilot-emacs/copilot.el" :files ("*.el")))
 
+;; Extra CAPF sources for Corfu
+(package! cape)
 
 (package! ado-mode)
 ;; (package! ado-mode
