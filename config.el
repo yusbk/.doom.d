@@ -341,26 +341,27 @@
          :taker   (gt-taker :text 'buffer :pick 'paragraph)
          :engines (list (gt-bing-engine) (gt-google-engine))
          :render  (gt-buffer-render)))
+  )
 
-  ;; Optional: Add keybindings for quick access
-  (map! :leader
-        (:prefix ("=" . "Translate")
-         :desc "Google Translate" "g" #'google-translate-smooth-translate
-         :desc "Go Translate" "t" #'gts-do-translate
-         :desc "Translate at point" "l" #'google-translate-at-point
-         :desc "Query Translate" "L" #'google-translate-query-translate)))
+;; Optional: Add keybindings for quick access
+(map! :leader
+      (:prefix ("=" . "Translate")
+       :desc "Google Translate" "g" #'google-translate-smooth-translate
+       :desc "Go Translate" "t" #'gts-do-translate
+       :desc "Translate at point" "l" #'google-translate-at-point
+       :desc "Query Translate" "L" #'google-translate-query-translate))
 
 ;;; =============================
 ;;; Region Selection (Expand/Contract)
 ;;; =============================
 (use-package! expand-region
-  :commands (er/expand-region er/contract-region)
-  :config
-  ;; Better selection than viw
-  (map! :nvig "C-=" #'er/expand-region)
-  (map! (:map 'override
-         :v "v" #'er/expand-region
-         :v "V" #'er/contract-region)))
+  :commands (er/expand-region er/contract-region))
+
+;; Better selection than keybind 'viw'
+(map! :nvig "C-=" #'er/expand-region)
+(map! (:map 'override
+       :v "v" #'er/expand-region
+       :v "V" #'er/contract-region))
 
 ;;; =============================
 ;;; Window Management
@@ -378,9 +379,11 @@
 ;;; Beacon (Cursor Blink)
 ;;; =============================
 (use-package! beacon
-  :commands beacon-blink
-  :config
-  (map! :leader "c b" #'beacon-blink))
+  :commands beacon-blink)
+
+(map! :leader
+      :prefix ("c" . "code")
+      :desc "Beacon blink" "b" #'beacon-blink)
 
 ;;; =============================
 ;;; Flyspell Configuration
@@ -444,10 +447,10 @@
     (message "Flyspell language: English"))
 
   ;; Add keybindings
-  (map! :leader
-        (:prefix ("t" . "toggle")
-         :desc "Norwegian spell" "sn" #'my/flyspell-norwegian
-         :desc "English spell" "se" #'my/flyspell-english))
+  ;; (map! :leader
+  ;;       (:prefix ("t" . "toggle")
+  ;;        :desc "Norwegian spell" "sn" #'my/flyspell-norwegian
+  ;;        :desc "English spell" "se" #'my/flyspell-english))
   )
 
 ;;; =============================
