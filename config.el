@@ -386,37 +386,10 @@
       :desc "Beacon blink" "b" #'beacon-blink)
 
 ;;; =============================
-;;; Flyspell Configuration
+;;; Flyspell All Modes
 ;;; =============================
-;; (after! flyspell
-;;   ;; Windows-specific settings
-;;   (when IS-WINDOWS
-;;     (setenv "DICPATH" "C:/Emacstillegg/dictionaries")
-;;     (setq ispell-program-name "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe"
-;;           lang-norsk "nb_NO"
-;;           lang-eng "en_GB"))
-
-;;   ;; Linux-specific settings
-;;   (when IS-LINUX
-;;     (setq ispell-program-name "aspell"
-;;           lang-norsk "norsk"
-;;           lang-eng "english"))
-
-;;   ;; Functions to switch language
-;;   (defun lang-norsk ()
-;;     "Switch Flyspell to Norwegian."
-;;     (interactive)
-;;     (ispell-change-dictionary lang-norsk)
-;;     (flyspell-buffer))
-
-;;   (defun lang-eng ()
-;;     "Switch Flyspell to English."
-;;     (interactive)
-;;     (ispell-change-dictionary lang-eng)
-;;     (flyspell-buffer)))
-
-;; Flyspell with error handling and better keybindings
 (after! flyspell
+  ;; Windows-specific settings
   (when IS-WINDOWS
     (let ((dict-path "C:/Emacstillegg/dictionaries")
           (hunspell-path "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe"))
@@ -428,10 +401,23 @@
               ispell-local-dictionary-alist
               '(("nb_NO" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "nb_NO") nil utf-8))))))
 
+  ;; Linux-specific settings
   (when IS-LINUX
     (setq ispell-program-name "aspell"))
 
-  ;; Better language switching functions
+  ;; Enable flyspell for programming modes (comments/strings only)
+  (add-hook 'ess-r-mode-hook #'flyspell-prog-mode)
+  (add-hook 'emacs-lisp-mode-hook #'flyspell-prog-mode)
+
+  ;; Enable flyspell for text modes (everything)
+  (add-hook 'org-mode-hook #'flyspell-mode)
+  (add-hook 'markdown-mode-hook #'flyspell-mode)
+
+  ;; Optional: Add more programming modes
+  ;; (add-hook 'python-mode-hook #'flyspell-prog-mode)
+  ;; (add-hook 'js-mode-hook #'flyspell-prog-mode)
+
+  ;; Language switching functions
   (defun my/flyspell-norwegian ()
     "Switch Flyspell to Norwegian."
     (interactive)
@@ -445,13 +431,71 @@
     (ispell-change-dictionary (if IS-WINDOWS "en_GB" "english"))
     (flyspell-buffer)
     (message "Flyspell language: English"))
-
-  ;; Add keybindings
-  ;; (map! :leader
-  ;;       (:prefix ("t" . "toggle")
-  ;;        :desc "Norwegian spell" "sn" #'my/flyspell-norwegian
-  ;;        :desc "English spell" "se" #'my/flyspell-english))
   )
+
+;; Keybindings
+(map! :leader
+      (:prefix ("t" . "toggle")
+               (:prefix ("S" . "Spell lang")
+                :desc "Norwegian" "n" #'my/flyspell-norwegian
+                :desc "English" "e" #'my/flyspell-english
+                :desc "Prog mode" "p" #'flyspell-prog-mode
+                :desc "Full mode" "f" #'flyspell-mode
+                :desc "Buffer check" "b" #'flyspell-buffer)))
+
+;; =============================
+;; What Gets Checked in Each Mode?
+;; =============================
+
+;; Programming modes (R, Emacs Lisp, Python, etc.):
+;;   flyspell-prog-mode → ONLY comments and strings
+;;   Example in R:
+;;     my_variable <- 42          # ← Code: NOT checked
+;;     # This is a comentt        # ← Comment: CHECKED ✓
+;;     "This is a strng"          # ← String: CHECKED ✓
+
+;; Text modes (Org, Markdown, plain text):
+;;   flyspell-mode → EVERYTHING checked
+;;   Example in Org:
+;;     * TODO Write report        # ← CHECKED ✓
+;;     This is a sentance.        # ← CHECKED ✓ ("sentance" → "sentence")
+;;     - List item with typo      # ← CHECKED ✓
+
+;; Markdown example:
+;;   # Heading with Misstake     # ← CHECKED ✓
+;;   This paragraph has erors.   # ← CHECKED ✓
+;;   ```r
+;;   code_here <- 42             # ← NOT checked (inside code block)
+;;   ```
+
+;; Automatically choose the right flyspell mode based on buffer type
+(defun my/smart-flyspell-mode ()
+  "Enable appropriate flyspell mode based on major mode."
+  (interactive)
+  (cond
+   ;; Programming modes: only check comments/strings
+   ((derived-mode-p 'prog-mode)
+    (flyspell-prog-mode))
+   ;; Text modes: check everything
+   ((derived-mode-p 'text-mode)
+    (flyspell-mode))
+   ;; Org mode: check everything
+   ((derived-mode-p 'org-mode)
+    (flyspell-mode))))
+
+;; Enable smart flyspell automatically
+(add-hook 'text-mode-hook #'my/smart-flyspell-mode)
+(add-hook 'prog-mode-hook #'my/smart-flyspell-mode)
+(add-hook 'org-mode-hook #'my/smart-flyspell-mode)
+
+;; Flyspell can be slow on large files - optimize it
+(after! flyspell
+  ;; Check less frequently while typing
+  (setq flyspell-issue-message-flag nil  ; Don't show messages
+        flyspell-issue-welcome-flag nil) ; Don't show welcome message
+
+  ;; Only check visible text in large buffers
+  (setq flyspell-large-region 1000))     ; Adjust threshold as needed
 
 ;;; =============================
 ;;; Outshine for Emacs Lisp Navigation
