@@ -447,7 +447,8 @@
   (map! :leader
         (:prefix ("t" . "toggle")
          :desc "Norwegian spell" "sn" #'my/flyspell-norwegian
-         :desc "English spell" "se" #'my/flyspell-english)))
+         :desc "English spell" "se" #'my/flyspell-english))
+  )
 
 ;;; =============================
 ;;; Outshine for Emacs Lisp Navigation
@@ -543,18 +544,10 @@
 ;; npm install @github/copilot-language-server
 ;; Then M-x copilot-login
 ;; https://github.com/copilot-emacs/copilot.el
-;; Activate (company +childframe)
+;; Activate (company +childframe) if not using Corfu
 
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
-  :init
-  ;; Make sure this is defined before copilot-mode runs ie. indentation 2 spaces
-  (setq copilot-indentation-alist
-        '((prog-mode       . 2)
-          (org-mode        . 2)
-          (text-mode       . 2)
-          (clojure-mode    . 2)
-          (emacs-lisp-mode . 2)))
   :config
   (map! :map copilot-completion-map
         :i "C-<return>" #'copilot-accept-completion
@@ -562,7 +555,13 @@
         :i "C-'"        #'copilot-accept-completion-by-line
         :i "M-["        #'copilot-next-completion
         :i "M-]"        #'copilot-previous-completion)
-  )
+
+  ;; Make sure this is defined before copilot-mode runs ie. indentation 2 spaces
+  (add-to-list 'copilot-indentation-alist '(prog-mode 2))
+  (add-to-list 'copilot-indentation-alist '(org-mode 2))
+  (add-to-list 'copilot-indentation-alist '(text-mode 2))
+  (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
 
 ;;; =============================
 ;;; Smart TAB with Better Corfu Detection
