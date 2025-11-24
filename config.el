@@ -597,8 +597,10 @@
   :hook (prog-mode . copilot-mode)
   :config
   (map! :map copilot-completion-map
-        :i "C-<return>" #'copilot-accept-completion
-        :i "M-<return>" #'copilot-accept-completion-by-word
+        :i "<tab>" #'copilot-accept-completion
+        :i "TAB" #'copilot-accept-completion
+        :i "C-<tab>" #'copilot-accept-completion-by-word
+        :i "C-TAB" #'copilot-accept-completion-by-word
         :i "C-'"        #'copilot-accept-completion-by-line
         :i "M-["        #'copilot-next-completion
         :i "M-]"        #'copilot-previous-completion)
