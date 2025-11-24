@@ -241,7 +241,7 @@
 
 (after! ess
   ;; Disable workspace save prompt
-  (setq inferior-R-args "--no-save --no-restore-history")
+  (setq inferior-R-args "--no-save --no-restore-history --no-restore")
 
   ;; ;; Enable rainbow delimiters for programming modes
   ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
