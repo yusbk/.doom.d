@@ -592,25 +592,25 @@
 ;; Then M-x copilot-login
 ;; https://github.com/copilot-emacs/copilot.el
 ;; Activate (company +childframe) if not using Corfu
-
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
-  :config
-  (map! :map copilot-completion-map
-        :i "<tab>" #'copilot-accept-completion
-        :i "TAB" #'copilot-accept-completion
-        :i "C-<tab>" #'copilot-accept-completion-by-word
-        :i "C-TAB" #'copilot-accept-completion-by-word
-        :i "C-'"        #'copilot-accept-completion-by-line
-        :i "M-["        #'copilot-next-completion
-        :i "M-]"        #'copilot-previous-completion)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)
+              ("C-'"   . 'copilot-accept-completion-by-line)
+              ("C-n" . 'copilot-next-completion)
+              ("C-p" . 'copilot-previous-completion))
 
+  :config
   ;; Make sure this is defined before copilot-mode runs ie. indentation 2 spaces
   (add-to-list 'copilot-indentation-alist '(prog-mode 2))
   (add-to-list 'copilot-indentation-alist '(org-mode 2))
   (add-to-list 'copilot-indentation-alist '(text-mode 2))
   (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
+
 
 ;;; =============================
 ;;; Smart TAB with Better Corfu Detection
