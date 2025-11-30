@@ -203,6 +203,26 @@
          (prog-mode . rainbow-delimiters-mode)))   ;; For all programming modes
 
 ;;; =============================
+;;; tree-sitter Configuration
+;;; =============================
+
+;; (after! treesit
+;;   ;; Tell Emacs where to find grammars ie. *.dll files
+;;   (add-to-list 'treesit-extra-load-path "C:/Users/ykama/.emacs.d/tree-sitter/")
+
+;;   ;; ;; Associate ESS R mode with lang grammar
+;;   ;; (add-to-list 'tree-sitter-major-mode-language-alist '(ess-r-mode . r))
+
+;;   ;; ;; ;; Load the grammar
+;;   ;; ;; (tree-sitter-require 'r)
+
+;;   ;; ;; Enable tree-sitter and highlighting for R files
+;;   ;; (add-hook 'ess-r-mode-hook #'tree-sitter-mode)
+;;   ;; (add-hook 'ess-r-mode-hook #'tree-sitter-hl-mode)
+;;   )
+
+
+;;; =============================
 ;;; ESS Configuration
 ;;; =============================
 ;; Check R version quickly
@@ -388,6 +408,7 @@
 ;;; =============================
 ;;; Flyspell All Modes
 ;;; =============================
+;; Use folder "hunspell-msvc-Release-x64" in PATH to use ispell
 (after! flyspell
   ;; Windows-specific settings
   (when IS-WINDOWS
@@ -586,12 +607,12 @@
 ;;; =============================
 ;;; GitHub Copilot (no TAB conflicts)
 ;;; =============================
-;; Ensure Node.js is install by typing node -v
-;; run this to install copilot-language-server
-;; npm install @github/copilot-language-server
-;; Then M-x copilot-login
-;; https://github.com/copilot-emacs/copilot.el
-;; Activate (company +childframe) if not using Corfu
+;; See Requirements from copilot GitHub page: https://github.com/copilot-emacs/copilot.el, especially Node.js
+;; which can be downloaded from https://nodejs.org/en/download/ (Standalone binary recommended for Windows ie. zip)
+;; Unzip and add the folder path to your PATH environment variable. Check with `node -v` in terminal.
+;; Node.js needed to be able to install copilot-language-server with M-x copilot-install-server
+;; After installation run:  M-x copilot-login
+;; Activate (company +childframe) in init.el if not using Corfu
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
   :bind (:map copilot-completion-map
@@ -610,7 +631,6 @@
   (add-to-list 'copilot-indentation-alist '(text-mode 2))
   (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
-
 
 ;;; =============================
 ;;; Smart TAB with Better Corfu Detection
