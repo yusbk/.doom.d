@@ -42,10 +42,12 @@
        "t" #'cycle-themes
        :desc "vectorise"
        "v" #'vectorise
-       :desc "hide cursor"
+       :desc "org-present hide cursor"
        "x" #'org-present-hide-cursor
-       :desc "show cursor"
+       :desc "org-present show cursor"
        "y" #'org-present-show-cursor
+       :desc "blink cursor"
+       "z" #'beacon-blink
        :desc "maximize buffer/window"
        "w" #'toggle-frame-maximized
        :desc "shutdown-server"
