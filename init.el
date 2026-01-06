@@ -106,7 +106,8 @@
        (eval +overlay)     ; run code, run (also, repls)
        (lookup             ; navigate your code and its documentation
         +dictionary)
-       lsp               ; M-x vscode
+       (lsp               ; M-x vscode
+        +eglot)           ; use Eglot (built-in Emacs LSP client)
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -140,6 +141,7 @@
        (ess               ; emacs speaks statistics
         ;; +stan
         +tree-sitter
+        +lsp
         )
        ;;factor
        ;;faust             ; dsp, but you get to keep your soul
@@ -160,11 +162,13 @@
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
-       ;;latex             ; writing papers in Emacs has never been so fun
+       (latex             ; writing papers in Emacs has never been so fun
+        +lsp)
        ;;lean              ; for folks with too much to prove
        ;;ledger            ; be audit you can be
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       (markdown          ; writing docs for people to ignore
+        +lsp)
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
@@ -201,7 +205,9 @@
        (web               ; the tubes
         +tree-sitter
         )
-       yaml              ; JSON, but readable
+       (yaml              ; JSON, but readable
+        +tree-sitter
+        )
        ;;zig               ; C, but simpler
 
        :email

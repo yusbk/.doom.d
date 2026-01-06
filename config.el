@@ -206,31 +206,83 @@
 ;;; tree-sitter Configuration
 ;;; =============================
 
+
+;; ;; Log more detail when installing grammars
+;; (setq debug-on-error t)
+;; (setenv "CC" "C:/Emacstillegg/msys2-portable-v2.29.0-ucrt64-ucrt-x86_64/ucrt64/bin/gcc.exe")
+
+;; ;; Optional: ensure grammars install to a writable dir (Doom backports similar behavior)
+;; (setq treesit-extra-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
+
+
 ;; (after! treesit
-;;   ;; Tell Emacs where to find grammars ie. *.dll files
-;;   (add-to-list 'treesit-extra-load-path "C:/Users/ykama/.emacs.d/tree-sitter/")
+;;   ;; Remap klassiske modes -> ts-modes
+;;   (setq major-mode-remap-alist
+;;         '((json-mode . json-ts-mode)
+;;           (yaml-mode . yaml-ts-mode)))
 
-;;   ;; ;; Associate ESS R mode with lang grammar
-;;   ;; (add-to-list 'tree-sitter-major-mode-language-alist '(ess-r-mode . r))
+;;   ;; Installer grammars dersom de mangler.
+;;   ;; Emacs 30 har bedre auto-støtte, men vi gjør det eksplisitt.
+;;   (defun ybk/ensure-ts-grammars ()
+;;     "Installer nødvendige Tree-sitter-grammars for JSON/YAML."
+;;     (dolist (lang '(json yaml))
+;;       (unless (treesit-language-available-p lang)
+;;         (condition-case err
+;;             (progn
+;;               (message "Installerer treesit-grammar for %s ..." lang)
+;;               (treesit-install-language-grammar lang)
+;;               (message "OK: %s" lang))
+;;           (error
+;;            (message "Feil ved installasjon av %s: %s" lang err))))))
+;;   (ybk/ensure-ts-grammars))
 
-;;   ;; ;; ;; Load the grammar
-;;   ;; ;; (tree-sitter-require 'r)
+;;; =============================
+;;; JSON/YAML hooks
+;;; ============================
 
-;;   ;; ;; Enable tree-sitter and highlighting for R files
-;;   ;; (add-hook 'ess-r-mode-hook #'tree-sitter-mode)
-;;   ;; (add-hook 'ess-r-mode-hook #'tree-sitter-hl-mode)
-;;   )
+(add-hook 'json-ts-mode-hook
+          (lambda ()
+            ;; Valgfritt: recompute font-lock features
+            (when (fboundp 'treesit-font-lock-recompute-features)
+              (treesit-font-lock-recompute-features))
+            (display-line-numbers-mode 1)))
 
+(after! yaml-ts-mode
+  (setq yaml-indent-offset 2)
+  (add-hook 'yaml-ts-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'yaml-ts-mode-hook #'display-line-numbers-mode))
+
+;;; =============================
+;;; Formatter/format-on-save (valgfritt)
+;;; ============================
+;; Apheleia eller Doom format when tree-sitter modes ie. lang-ts-mode
+(after! apheleia
+  (setf (alist-get 'json-ts-mode apheleia-mode-alist) '(prettier)
+        (alist-get 'yaml-ts-mode apheleia-mode-alist) '(prettier)))
+
+;; Doom format-on-save via +format modul (hvis aktivert):
+(setq +format-with-lsp nil)   ; bruk formattere direkte, ikke via LSP
 
 ;;; =============================
 ;;; ESS Configuration
 ;;; =============================
+
+;; Sett riktig sti til Rterm.exe (oppdater versjonsstien til din R).
+(when (eq system-type 'windows-nt)
+  (setq inferior-ess-r-program "C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"))
+
 ;; Check R version quickly
 (defun check-r-version ()
   "Display the R version used by Emacs."
   (interactive)
   (message "R version: %s"
            (car (split-string (shell-command-to-string "R --version") "\n"))))
+
+;; Automatically set CRAN mirror when ESS R starts
+(add-hook 'ess-r-post-run-hook
+          (lambda ()
+            (ess-send-string (ess-get-process)
+                             "options(repos = c(CRAN='https://cran.rstudio.com'))\n")))
 
 ;; Disable line numbers in inferior ESS mode
 (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil)
@@ -266,6 +318,12 @@
   ;; ;; Enable rainbow delimiters for programming modes
   ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
 
+  (setq ess-indent-with-fancy-comments nil
+        ess-ask-for-ess-directory nil
+        ess-roxy-str "#'")
+  ;; Start R i samme vindu
+  (setq ess-switch-process t)
+
   ;; Keybindings for ESS
   (map! (:map ess-mode-map
          :localleader
@@ -284,6 +342,44 @@
          :i "M--" #'ess-cycle-assign
          :i "M-+" #'my-add-column
          :n "C-<up>" #'ess-readline)))
+
+;; -----------------------------
+;; Eglot for R (via languageserver)
+;; -----------------------------
+;; Installer eerst i R: install.packages("languageserver")
+;; install.packages(c("languageserver", "lintr", "styler"))
+(add-hook 'ess-r-mode-hook
+          (lambda ()
+            (require 'eglot)
+            (eglot-ensure)))
+
+
+;; Optional: make sure Eglot knows the server program for R
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
+
+;; Handy keybindings (Doom defaults cover many; these are extra examples)
+(map! :map ess-r-mode-map
+      :localleader
+      "l s" #'eglot
+      "l r" #'eglot-reconnect
+      "l f" #'eglot-format
+      "l a" #'eglot-code-actions
+      "l d" #'eldoc  ;; hover docs are also on 'K' (doom’s lookup)
+      )
+
+;; Optional: show diagnostics inline
+(setq eglot-report-progress t
+      eglot-events-buffer-size 0)
+
+;; If you use 'apheleia' to format via styler:
+(with-eval-after-load 'apheleia
+  (setf (alist-get 'R apheleia-formatters)
+        '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
+  (add-hook 'ess-r-mode-hook #'apheleia-mode))
+
+
 
 ;;; =============================
 ;;; Outline Folding for ESS & Markdown
@@ -610,6 +706,7 @@
 ;; See Requirements from copilot GitHub page: https://github.com/copilot-emacs/copilot.el, especially Node.js
 ;; which can be downloaded from https://nodejs.org/en/download/ (Standalone binary recommended for Windows ie. zip)
 ;; Unzip and add the folder path to your PATH environment variable. Check with `node -v` in terminal.
+;; Run `doom sync` after adding copilot to the PATH after restarting
 ;; Node.js needed to be able to install copilot-language-server with M-x copilot-install-server
 ;; After installation run:  M-x copilot-login
 ;; Activate (company +childframe) in init.el if not using Corfu
