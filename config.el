@@ -154,7 +154,7 @@
 ;;; =============================
 (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir))
 
-(setq my-themes '(doom-palenight doom-gruvbox doom-one-light doom-flatwhite))
+(setq my-themes '(doom-gruvbox doom-palenight doom-one-light doom-flatwhite))
 (setq my-theme-index 0)
 
 (defun cycle-themes ()
