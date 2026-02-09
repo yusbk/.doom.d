@@ -62,6 +62,7 @@
 (package! visual-fill-column)
 (package! olivetti) ;resize window margin
 (package! apheleia)  ; enkel formatter-styring
+(package! minimap) ;code overview in side window
 
 ;; Copilot
 ;; (package! copilot :recipe (:host github :repo "zerolfx/copilot.el"))

@@ -186,6 +186,23 @@
   (consult-buffer))
 
 ;;; =============================
+;;; Minimap
+;;; ============================
+(use-package! minimap
+  :config
+  ;; Always show minimap on the right
+  (setq minimap-window-location 'right
+        minimap-width-fraction 0.1
+        minimap-major-modes '(prog-mode org-mode))
+  ;; Automatically open minimap when you open a file
+  ;; (add-hook 'prog-mode-hook #'minimap-mode)
+  )
+
+(map! :leader
+      (:prefix ("o" . "open")
+       :desc "Toggle minimap" "m" #'minimap-mode))
+
+;;; =============================
 ;;; Evil Escape Settings
 ;;; =============================
 (after! evil-escape
