@@ -223,13 +223,25 @@
 ;;; tree-sitter Configuration
 ;;; =============================
 
+;; ;; Run `M-: treesit-extra-load-path' to see where grammars are installed eg. "C:/Users/ykama/.emacs.d/.local/etc/tree-sitter"
+;; ;; Download grammars manually here https://github.com/emacs-tree-sitter/tree-sitter-langs/releases
+;; ;; For Windows, add .dll file the folder shown by `treesit-extra-load-path' and rename to "tree-sitter-<lang>.dll" (e.g. tree-sitter-json.dll
+;; ;; or libyaml.dll or yaml.dll
+;; (use-package! tree-sitter-langs
+;;   :after tree-sitter)
 
 ;; ;; Log more detail when installing grammars
 ;; (setq debug-on-error t)
 ;; (setenv "CC" "C:/Emacstillegg/msys2-portable-v2.29.0-ucrt64-ucrt-x86_64/ucrt64/bin/gcc.exe")
 
 ;; ;; Optional: ensure grammars install to a writable dir (Doom backports similar behavior)
-;; (setq treesit-extra-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
+;; ;; (setq treesit-extra-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
+;; (setq treesit-extra-load-path
+;;       (list (expand-file-name "tree-sitter-grammars" user-emacs-directory)
+;;             (expand-file-name ".local/etc/tree-sitter" user-emacs-directory)))
+
+;; ;; Remap klassiske modes -> ts-modes
+;; (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode))
 
 
 ;; (after! treesit
@@ -237,6 +249,7 @@
 ;;   (setq major-mode-remap-alist
 ;;         '((json-mode . json-ts-mode)
 ;;           (yaml-mode . yaml-ts-mode)))
+
 
 ;;   ;; Installer grammars dersom de mangler.
 ;;   ;; Emacs 30 har bedre auto-støtte, men vi gjør det eksplisitt.
@@ -422,11 +435,22 @@
 
   ;; Doom-style folding keybindings
   (map! :map outline-minor-mode-map
-        :n "z a" #'outline-toggle-children
-        :n "z c" #'outline-hide-subtree
-        :n "z o" #'outline-show-subtree
-        :n "z m" #'outline-hide-body
-        :n "z r" #'outline-show-all))
+        :n "z T a" #'outline-toggle-children
+        :n "z T c" #'outline-hide-subtree
+        :n "z T o" #'outline-show-subtree
+        :n "z T m" #'outline-hide-body
+        :n "z T r" #'outline-show-all)
+  )
+
+;; (after! outline
+;;   (map! :map outline-minor-mode-map
+;;         :nv
+;;         (:prefix ("z T" . "Outline folding")
+;;          :desc "Toggle children" "a" #'outline-toggle-children
+;;          :desc "Hide subtree"    "c" #'outline-hide-subtree
+;;          :desc "Show subtree"    "o" #'outline-show-subtree
+;;          :desc "Hide body"       "m" #'outline-hide-body
+;;          :desc "Show all"        "r" #'outline-show-all)))
 
 ;;; =============================
 ;;; Quarto Integration
@@ -657,6 +681,7 @@
  "gb" "git branch"
  "gbd" "git branch -d $1"
  "gbD" "git branch -D $1"
+ "gbdO" "git push origin --delete $1"
  "gf" "git fetch $1"
  "gm" "git merge $1"
  "gmf" "git merge --no-ff $1"

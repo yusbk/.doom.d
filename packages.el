@@ -63,6 +63,7 @@
 (package! olivetti) ;resize window margin
 (package! apheleia)  ; enkel formatter-styring
 (package! minimap) ;code overview in side window
+(package! tree-sitter-langs)
 
 ;; Copilot
 ;; (package! copilot :recipe (:host github :repo "zerolfx/copilot.el"))
