@@ -317,6 +317,9 @@
 ;; Disable line numbers in inferior ESS mode
 (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil)
 
+;; Deactive fancy comments to handle # and ## the way I want it ie. no indentation
+(setq-hook! 'ess-r-mode-hook ess-indent-with-fancy-comments nil)
+
 ;; Helper functions for R coding
 (defun my-add-column () (interactive) (insert " := "))
 (defun my-add-match ()  (interactive) (insert " %in% "))
@@ -344,6 +347,9 @@
 (after! ess
   ;; Disable workspace save prompt
   (setq inferior-R-args "--no-save --no-restore-history --no-restore")
+
+  (setq ess-indent-with-fancy-comments nil
+        comment-style 'aligned)  ;; aligns comment text after code
 
   ;; ;; Enable rainbow delimiters for programming modes
   ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
