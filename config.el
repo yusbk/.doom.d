@@ -314,12 +314,6 @@
             (ess-send-string (ess-get-process)
                              "options(repos = c(CRAN='https://cran.rstudio.com'))\n")))
 
-;; Disable line numbers in inferior ESS mode
-(setq-hook! 'inferior-ess-mode-hook display-line-numbers nil)
-
-;; Deactive fancy comments to handle # and ## the way I want it ie. no indentation
-(setq-hook! 'ess-r-mode-hook ess-indent-with-fancy-comments nil)
-
 ;; Helper functions for R coding
 (defun my-add-column () (interactive) (insert " := "))
 (defun my-add-match ()  (interactive) (insert " %in% "))
@@ -347,9 +341,6 @@
 (after! ess
   ;; Disable workspace save prompt
   (setq inferior-R-args "--no-save --no-restore-history --no-restore")
-
-  (setq ess-indent-with-fancy-comments nil
-        comment-style 'aligned)  ;; aligns comment text after code
 
   ;; ;; Enable rainbow delimiters for programming modes
   ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
@@ -415,6 +406,22 @@
         '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
+;; ;; Disable line numbers in inferior ESS mode                  ;;
+;; (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil) ;;
+
+(after! ess-r-mode
+  (setq ess-style 'RStudio)
+  (setq comment-style 'aligned
+        ess-indent-with-fancy-comments nil)
+
+  ;; disable trailing ## in comments
+  (setq ess-fancy-comments nil)
+
+  ;; ensure comment prefix is exactly "## "
+  (setq comment-start "## "
+        comment-add 0
+        comment-style 'plain)
+  )
 
 
 ;;; =============================
