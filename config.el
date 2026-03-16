@@ -137,7 +137,7 @@
                  ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
                  ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
                  ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
-                 ("cdp" ,(concat hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
+                 ("cdr" ,(concat hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
                  ("cd1" ,(concat shortcutonedrive "; ls -a"))
                  ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
   (set-eshell-alias! (car alias) (cadr alias)))
@@ -154,7 +154,13 @@
 ;;; =============================
 (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir))
 
-(setq my-themes '(doom-gruvbox doom-palenight doom-one-light doom-flatwhite))
+(setq my-themes '(doom-gruvbox
+                  ;; doom-palenight ;;
+                  doom-bluloco-light
+                  ;; doom-one-light ;;
+                  doom-city-lights
+                  doom-flatwhite
+                  ))
 (setq my-theme-index 0)
 
 (defun cycle-themes ()
@@ -363,6 +369,8 @@
          :i "M-+" #'my-add-column
          :i "M-'" #'my-add-match
          :i "M-\\" #'my-add-pipe
+         :i "C-|" (lambda () (interactive) (insert " |> "))
+         :i "C-%" (lambda () (interactive) (insert " %>% "))
          :i "C-c '" #'polymode-toggle-chunk-narrowing
          :n "C-c '" #'polymode-toggle-chunk-narrowing)
         (:map inferior-ess-r-mode-map
@@ -406,6 +414,25 @@
         '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
+;; Aline comments and pad to 70 columns with "-"
+(defun ybk/ess-align-comment-line (&optional width)
+  "Pad an R/ESS comment line with '-' to reach WIDTH (default 70 chars)."
+  (interactive)
+  (let* ((width (or width 70))
+         (line (buffer-substring-no-properties
+                (line-beginning-position) (line-end-position))))
+    (when (string-match "^\\(#+\\)\\s-*\\(.*\\)$" line)
+      (let* ((hashes (match-string 1 line))
+             (text   (string-trim (match-string 2 line)))
+             (base   (concat hashes " " text " "))
+             (padding (max 0 (- width (length base))))
+             (new-line (concat base (make-string padding ?-))))
+        (delete-region (line-beginning-position) (line-end-position))
+        (insert new-line)))))
+
+(map! :map ess-r-mode-map
+      "C-c -" #'ybk/ess-align-comment-line)
+
 ;; ;; Disable line numbers in inferior ESS mode                  ;;
 ;; (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil) ;;
 
@@ -414,13 +441,15 @@
   (setq comment-style 'aligned
         ess-indent-with-fancy-comments nil)
 
-  ;; disable trailing ## in comments
+  ;; disable trailing # in comments
   (setq ess-fancy-comments nil)
 
-  ;; ensure comment prefix is exactly "## "
-  (setq comment-start "## "
-        comment-add 0
-        comment-style 'plain)
+  ;; ensure comment prefix is exactly "# "
+  (add-hook 'ess-r-mode-hook
+            (lambda ()
+              (setq-local comment-start "# "
+                          comment-end ""
+                          comment-add 0)))
   )
 
 
