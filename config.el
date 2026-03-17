@@ -389,6 +389,7 @@
          :i "M-\\" #'my-add-pipe
          :i "C-|" (lambda () (interactive) (insert " |> "))
          :i "C-%" (lambda () (interactive) (insert " %>% "))
+         :i "C-i" (lambda () (interactive) (insert " %in% "))
          :i "C-c '" #'polymode-toggle-chunk-narrowing
          :n "C-c '" #'polymode-toggle-chunk-narrowing)
         (:map inferior-ess-r-mode-map
@@ -432,24 +433,36 @@
         '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
-;; Aline comments and pad to 70 columns with "-"
-(defun ybk/ess-align-comment-line (&optional width)
-  "Pad an R/ESS comment line with '-' to reach WIDTH (default 70 chars)."
+;; -- Commenting ---------------------------------------------------------------
+(defun ybk/align-comment-line-generic (&optional width)
+  "Pad comment line with '-' to reach WIDTH using buffer's `comment-start`.
+Only operates on comment-only lines starting with at least one `comment-start` char."
   (interactive)
-  (let* ((width (or width 70))
+  (let* ((width (or width (and (boundp 'fill-column) fill-column) 70))
+         (cstart (or comment-start "#"))
+         (re (concat "^\\([ \t]*\\)\\(" (regexp-quote cstart) "+\\)\\(?:[ \t]+\\(.*\\)\\)?$"))
          (line (buffer-substring-no-properties
                 (line-beginning-position) (line-end-position))))
-    (when (string-match "^\\(#+\\)\\s-*\\(.*\\)$" line)
-      (let* ((hashes (match-string 1 line))
-             (text   (string-trim (match-string 2 line)))
-             (base   (concat hashes " " text " "))
-             (padding (max 0 (- width (length base))))
+    (when (string-match re line)
+      (let* ((indent (match-string 1 line))
+             (hashes (match-string 2 line))
+             (text   (or (match-string 3 line) ""))
+             (text   (string-trim-right text))
+             (base   (concat indent
+                             hashes
+                             (if (string-empty-p text) "" " ")
+                             text
+                             " "))
+             (padding (max 0 (- width (string-width base))))
              (new-line (concat base (make-string padding ?-))))
         (delete-region (line-beginning-position) (line-end-position))
         (insert new-line)))))
 
-(map! :map ess-r-mode-map
-      "C-c -" #'ybk/ess-align-comment-line)
+(after! general
+  (map! :map prog-mode-map "C-c -" #'ybk/align-comment-line-generic)
+  (map! :map text-mode-map "C-c -" #'ybk/align-comment-line-generic)
+  (map! :map conf-mode-map "C-c -" #'ybk/align-comment-line-generic))
+
 
 ;; ;; Disable line numbers in inferior ESS mode                  ;;
 ;; (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil) ;;
