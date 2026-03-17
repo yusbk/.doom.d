@@ -129,6 +129,24 @@
 ;;; =============================
 (setq +format-on-save-enabled-modes '(python-mode r-mode emacs-lisp-mode))
 
+
+;;; ============================
+;;; Which key defined
+;;; ============================
+;; Use C-h to see all the keys when there are many eg. more than one page
+(after! which-key
+  (which-key-add-key-based-replacements
+    "C-x RET" "set"
+    "C-x a" "abbreviation"
+    "C-x 8" "emoji"
+    "C-x n" "narrow-codes"
+    "C-x r" "register"
+    "C-x t" "tabs"
+    "C-x x" "buffer-related"
+    "C-x w" "winum"
+    ))
+
+
 ;;; =============================
 ;;; Eshell Aliases (Fixed for Eshell)
 ;;; =============================
@@ -739,9 +757,9 @@
 
 (use-package! corfu
   :init
-  (setq corfu-auto t
-        corfu-auto-delay 0.15
-        corfu-auto-prefix 1
+  (setq corfu-auto t          ; enable auto popup
+        corfu-auto-delay 0.6 ; delay in seconds (increase if needed)
+        corfu-auto-prefix 2   ; number of chars before completion starts
         corfu-cycle t
         corfu-preselect 'valid
         corfu-quit-no-match 'separator  ; Better: quit only at separator
@@ -770,6 +788,12 @@
 
 (custom-set-faces!
   '((corfu-popupinfo) :height 0.9))
+
+;; Disabled auto-complete in ESS, use TAB to activate ;;
+(add-hook 'ess-r-mode-hook
+          (lambda ()
+            (setq-local corfu-auto nil)))
+
 
 ;;; =============================
 ;;; Cape (optional extra CAPF sources)
