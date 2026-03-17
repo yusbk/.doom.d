@@ -751,9 +751,9 @@
  "gpushs" "git push origin master --recurse-submodules=on-demand"
  "gpulls" "git pull --recurse-submodules")
 
-;;; =============================
+;;; =================================
 ;;; Corfu (modern CAPF completion)
-;;; =============================
+;;; =================================
 
 (use-package! corfu
   :init
@@ -765,7 +765,7 @@
         corfu-quit-no-match 'separator  ; Better: quit only at separator
         corfu-quit-at-boundary 'separator
         corfu-scroll-margin 2
-        corfu-popupinfo-delay 0.2)
+        corfu-popupinfo-delay 0.3)
   :config
   (global-corfu-mode 1)
   (corfu-popupinfo-mode 1)
@@ -789,10 +789,34 @@
 (custom-set-faces!
   '((corfu-popupinfo) :height 0.9))
 
-;; Disabled auto-complete in ESS, use TAB to activate ;;
-(add-hook 'ess-r-mode-hook
-          (lambda ()
-            (setq-local corfu-auto nil)))
+;;; --- ESS + Corfu: Make TAB trigger completion in .R buffers ---
+(after! ess
+  ;; Let TAB do completion in scripts, not only indentation
+  (setq ess-tab-complete-in-script t)
+
+  ;; Ensure TAB invokes completion when popup is not up yet
+  (map! :map ess-r-mode-map
+        :i "<tab>" #'completion-at-point
+        :i "TAB"   #'completion-at-point)
+
+  ;; If you prefer manual popup only in ESS buffers, keep this:
+  (add-hook 'ess-r-mode-hook
+            (lambda ()
+              (setq-local corfu-auto nil)
+              ;; Optional: shorter menu latency for when you press TAB repeatedly
+              (setq-local corfu-auto-delay 0.3))))
+
+;; Optional: prioritize ESS CAPF and add CAPE fallbacks
+(use-package! cape
+  :after (corfu ess)
+  :init
+  (defun yusman/ess-capf-setup ()
+    (setq-local completion-at-point-functions
+                (list
+                 #'ess-r-completion-at-point
+                 #'cape-dabbrev
+                 #'cape-file)))
+  (add-hook 'ess-r-mode-hook #'yusman/ess-capf-setup))
 
 
 ;;; =============================
