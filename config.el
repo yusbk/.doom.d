@@ -435,13 +435,14 @@
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
 ;; -- Commenting ---------------------------------------------------------------
+;; Function must be defined before bindings
 (defun ybk/align-comment-line-generic (&optional width)
-  "Pad comment line with '-' to reach WIDTH using buffer's `comment-start`.
-Only operates on comment-only lines starting with at least one `comment-start` char."
+  "Pad comment line with '-' to reach WIDTH using buffer's `comment-start`."
   (interactive)
-  (let* ((width (or width (and (boundp 'fill-column) fill-column) 70))
+  (let* ((width  (or width (and (boundp 'fill-column) fill-column) 70))
          (cstart (or comment-start "#"))
-         (re (concat "^\\([ \t]*\\)\\(" (regexp-quote cstart) "+\\)\\(?:[ \t]+\\(.*\\)\\)?$"))
+         (cchar  (string (aref (string-trim-left cstart) 0)))
+         (re (concat "^\\([ \t]*\\)\\(" (regexp-quote cchar) "+\\)\\s-*\\(.*\\)?$"))
          (line (buffer-substring-no-properties
                 (line-beginning-position) (line-end-position))))
     (when (string-match re line)
@@ -459,20 +460,27 @@ Only operates on comment-only lines starting with at least one `comment-start` c
         (delete-region (line-beginning-position) (line-end-position))
         (insert new-line)))))
 
+;; ---- Keybindings ----
+
+;; Global-ish: works in most editable buffers
 (after! general
   (map! :map prog-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map text-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map conf-mode-map "C-c -" #'ybk/align-comment-line-generic))
 
-(after! prog-mode
-  (map! :map prog-mode-map
+;; ESS-specific: ensure it’s available even if something overrides prog-mode-map
+(after! ess
+  (map! :map ess-r-mode-map
+        "C-c -" #'ybk/align-comment-line-generic)
+
+  ;; Localleader menu under SPC m
+  (map! :map ess-r-mode-map
         :localleader
         (:prefix ("c" . "Comments")
                  "-" #'ybk/align-comment-line-generic
                  "l" #'comment-line
                  "r" #'comment-region
                  "u" #'uncomment-region)))
-
 
 ;; ;; Disable line numbers in inferior ESS mode                  ;;
 ;; (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil) ;;
