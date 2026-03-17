@@ -144,6 +144,7 @@
     "C-x t" "tabs"
     "C-x x" "buffer-related"
     "C-x w" "winum"
+    "SPC m c" "Comments"
     ))
 
 
@@ -462,6 +463,15 @@ Only operates on comment-only lines starting with at least one `comment-start` c
   (map! :map prog-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map text-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map conf-mode-map "C-c -" #'ybk/align-comment-line-generic))
+
+(after! prog-mode
+  (map! :map prog-mode-map
+        :localleader
+        (:prefix ("c" . "Comments")
+                 "-" #'ybk/align-comment-line-generic
+                 "l" #'comment-line
+                 "r" #'comment-region
+                 "u" #'uncomment-region)))
 
 
 ;; ;; Disable line numbers in inferior ESS mode                  ;;
