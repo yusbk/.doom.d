@@ -171,7 +171,9 @@
 ;;; =============================
 ;;; UI and Themes
 ;;; =============================
-(setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir))
+
+;; (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir)) ;;
+(setq fancy-splash-image (expand-file-name "img/hdir2.png" doom-user-dir))
 
 (setq my-themes '(doom-gruvbox
                   doom-fairy-floss
@@ -421,6 +423,8 @@
       "l f" #'eglot-format
       "l a" #'eglot-code-actions
       "l d" #'eldoc  ;; hover docs are also on 'K' (doom’s lookup)
+      "l R" #'eglot-rename
+      "l =" #'apheleia-format-buffer ; explicit formating
       )
 
 ;; Optional: show diagnostics inline
@@ -432,6 +436,12 @@
   (setf (alist-get 'R apheleia-formatters)
         '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
+
+;; using Apheleia on save and not binding eglot-format ;;
+(add-hook 'ess-r-mode-hook
+          (lambda ()
+            (when (bound-and-true-p apheleia-mode)
+              (add-hook 'before-save-hook #'apheleia-format-buffer nil t))))
 
 ;; -- Commenting ---------------------------------------------------------------
 ;; Function must be defined before bindings
