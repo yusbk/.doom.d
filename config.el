@@ -174,11 +174,10 @@
 (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir))
 
 (setq my-themes '(doom-gruvbox
-                  ;; doom-palenight ;;
-                  doom-bluloco-light
-                  ;; doom-one-light ;;
-                  doom-city-lights
-                  doom-flatwhite
+                  doom-fairy-floss
+                  doom-plain
+                  doom-ayu-mirage
+                  doom-earl-grey
                   ))
 (setq my-theme-index 0)
 
