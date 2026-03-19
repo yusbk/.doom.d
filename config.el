@@ -496,7 +496,7 @@
 
 (after! ess-r-mode
   (setq ess-style 'RStudio)
-  (setq comment-style 'aligned
+  (setq comment-style 'plain ; 'aligned cause it to add trailing #
         ess-indent-with-fancy-comments nil)
 
   ;; disable trailing # in comments
