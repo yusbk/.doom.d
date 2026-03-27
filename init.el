@@ -108,8 +108,7 @@
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp               ; M-x vscode
-        +eglot           ; use Eglot (built-in Emacs LSP client)
-        +booster)
+        +eglot)           ; use Eglot (built-in Emacs LSP client)
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
