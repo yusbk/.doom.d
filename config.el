@@ -87,7 +87,8 @@
 (when IS-WINDOWS
   (setq hdir-dir-o "O:"
         hdir-dir-h "H:"
-        hdir-dir-c "C:/Users/ykama/"))
+        hdir-dir-c "C:/Users/ykama/"
+        hdir-dir-cc "C:"))
 
 ;;; =============================
 ;;; OneDrive Paths
@@ -175,7 +176,7 @@
 ;; (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir)) ;;
 (setq fancy-splash-image (expand-file-name "img/hdir2.png" doom-user-dir))
 
-(setq my-themes '(doom-fairy-floss
+(setq my-themes '(
                   doom-gruvbox
                   doom-fairy-floss
                   doom-plain
@@ -227,7 +228,7 @@
 
 (map! :leader
       (:prefix ("o" . "open")
-               :desc "Toggle minimap" "m" #'minimap-mode))
+       :desc "Toggle minimap" "m" #'minimap-mode))
 
 ;;; =============================
 ;;; Evil Escape Settings
@@ -265,7 +266,7 @@
 ;; ;; (setq treesit-extra-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
 ;; (setq treesit-extra-load-path
 ;;       (list (expand-file-name "tree-sitter-grammars" user-emacs-directory)
-;;             (expand-file-name ".local/etc/tree-sitter" user-emacs-directory)))
+;;             (expand-file-name "tree-sitter-lang" hdir-dir-cc)))
 
 ;; ;; Remap klassiske modes -> ts-modes
 ;; (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode))
@@ -292,6 +293,7 @@
 ;;           (error
 ;;            (message "Feil ved installasjon av %s: %s" lang err))))))
 ;;   (ybk/ensure-ts-grammars))
+
 
 ;;; =============================
 ;;; JSON/YAML hooks
@@ -380,25 +382,25 @@
 
   ;; Keybindings for ESS
   (map! (:map ess-mode-map
-              :localleader
-              "T" #'test-R-buffer
-              "s" #'ess-indent-region-with-styler
-              "g" #'run-ess-r-newest
-              "c '" #'polymode-toggle-chunk-narrowing)
+         :localleader
+         "T" #'test-R-buffer
+         "s" #'ess-indent-region-with-styler
+         "g" #'run-ess-r-newest
+         "c '" #'polymode-toggle-chunk-narrowing)
         (:map ess-r-mode-map
-              :i "M--" #'ess-cycle-assign
-              :i "M-+" #'my-add-column
-              :i "M-'" #'my-add-match
-              :i "M-\\" #'my-add-pipe
-              :i "C-|" (lambda () (interactive) (insert " |> "))
-              :i "C-%" (lambda () (interactive) (insert " %>% "))
-              :i "C-i" (lambda () (interactive) (insert " %in% "))
-              :i "C-c '" #'polymode-toggle-chunk-narrowing
-              :n "C-c '" #'polymode-toggle-chunk-narrowing)
+         :i "M--" #'ess-cycle-assign
+         :i "M-+" #'my-add-column
+         :i "M-'" #'my-add-match
+         :i "M-\\" #'my-add-pipe
+         :i "C-|" (lambda () (interactive) (insert " |> "))
+         :i "C-%" (lambda () (interactive) (insert " %>% "))
+         :i "C-i" (lambda () (interactive) (insert " %in% "))
+         :i "C-c '" #'polymode-toggle-chunk-narrowing
+         :n "C-c '" #'polymode-toggle-chunk-narrowing)
         (:map inferior-ess-r-mode-map
-              :i "M--" #'ess-cycle-assign
-              :i "M-+" #'my-add-column
-              :n "C-<up>" #'ess-readline)))
+         :i "M--" #'ess-cycle-assign
+         :i "M-+" #'my-add-column
+         :n "C-<up>" #'ess-readline)))
 
 ;; -----------------------------
 ;; Eglot for R (via languageserver)
@@ -558,8 +560,8 @@
 ;;; =============================
 (after! ess
   (map! (:map markdown-mode-map
-              :localleader
-              :n "v" #'quarto-preview)))
+         :localleader
+         :n "v" #'quarto-preview)))
 
 ;;; =============================
 ;;; Stata Mode
@@ -604,10 +606,10 @@
 ;; Optional: Add keybindings for quick access
 (map! :leader
       (:prefix ("=" . "Translate")
-               :desc "Google Translate" "g" #'google-translate-smooth-translate
-               :desc "Go Translate" "t" #'gts-do-translate
-               :desc "Translate at point" "l" #'google-translate-at-point
-               :desc "Query Translate" "L" #'google-translate-query-translate))
+       :desc "Google Translate" "g" #'google-translate-smooth-translate
+       :desc "Go Translate" "t" #'gts-do-translate
+       :desc "Translate at point" "l" #'google-translate-at-point
+       :desc "Query Translate" "L" #'google-translate-query-translate))
 
 ;;; =============================
 ;;; Region Selection (Expand/Contract)
@@ -618,8 +620,8 @@
 ;; Better selection than keybind 'viw'
 (map! :nvig "C-=" #'er/expand-region)
 (map! (:map 'override
-            :v "v" #'er/expand-region
-            :v "V" #'er/contract-region))
+       :v "v" #'er/expand-region
+       :v "V" #'er/contract-region))
 
 ;;; =============================
 ;;; Window Management
@@ -696,11 +698,11 @@
 (map! :leader
       (:prefix ("t" . "toggle")
                (:prefix ("S" . "Spell lang")
-                        :desc "Norwegian" "n" #'my/flyspell-norwegian
-                        :desc "English" "e" #'my/flyspell-english
-                        :desc "Prog mode" "p" #'flyspell-prog-mode
-                        :desc "Full mode" "f" #'flyspell-mode
-                        :desc "Buffer check" "b" #'flyspell-buffer)))
+                :desc "Norwegian" "n" #'my/flyspell-norwegian
+                :desc "English" "e" #'my/flyspell-english
+                :desc "Prog mode" "p" #'flyspell-prog-mode
+                :desc "Full mode" "f" #'flyspell-mode
+                :desc "Buffer check" "b" #'flyspell-buffer)))
 
 ;; =============================
 ;; What Gets Checked in Each Mode?

@@ -108,7 +108,8 @@
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp               ; M-x vscode
-        +eglot)           ; use Eglot (built-in Emacs LSP client)
+        +eglot           ; use Eglot (built-in Emacs LSP client)
+        +booster)
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -116,9 +117,9 @@
        ;;prodigy           ; FIXME managing external services & code builders
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
-       (tree-sitter       ; syntax and parsing, sitting in a tree...
-        +all
-        )
+       ;; (tree-sitter       ; syntax and parsing, sitting in a tree...
+       ;;  +all
+       ;;  )
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
@@ -143,7 +144,7 @@
        ;;erlang            ; an elegant language for a more civilized age
        (ess               ; emacs speaks statistics
         ;; +stan
-        +tree-sitter
+        ;; +tree-sitter
         +lsp
         )
        ;;factor
@@ -159,7 +160,7 @@
        ;;idris             ; a language you can depend on
        (json               ; At least it ain't XML
         +lsp
-        +tree-sitter
+        ;; +tree-sitter
         )
        ;;(java +lsp)       ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
@@ -189,7 +190,7 @@
         +lsp
         ;; +poetry   ;if using Poetry environment
         ;; +pyright  ;need to install node.js first then run 'npm install -g pyright' else use +lsp only and run: pip install 'python-lsp-server[all]'
-        +tree-sitter
+        ;; +tree-sitter
         )
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
@@ -206,10 +207,10 @@
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
        (web               ; the tubes
-        +tree-sitter
+        ;; +tree-sitter
         )
        (yaml              ; JSON, but readable
-        +tree-sitter
+        ;; +tree-sitter
         )
        ;;zig               ; C, but simpler
 
