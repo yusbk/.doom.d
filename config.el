@@ -84,11 +84,13 @@
         hdir-dir-h "/mnt/H"
         hdir-dir-c "~/"))
 
+;; Add slash for Windows ie. "O:/" Without it will call for last used folder in drive,
+;; which can be very different from the root and cause confusion.
 (when IS-WINDOWS
-  (setq hdir-dir-o "O:"
-        hdir-dir-h "H:"
+  (setq hdir-dir-o "O:/"
+        hdir-dir-h "H:/"
         hdir-dir-c "C:/Users/ykama/"
-        hdir-dir-cc "C:"))
+        hdir-dir-cc "C:/"))
 
 ;;; =============================
 ;;; OneDrive Paths
@@ -97,11 +99,13 @@
   (setq onedrive "OneDrive/"
         shortcutonedrive (concat hdir-dir-c "OneDrive/")))
 
+;; Handle separators properly for Windows OneDrive paths, which often contain
+;; spaces. Use `expand-file-name` to ensure correct path construction.
 (when IS-WINDOWS
-  (setq onedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"
-        shortcutonedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"))
-
-(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
+  (setq onedrive
+        (expand-file-name "OneDrive - Helsedirektoratet/"
+                          "C:/Users/ykama/")
+        shortcutonedrive onedrive))
 
 ;;; =============================
 ;;; Git and Shell Configuration
@@ -130,7 +134,6 @@
 ;;; =============================
 (setq +format-on-save-enabled-modes '(python-mode r-mode emacs-lisp-mode))
 
-
 ;;; ============================
 ;;; Which key defined
 ;;; ============================
@@ -148,18 +151,21 @@
     "SPC m c" "Comments"
     ))
 
-
 ;;; =============================
 ;;; Eshell Aliases (Fixed for Eshell)
 ;;; =============================
 (map! :leader "o x" #'+eshell/frame)
-(dolist (alias `(("dsync" "~/.emacs.d/bin/doom sync")
-                 ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
-                 ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
-                 ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
-                 ("cdr" ,(concat hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
-                 ("cd1" ,(concat shortcutonedrive "; ls -a"))
-                 ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
+
+(dolist (alias
+         `(("dsync" "~/.emacs.d/bin/doom sync")
+           ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
+           ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
+           ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
+           ("cdr" ,(concat "cd " hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
+           ("cdp" ,(concat "cd "
+                           (shell-quote-argument shortcutonedrive) ;for handling spaces in path
+                           "; ls -a"))
+           ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
   (set-eshell-alias! (car alias) (cadr alias)))
 
 ;;; =============================
