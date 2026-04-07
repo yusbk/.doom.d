@@ -107,8 +107,10 @@
        (eval +overlay)     ; run code, run (also, repls)
        (lookup             ; navigate your code and its documentation
         +dictionary)
-       (lsp               ; M-x vscode
-        +eglot)           ; use Eglot (built-in Emacs LSP client)
+       (lsp                ; M-x vscode
+        +eglot             ; use Eglot (built-in Emacs LSP client)
+        +peek              ; looking up definitions and references
+        )
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
