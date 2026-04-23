@@ -129,6 +129,12 @@
 ;;; =============================
 (setq evil-want-fine-undo t) ; Fine-grained undo in Evil mode
 
+(setq shell-file-name (executable-find "bash"))
+(setq-default vterm-shell "C:/Program
+        Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
+(setq-default explicit-shell-file-name "C:/Program
+        Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
+
 ;;; =============================
 ;;; Format on Save (Selective)
 ;;; =============================
@@ -377,6 +383,8 @@
   ;; Disable workspace save prompt
   (setq inferior-R-args "--no-save --no-restore-history --no-restore")
 
+  ;;   (add-to-list 'auto-mode-alist '("\\.[rR]\\'" . ess-r-mode))
+
   ;; ;; Enable rainbow delimiters for programming modes
   ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
 
@@ -413,16 +421,34 @@
 ;; -----------------------------
 ;; Installer eerst i R: install.packages("languageserver")
 ;; install.packages(c("languageserver", "lintr", "styler"))
-(add-hook 'ess-r-mode-hook
-          (lambda ()
-            (require 'eglot)
-            (eglot-ensure)))
+;; (add-hook 'ess-r-mode-hook
+;;           (lambda ()
+;;             (require 'eglot)
+;;             (eglot-ensure)))
 
+(after! ess
+  (add-to-list 'auto-mode-alist '("\\.[rR]\\'" . ess-r-mode))
 
-;; Optional: make sure Eglot knows the server program for R
-(with-eval-after-load 'eglot
+  (add-hook 'ess-r-mode-hook #'eglot-ensure))
+
+(after! eglot
+  (setq eglot-connect-timeout 60)
+  ;; Ensure Eglot knows the server program for R (adjust path if needed)
   (add-to-list 'eglot-server-programs
-               '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
+               `(ess-r-mode .
+                 ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
+                  "--slave"
+                  "-e"
+                  "languageserver::run()")))
+  ;;   (add-to-list 'eglot-server-programs
+  ;;                '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()")))
+  )
+
+
+;; ;; Optional: make sure Eglot knows the server program for R
+;; (with-eval-after-load 'eglot
+;;   (add-to-list 'eglot-server-programs
+;;                '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
 
 ;; Handy keybindings (Doom defaults cover many; these are extra examples)
 (map! :map ess-r-mode-map
