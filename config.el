@@ -3,8 +3,78 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
+
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets.
 (setq user-full-name "Yusman Kamaleri"
       user-mail-address "ykamamaleri@gmail.com")
+
+
+;; Doom exposes five (optional) variables for controlling fonts in Doom:
+;;
+;; - `doom-font' -- the primary font to use
+;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
+;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
+;;   presentations or streaming.
+;; - `doom-symbol-font' -- for symbols
+;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
+;;
+;; See 'C-h v doom-font' for documentation and more examples of what they
+;; accept. For example:
+;;
+;;(setq doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+;;
+;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
+;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
+;; refresh your font settings. If Emacs still can't find your font, it likely
+;; wasn't installed correctly. Font issues are rarely Doom issues!
+
+;; There are two ways to load a theme. Both assume the theme is installed and
+;; available. You can either set `doom-theme' or manually load a theme with the
+;; `load-theme' function. This is the default:
+;; (setq doom-theme 'doom-one)
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type t)
+
+;; If you use `org' and don't want your org files in the default location below,
+;; change `org-directory'. It must be set before org loads!
+;; (setq org-directory "~/org/")
+
+
+;; Whenever you reconfigure a package, make sure to wrap your config in an
+;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;;
+;;   (after! PACKAGE
+;;     (setq x y))
+;;
+;; The exceptions to this rule:
+;;
+;;   - Setting file/directory variables (like `org-directory')
+;;   - Setting variables which explicitly tell you to set them before their
+;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
+;;   - Setting doom variables (which start with 'doom-' or '+').
+;;
+;; Here are some additional functions/macros that will help you configure Doom.
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
+;; etc).
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
 
 ;;; =============================
 ;;; OS-specific Directory Settings
@@ -14,13 +84,10 @@
         hdir-dir-h "/mnt/H"
         hdir-dir-c "~/"))
 
-;; Add slash for Windows ie. "O:/" Without it will call for last used folder in drive,
-;; which can be very different from the root and cause confusion.
 (when IS-WINDOWS
-  (setq hdir-dir-o "O:/"
-        hdir-dir-h "H:/"
-        hdir-dir-c "C:/Users/ykama/"
-        hdir-dir-cc "C:/"))
+  (setq hdir-dir-o "O:"
+        hdir-dir-h "H:"
+        hdir-dir-c "C:/Users/ykama/"))
 
 ;;; =============================
 ;;; OneDrive Paths
@@ -29,116 +96,70 @@
   (setq onedrive "OneDrive/"
         shortcutonedrive (concat hdir-dir-c "OneDrive/")))
 
-;; Handle separators properly for Windows OneDrive paths, which often contain
-;; spaces. Use `expand-file-name` to ensure correct path construction.
 (when IS-WINDOWS
-  (setq onedrive
-        (expand-file-name "OneDrive - Helsedirektoratet/"
-                          "C:/Users/ykama/")
-        shortcutonedrive onedrive))
+  (setq onedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"
+        shortcutonedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"))
+
+(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
 
 ;;; =============================
-;;; Git and Shell Configuration (Windows)
+;;; Git and Shell Configuration
 ;;; =============================
-;; CHANGED: `after! exec-path` is not a real package — removed that wrapper.
-;; exec-path manipulation should happen unconditionally at startup, not deferred.
-;; Also: set shell-file-name here only for Windows; global one is set below.
+;; Use Error Handling to avoid issues if Git or Bash paths do not exist
 (when IS-WINDOWS
-  (let ((git-bin "C:/Program Files/Git/usr/bin"))
-    (when (file-directory-p git-bin)
-      (add-to-list 'exec-path git-bin)
-      (setenv "PATH" (concat git-bin ";" (getenv "PATH")))))
+  (after! exec-path
+    (let ((git-bin "C:/Program Files/Git/usr/bin"))
+      (when (file-directory-p git-bin)
+        (add-to-list 'exec-path git-bin)
+        (setenv "PATH" (concat git-bin ";" (getenv "PATH"))))))
 
-  ;; CHANGED: Set eshell to use bash (from Git for Windows) only on Windows.
-  ;; Moved out of `after! eshell` because explicit-shell-file-name needs to be
-  ;; set before eshell loads, not inside a deferred block that runs too late.
-  (let ((bash-path "C:/Program Files/Git/bin/bash.exe"))
-    (when (file-executable-p bash-path)
-      (setq explicit-shell-file-name bash-path
-            shell-file-name bash-path))))
+  (after! eshell
+    (let ((bash-path "C:/Program Files/Git/bin/bash.exe"))
+      (when (file-executable-p bash-path)
+        (setq explicit-shell-file-name bash-path
+              shell-file-name bash-path)))))
 
 ;;; =============================
 ;;; General Settings
 ;;; =============================
 (setq evil-want-fine-undo t) ; Fine-grained undo in Evil mode
 
-;; CHANGED: Removed the duplicate/conflicting shell settings that appeared below.
-;; The Windows-specific ones above are sufficient.
-;; On Linux this falls through to whatever bash is in PATH.
-(unless IS-WINDOWS
-  (setq shell-file-name (executable-find "bash")))
-
-;; REMOVED: vterm-shell and explicit-shell-file-name set to cmdproxy.exe.
-;; cmdproxy.exe is a last-resort fallback — using it directly breaks many shell
-;; features and is why eshell/shell behaved oddly. The Git bash path above is
-;; the correct Windows shell to use. If you need vterm specifically, set it
-;; separately: (setq vterm-shell "C:/Windows/System32/cmd.exe")
-
 ;;; =============================
 ;;; Format on Save (Selective)
 ;;; =============================
 (setq +format-on-save-enabled-modes '(python-mode r-mode emacs-lisp-mode))
 
+
 ;;; ============================
 ;;; Which key defined
 ;;; ============================
+;; Use C-h to see all the keys when there are many eg. more than one page
 (after! which-key
   (which-key-add-key-based-replacements
     "C-x RET" "set"
-    "C-x a"   "abbreviation"
-    "C-x 8"   "emoji"
-    "C-x n"   "narrow-codes"
-    "C-x r"   "register"
-    "C-x t"   "tabs"
-    "C-x x"   "buffer-related"
-    "C-x w"   "winum"
-    "SPC m c" "Comments"))
+    "C-x a" "abbreviation"
+    "C-x 8" "emoji"
+    "C-x n" "narrow-codes"
+    "C-x r" "register"
+    "C-x t" "tabs"
+    "C-x x" "buffer-related"
+    "C-x w" "winum"
+    "SPC m c" "Comments"
+    ))
+
 
 ;;; =============================
-;;; Eshell Aliases
+;;; Eshell Aliases (Fixed for Eshell)
 ;;; =============================
 (map! :leader "o x" #'+eshell/frame)
-
-(dolist (alias
-         `(("dsync" "~/.emacs.d/bin/doom sync")
-           ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
-           ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
-           ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
-           ("cdr" ,(concat "cd " hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
-           ("cdp" ,(concat "cd "
-                           (shell-quote-argument shortcutonedrive)
-                           "; ls -a"))
-           ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
+(dolist (alias `(("dsync" "~/.emacs.d/bin/doom sync")
+                 ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
+                 ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
+                 ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
+                 ("cdr" ,(concat hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
+                 ("cd1" ,(concat shortcutonedrive "; ls -a"))
+                 ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
   (set-eshell-alias! (car alias) (cadr alias)))
-
-;;; =============================
-;;; Eshell Extra Aliases
-;;; =============================
-(set-eshell-alias! "cdl" "cd $1; ls")
-
-(dolist (alias '(("cgw" . "/Git-hdir/$1")
-                 ("cgk" . "/Git-kh/$1")
-                 ("cgp" . "/Git-personal/$1")
-                 ("cgwl" . "/Git-hdir")
-                 ("cgkl" . "/Git-kh")
-                 ("cgpl" . "/Git-personal")))
-  (set-eshell-alias! (car alias) (concat "cd " hdir-dir-c (cdr alias) "; ls -a")))
-
-(set-eshell-alias!
- "gc" "git checkout $1"
- "gcb" "git checkout -b $1"
- "gb" "git branch"
- "gbd" "git branch -d $1"
- "gbD" "git branch -D $1"
- "gbdO" "git push origin --delete $1"
- "gf" "git fetch $1"
- "gm" "git merge $1"
- "gmf" "git merge --no-ff $1"
- "gpusho" "git push origin"
- "gpush" "git push origin $1"
- "gpull" "git pull"
- "gpushs" "git push origin master --recurse-submodules=on-demand"
- "gpulls" "git pull --recurse-submodules")
 
 ;;; =============================
 ;;; Fonts
@@ -150,13 +171,17 @@
 ;;; =============================
 ;;; UI and Themes
 ;;; =============================
+
+;; (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir)) ;;
 (setq fancy-splash-image (expand-file-name "img/hdir2.png" doom-user-dir))
 
-(setq my-themes '(doom-gruvbox
+(setq my-themes '(doom-fairy-floss
+                  doom-gruvbox
                   doom-fairy-floss
                   doom-plain
                   doom-ayu-mirage
-                  doom-earl-grey))
+                  doom-earl-grey
+                  ))
 (setq my-theme-index 0)
 
 (defun cycle-themes ()
@@ -167,13 +192,14 @@
   (load-theme (nth my-theme-index my-themes) :no-confirm)
   (message "Tema dipakai: %s" (nth my-theme-index my-themes)))
 
+;; Load the first theme
 (load-theme (nth my-theme-index my-themes) :no-confirm)
 
 ;;; =============================
 ;;; Focus Mode
 ;;; =============================
 (use-package! focus
-  :commands focus-mode)
+  :commands focus-mode) ;; Lazy load for performance
 
 ;;; =============================
 ;;; Split Windows Behavior
@@ -183,6 +209,7 @@
 
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
+  ;; Use Consult for buffer switching
   (consult-buffer))
 
 ;;; =============================
@@ -190,9 +217,13 @@
 ;;; ============================
 (use-package! minimap
   :config
+  ;; Always show minimap on the right
   (setq minimap-window-location 'right
         minimap-width-fraction 0.1
-        minimap-major-modes '(prog-mode org-mode)))
+        minimap-major-modes '(prog-mode org-mode))
+  ;; Automatically open minimap when you open a file
+  ;; (add-hook 'prog-mode-hook #'minimap-mode)
+  )
 
 (map! :leader
       (:prefix ("o" . "open")
@@ -203,23 +234,72 @@
 ;;; =============================
 (after! evil-escape
   (setq evil-escape-key-sequence "jk"
-        evil-escape-delay 0.2))
+        evil-escape-delay 0.2)) ;; Adjust delay as needed
 
 ;;; =============================
-;;; Rainbow Delimiters
+;;; Rainbow Delimiters for Lisp, Stata, ESS, and All Prog Modes
 ;;; =============================
 (use-package! rainbow-delimiters
   :hook ((emacs-lisp-mode . rainbow-delimiters-mode)
          (ado-mode . rainbow-delimiters-mode)
-         (ess-mode . rainbow-delimiters-mode)
-         (ess-r-mode . rainbow-delimiters-mode)
-         (prog-mode . rainbow-delimiters-mode)))
+         (ess-mode . rainbow-delimiters-mode)      ;; For ESS major mode
+         (ess-r-mode . rainbow-delimiters-mode)    ;; For R editing
+         (prog-mode . rainbow-delimiters-mode)))   ;; For all programming modes
+
+;;; =============================
+;;; tree-sitter Configuration
+;;; =============================
+
+;; ;; Run `M-: treesit-extra-load-path' to see where grammars are installed eg. "C:/Users/ykama/.emacs.d/.local/etc/tree-sitter"
+;; ;; Download grammars manually here https://github.com/emacs-tree-sitter/tree-sitter-langs/releases
+;; ;; For Windows, add .dll file the folder shown by `treesit-extra-load-path' and rename to "tree-sitter-<lang>.dll" (e.g. tree-sitter-json.dll
+;; ;; or libyaml.dll or yaml.dll
+;; (use-package! tree-sitter-langs
+;;   :after tree-sitter)
+
+;; ;; Log more detail when installing grammars
+;; (setq debug-on-error t)
+;; (setenv "CC" "C:/Emacstillegg/msys2-portable-v2.29.0-ucrt64-ucrt-x86_64/ucrt64/bin/gcc.exe")
+
+;; ;; Optional: ensure grammars install to a writable dir (Doom backports similar behavior)
+;; ;; (setq treesit-extra-load-path (list (expand-file-name "tree-sitter" user-emacs-directory)))
+;; (setq treesit-extra-load-path
+;;       (list (expand-file-name "tree-sitter-grammars" user-emacs-directory)
+;;             (expand-file-name ".local/etc/tree-sitter" user-emacs-directory)))
+
+;; ;; Remap klassiske modes -> ts-modes
+;; (add-to-list 'major-mode-remap-alist '(yaml-mode . yaml-ts-mode))
+
+
+;; (after! treesit
+;;   ;; Remap klassiske modes -> ts-modes
+;;   (setq major-mode-remap-alist
+;;         '((json-mode . json-ts-mode)
+;;           (yaml-mode . yaml-ts-mode)))
+
+
+;;   ;; Installer grammars dersom de mangler.
+;;   ;; Emacs 30 har bedre auto-støtte, men vi gjør det eksplisitt.
+;;   (defun ybk/ensure-ts-grammars ()
+;;     "Installer nødvendige Tree-sitter-grammars for JSON/YAML."
+;;     (dolist (lang '(json yaml))
+;;       (unless (treesit-language-available-p lang)
+;;         (condition-case err
+;;             (progn
+;;               (message "Installerer treesit-grammar for %s ..." lang)
+;;               (treesit-install-language-grammar lang)
+;;               (message "OK: %s" lang))
+;;           (error
+;;            (message "Feil ved installasjon av %s: %s" lang err))))))
+;;   (ybk/ensure-ts-grammars))
 
 ;;; =============================
 ;;; JSON/YAML hooks
 ;;; ============================
+
 (add-hook 'json-ts-mode-hook
           (lambda ()
+            ;; Valgfritt: recompute font-lock features
             (when (fboundp 'treesit-font-lock-recompute-features)
               (treesit-font-lock-recompute-features))
             (display-line-numbers-mode 1)))
@@ -230,33 +310,32 @@
   (add-hook 'yaml-ts-mode-hook #'display-line-numbers-mode))
 
 ;;; =============================
-;;; Formatter/format-on-save
+;;; Formatter/format-on-save (valgfritt)
 ;;; ============================
+;; Apheleia eller Doom format when tree-sitter modes ie. lang-ts-mode
 (after! apheleia
   (setf (alist-get 'json-ts-mode apheleia-mode-alist) '(prettier)
         (alist-get 'yaml-ts-mode apheleia-mode-alist) '(prettier)))
 
-;; CHANGED: +format-with-lsp nil is correct — keeps formatting fast and
-;; predictable by avoiding LSP format roundtrips (which time out on Windows).
-(setq +format-with-lsp nil)
+;; Doom format-on-save via +format modul (hvis aktivert):
+(setq +format-with-lsp nil)   ; bruk formattere direkte, ikke via LSP
 
 ;;; =============================
 ;;; ESS Configuration
 ;;; =============================
 
-;; CHANGED: Pinned to exact versioned Rterm.exe path.
-;; Using "R" (relying on PATH) is cleaner but can break if PATH isn't set up
-;; properly in the Emacs GUI process on Windows (which doesn't inherit shell PATH).
+;; Sett riktig sti til Rterm.exe (oppdater versjonsstien til din R).
 (when (eq system-type 'windows-nt)
   (setq inferior-ess-r-program "C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"))
 
+;; Check R version quickly
 (defun check-r-version ()
   "Display the R version used by Emacs."
   (interactive)
   (message "R version: %s"
            (car (split-string (shell-command-to-string "R --version") "\n"))))
 
-;; Set CRAN mirror automatically when R starts
+;; Automatically set CRAN mirror when ESS R starts
 (add-hook 'ess-r-post-run-hook
           (lambda ()
             (ess-send-string (ess-get-process)
@@ -272,6 +351,7 @@
   (insert "%>%")
   (ess-newline-and-indent))
 
+;; Retrieve previous commands from R process
 (defun ess-readline ()
   "Copy previous command from R process for editing."
   (interactive)
@@ -286,14 +366,19 @@
   (setq this-command 'ess-readline))
 
 (after! ess
-  (setq inferior-R-args "--no-save --no-restore-history --no-restore"
-        ess-indent-with-fancy-comments nil
+  ;; Disable workspace save prompt
+  (setq inferior-R-args "--no-save --no-restore-history --no-restore")
+
+  ;; ;; Enable rainbow delimiters for programming modes
+  ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
+
+  (setq ess-indent-with-fancy-comments nil
         ess-ask-for-ess-directory nil
-        ess-roxy-str "#'"
-        ess-switch-process t)
+        ess-roxy-str "#'")
+  ;; Start R i samme vindu
+  (setq ess-switch-process t)
 
-  (add-to-list 'auto-mode-alist '("\\.[rR]\\'" . ess-r-mode))
-
+  ;; Keybindings for ESS
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
@@ -315,156 +400,52 @@
          :i "M-+" #'my-add-column
          :n "C-<up>" #'ess-readline)))
 
-;;; =============================
-;;; Eglot for R (via languageserver)
-;;; =============================
-;; THE JSONRPC TIMEOUT FIX:
-;; The error `jsonrpc-error request id=1 failed: Timed out` means Eglot sent a
-;; request to the R languageserver but got no reply within the timeout window.
-;; On Windows this almost always happens because:
-;;   1. `languageserver::run()` takes 5-15 seconds to start up (R startup is slow).
-;;   2. Eglot's default timeout (30s) is often not enough on a cold start with
-;;      antivirus scanning R + languageserver + all its dependencies.
-;;   3. The PATH "R" lookup fails silently in the GUI Emacs process on Windows,
-;;      so languageserver never actually starts.
-;;
-;; Fixes applied below:
-;;   - Use the full Rterm.exe path (not bare "R") to avoid PATH lookup failures.
-;;   - Increase eglot-connect-timeout to 120s.
-;;   - Add --no-save --no-restore flags to speed up R startup.
-;;   - Wrap eglot-ensure in a short idle timer so ESS finishes loading before
-;;     Eglot tries to connect (removes the mode-spec error on file open).
-;;   - Kept eglot-events-buffer-size at a non-zero value for debugging; set to 0
-;;     only after confirmed working (0 disables the log entirely).
-
-(after! eglot
-  (setq eglot-connect-timeout 120     ; Windows R startup is slow
-        eglot-events-buffer-size 2000  ; small log for debugging; set 0 when stable
-        eglot-report-progress nil)     ; avoids noisy modeline updates
-
-  ;; Use full Rterm.exe path — GUI Emacs on Windows doesn't inherit shell PATH,
-  ;; so bare "R" can fail silently.
-  (when IS-WINDOWS
-    (add-to-list 'eglot-server-programs
-                 `(ess-r-mode . ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
-                                 "--no-save"
-                                 "--no-restore"
-                                 "--slave"
-                                 "-e"
-                                 "languageserver::run()"))))
-  (unless IS-WINDOWS
-    (add-to-list 'eglot-server-programs
-                 '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
-
-  ;; POLYMODE-SAFE eglot-ensure
-  ;; Direct `eglot-ensure` in the mode hook fires during polymode chunk setup,
-  ;; before the R process exists, causing the "Polymode error (pm--mode-setup)"
-  ;; timeout. The fix:
-  ;;   1. Skip eglot entirely if we're inside a polymode inner buffer — let
-  ;;      the host buffer's Eglot session handle LSP for the whole .Rmd file.
-  ;;   2. For plain .R files, use a short idle timer so ESS finishes its own
-  ;;      setup before Eglot tries to connect.
-  (defun ybk/eglot-ensure-safe ()
-    "Start Eglot safely, skipping polymode inner buffers."
-    (when (and
-           ;; Not a polymode inner buffer (these are indirect buffers with a base)
-           (not (and (boundp 'polymode-mode) polymode-mode
-                     (buffer-base-buffer)))
-           ;; Not already managed
-           (not (eglot-managed-p)))
-      (run-with-idle-timer
-       2.0 nil
-       (lambda (buf)
-         (when (and (buffer-live-p buf)
-                    (not (eglot-managed-p)))
-           (with-current-buffer buf
-             ;; Final check: still not in a polymode inner buffer
-             (unless (and (boundp 'polymode-mode) polymode-mode
-                          (buffer-base-buffer))
-               (ignore-errors (eglot-ensure))))))
-       (current-buffer))))
-
-  (add-hook 'ess-r-mode-hook #'ybk/eglot-ensure-safe))
+;; -----------------------------
+;; Eglot for R (via languageserver)
+;; -----------------------------
+;; Installer eerst i R: install.packages("languageserver")
+;; install.packages(c("languageserver", "lintr", "styler"))
+(add-hook 'ess-r-mode-hook
+          (lambda ()
+            (require 'eglot)
+            (eglot-ensure)))
 
 
-;; (after! eglot
-;;   (setq eglot-connect-timeout 120   ; CHANGED from 60 — Windows R startup is slow
-;;         eglot-events-buffer-size 2000  ; CHANGED: keep small log for debugging
-;;         eglot-report-progress nil)  ; CHANGED: avoids noisy modeline updates
+;; Optional: make sure Eglot knows the server program for R
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
 
-;;   ;; CHANGED: Use full path to Rterm so Eglot finds it even when the GUI Emacs
-;;   ;; process doesn't inherit your shell PATH (common on Windows).
-;;   (when IS-WINDOWS
-;;     (add-to-list 'eglot-server-programs
-;;                  `(ess-r-mode . ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
-;;                                  "--no-save"
-;;                                  "--no-restore"
-;;                                  "--slave"
-;;                                  "-e"
-;;                                  "languageserver::run()"))))
-
-;;   ;; Linux / fallback: rely on PATH
-;;   (unless IS-WINDOWS
-;;     (add-to-list 'eglot-server-programs
-;;                  '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
-
-;;   ;; CHANGED: Don't call eglot-ensure directly in the hook — use a short idle
-;;   ;; timer instead. This gives ESS time to finish setting up the buffer before
-;;   ;; Eglot tries to connect, which prevents the "File mode specification error"
-;;   ;; you see when opening .R files.
-;;   (add-hook 'ess-r-mode-hook
-;;             (lambda ()
-;;               (run-with-idle-timer
-;;                1.5 nil  ; wait 1.5 seconds of idle before connecting
-;;                (lambda ()
-;;                  (when (and (buffer-live-p (current-buffer))
-;;                             (derived-mode-p 'ess-r-mode))
-;;                    (eglot-ensure)))))))
-
-;; Eglot keybindings
+;; Handy keybindings (Doom defaults cover many; these are extra examples)
 (map! :map ess-r-mode-map
       :localleader
       "l s" #'eglot
       "l r" #'eglot-reconnect
       "l f" #'eglot-format
       "l a" #'eglot-code-actions
-      "l d" #'eldoc
+      "l d" #'eldoc  ;; hover docs are also on 'K' (doom’s lookup)
       "l R" #'eglot-rename
-      "l =" #'apheleia-format-buffer)
+      "l =" #'apheleia-format-buffer ; explicit formating
+      )
 
-;;; =============================
-;;; Apheleia (R formatting via styler)
-;;; =============================
+;; Optional: show diagnostics inline
+(setq eglot-report-progress t
+      eglot-events-buffer-size 0)
+
+;; If you use 'apheleia' to format via styler:
 (with-eval-after-load 'apheleia
   (setf (alist-get 'R apheleia-formatters)
-        '("Rscript" "--vanilla" "-e"
-          "styler::style_file(commandArgs(TRUE)[1])"
-          filepath))
+        '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
+;; using Apheleia on save and not binding eglot-format ;;
 (add-hook 'ess-r-mode-hook
           (lambda ()
             (when (bound-and-true-p apheleia-mode)
               (add-hook 'before-save-hook #'apheleia-format-buffer nil t))))
 
-;;; =============================
-;;; ESS Style & Comment Settings
-;;; =============================
-(after! ess-r-mode
-  (setq ess-style 'RStudio
-        comment-style 'plain
-        ess-indent-with-fancy-comments nil
-        ess-fancy-comments nil)
-
-  (add-hook 'ess-r-mode-hook
-            (lambda ()
-              (setq-local comment-start "# "
-                          comment-end ""
-                          comment-add 0))))
-
-;;; =============================
-;;; Comment Align Helper
-;;; =============================
+;; -- Commenting ---------------------------------------------------------------
+;; Function must be defined before bindings
 (defun ybk/align-comment-line-generic (&optional width)
   "Pad comment line with '-' to reach WIDTH using buffer's `comment-start`."
   (interactive)
@@ -489,14 +470,20 @@
         (delete-region (line-beginning-position) (line-end-position))
         (insert new-line)))))
 
+;; ---- Keybindings ----
+
+;; Global-ish: works in most editable buffers
 (after! general
   (map! :map prog-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map text-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map conf-mode-map "C-c -" #'ybk/align-comment-line-generic))
 
+;; ESS-specific: ensure it’s available even if something overrides prog-mode-map
 (after! ess
   (map! :map ess-r-mode-map
         "C-c -" #'ybk/align-comment-line-generic)
+
+  ;; Localleader menu under SPC m
   (map! :map ess-r-mode-map
         :localleader
         (:prefix ("c" . "Comments")
@@ -505,6 +492,26 @@
                  "r" #'comment-region
                  "u" #'uncomment-region)))
 
+;; ;; Disable line numbers in inferior ESS mode                  ;;
+;; (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil) ;;
+
+(after! ess-r-mode
+  (setq ess-style 'RStudio)
+  (setq comment-style 'plain ; 'aligned cause it to add trailing #
+        ess-indent-with-fancy-comments nil)
+
+  ;; disable trailing # in comments
+  (setq ess-fancy-comments nil)
+
+  ;; ensure comment prefix is exactly "# "
+  (add-hook 'ess-r-mode-hook
+            (lambda ()
+              (setq-local comment-start "# "
+                          comment-end ""
+                          comment-add 0)))
+  )
+
+
 ;;; =============================
 ;;; Outline Folding for ESS & Markdown
 ;;; =============================
@@ -512,12 +519,14 @@
   (defun +custom/enable-outline-folding ()
     "Enable outline folding for comment headings."
     (outline-minor-mode 1)
-    (setq-local outline-regexp "##+ *")
+    (setq-local outline-regexp "##+\\s-*")
     (setq-local outline-level (lambda () (length (match-string 0))))
     (setq-local +fold-provider-text 'outline))
 
+  ;; Apply to ESS R mode
   (add-hook 'ess-r-mode-hook #'+custom/enable-outline-folding)
 
+  ;; Apply to Markdown mode
   (add-hook 'markdown-mode-hook
             (lambda ()
               (outline-minor-mode 1)
@@ -525,12 +534,24 @@
               (setq-local outline-level (lambda () (length (match-string 0))))
               (setq-local +fold-provider-text 'outline)))
 
+  ;; Doom-style folding keybindings
   (map! :map outline-minor-mode-map
         :n "z T a" #'outline-toggle-children
         :n "z T c" #'outline-hide-subtree
         :n "z T o" #'outline-show-subtree
         :n "z T m" #'outline-hide-body
-        :n "z T r" #'outline-show-all))
+        :n "z T r" #'outline-show-all)
+  )
+
+;; (after! outline
+;;   (map! :map outline-minor-mode-map
+;;         :nv
+;;         (:prefix ("z T" . "Outline folding")
+;;          :desc "Toggle children" "a" #'outline-toggle-children
+;;          :desc "Hide subtree"    "c" #'outline-hide-subtree
+;;          :desc "Show subtree"    "o" #'outline-show-subtree
+;;          :desc "Hide body"       "m" #'outline-hide-body
+;;          :desc "Show all"        "r" #'outline-show-all)))
 
 ;;; =============================
 ;;; Quarto Integration
@@ -552,34 +573,41 @@
 ;;; =============================
 ;;; Translation Tools
 ;;; =============================
+;; Google Translate (basic)
 (use-package! google-translate
-  :commands (google-translate-smooth-translate
-             google-translate-at-point
-             google-translate-query-translate))
+  :commands (google-translate-smooth-translate google-translate-at-point google-translate-query-translate))
 
 (use-package! google-translate-smooth-ui
   :after google-translate
   :config
+  ;; Set translation directions
   (setq google-translate-translation-directions-alist
         '(("en" . "no")
           ("no" . "en"))))
 
+;; Go-Translate (modern alternative)
 (use-package! go-translate
   :commands gts-do-translate
   :config
+  ;; Default languages
   (setq gt-langs '(en no))
+  ;; Default translator: Google
+  (setq gt-default-translator (gt-translator :engines (gt-google-engine)))
+  ;; Advanced translator: Bing + Google, render in buffer
   (setq gt-default-translator
         (gt-translator
          :taker   (gt-taker :text 'buffer :pick 'paragraph)
          :engines (list (gt-bing-engine) (gt-google-engine))
-         :render  (gt-buffer-render))))
+         :render  (gt-buffer-render)))
+  )
 
+;; Optional: Add keybindings for quick access
 (map! :leader
       (:prefix ("=" . "Translate")
-       :desc "Google Translate"  "g" #'google-translate-smooth-translate
-       :desc "Go Translate"      "t" #'gts-do-translate
+       :desc "Google Translate" "g" #'google-translate-smooth-translate
+       :desc "Go Translate" "t" #'gts-do-translate
        :desc "Translate at point" "l" #'google-translate-at-point
-       :desc "Query Translate"   "L" #'google-translate-query-translate))
+       :desc "Query Translate" "L" #'google-translate-query-translate))
 
 ;;; =============================
 ;;; Region Selection (Expand/Contract)
@@ -587,6 +615,7 @@
 (use-package! expand-region
   :commands (er/expand-region er/contract-region))
 
+;; Better selection than keybind 'viw'
 (map! :nvig "C-=" #'er/expand-region)
 (map! (:map 'override
        :v "v" #'er/expand-region
@@ -595,8 +624,10 @@
 ;;; =============================
 ;;; Window Management
 ;;; =============================
+;; Rotate windows (requires `rotate` package in init.el)
 (map! :map evil-window-map
-      "SPC"       #'rotate-layout
+      "SPC" #'rotate-layout
+      ;; Swap windows
       "C-<left>"  #'+evil/window-move-left
       "C-<down>"  #'+evil/window-move-down
       "C-<up>"    #'+evil/window-move-up
@@ -613,9 +644,11 @@
       :desc "Beacon blink" "b" #'beacon-blink)
 
 ;;; =============================
-;;; Flyspell
+;;; Flyspell All Modes
 ;;; =============================
+;; Use folder "hunspell-msvc-Release-x64" in PATH to use ispell
 (after! flyspell
+  ;; Windows-specific settings
   (when IS-WINDOWS
     (let ((dict-path "C:/Emacstillegg/dictionaries")
           (hunspell-path "C:/Emacstillegg/hunspell-1.3.2-3-w32-bin/bin/hunspell.exe"))
@@ -625,19 +658,25 @@
         (setq ispell-program-name hunspell-path
               ispell-local-dictionary "nb_NO"
               ispell-local-dictionary-alist
-              '(("nb_NO" "[[:alpha:]]" "[^[:alpha:]]" "[']"
-                 nil ("-d" "nb_NO") nil utf-8))))))
+              '(("nb_NO" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "nb_NO") nil utf-8))))))
 
+  ;; Linux-specific settings
   (when IS-LINUX
     (setq ispell-program-name "aspell"))
 
-  ;; CHANGED: Removed redundant duplicate hooks — smart-flyspell-mode below
-  ;; covers all modes. Kept only the specific mode hooks for clarity.
-  (add-hook 'ess-r-mode-hook    #'flyspell-prog-mode)
+  ;; Enable flyspell for programming modes (comments/strings only)
+  (add-hook 'ess-r-mode-hook #'flyspell-prog-mode)
   (add-hook 'emacs-lisp-mode-hook #'flyspell-prog-mode)
-  (add-hook 'org-mode-hook      #'flyspell-mode)
+
+  ;; Enable flyspell for text modes (everything)
+  (add-hook 'org-mode-hook #'flyspell-mode)
   (add-hook 'markdown-mode-hook #'flyspell-mode)
 
+  ;; Optional: Add more programming modes
+  ;; (add-hook 'python-mode-hook #'flyspell-prog-mode)
+  ;; (add-hook 'js-mode-hook #'flyspell-prog-mode)
+
+  ;; Language switching functions
   (defun my/flyspell-norwegian ()
     "Switch Flyspell to Norwegian."
     (interactive)
@@ -651,20 +690,71 @@
     (ispell-change-dictionary (if IS-WINDOWS "en_GB" "english"))
     (flyspell-buffer)
     (message "Flyspell language: English"))
+  )
 
-  ;; Performance: don't slow down typing
-  (setq flyspell-issue-message-flag nil
-        flyspell-issue-welcome-flag nil
-        flyspell-large-region 1000))
-
+;; Keybindings
 (map! :leader
       (:prefix ("t" . "toggle")
                (:prefix ("S" . "Spell lang")
-                :desc "Norwegian"   "n" #'my/flyspell-norwegian
-                :desc "English"     "e" #'my/flyspell-english
-                :desc "Prog mode"   "p" #'flyspell-prog-mode
-                :desc "Full mode"   "f" #'flyspell-mode
+                :desc "Norwegian" "n" #'my/flyspell-norwegian
+                :desc "English" "e" #'my/flyspell-english
+                :desc "Prog mode" "p" #'flyspell-prog-mode
+                :desc "Full mode" "f" #'flyspell-mode
                 :desc "Buffer check" "b" #'flyspell-buffer)))
+
+;; =============================
+;; What Gets Checked in Each Mode?
+;; =============================
+
+;; Programming modes (R, Emacs Lisp, Python, etc.):
+;;   flyspell-prog-mode → ONLY comments and strings
+;;   Example in R:
+;;     my_variable <- 42          # ← Code: NOT checked
+;;     # This is a comentt        # ← Comment: CHECKED ✓
+;;     "This is a strng"          # ← String: CHECKED ✓
+
+;; Text modes (Org, Markdown, plain text):
+;;   flyspell-mode → EVERYTHING checked
+;;   Example in Org:
+;;     * TODO Write report        # ← CHECKED ✓
+;;     This is a sentance.        # ← CHECKED ✓ ("sentance" → "sentence")
+;;     - List item with typo      # ← CHECKED ✓
+
+;; Markdown example:
+;;   # Heading with Misstake     # ← CHECKED ✓
+;;   This paragraph has erors.   # ← CHECKED ✓
+;;   ```r
+;;   code_here <- 42             # ← NOT checked (inside code block)
+;;   ```
+
+;; Automatically choose the right flyspell mode based on buffer type
+(defun my/smart-flyspell-mode ()
+  "Enable appropriate flyspell mode based on major mode."
+  (interactive)
+  (cond
+   ;; Programming modes: only check comments/strings
+   ((derived-mode-p 'prog-mode)
+    (flyspell-prog-mode))
+   ;; Text modes: check everything
+   ((derived-mode-p 'text-mode)
+    (flyspell-mode))
+   ;; Org mode: check everything
+   ((derived-mode-p 'org-mode)
+    (flyspell-mode))))
+
+;; Enable smart flyspell automatically
+(add-hook 'text-mode-hook #'my/smart-flyspell-mode)
+(add-hook 'prog-mode-hook #'my/smart-flyspell-mode)
+(add-hook 'org-mode-hook #'my/smart-flyspell-mode)
+
+;; Flyspell can be slow on large files - optimize it
+(after! flyspell
+  ;; Check less frequently while typing
+  (setq flyspell-issue-message-flag nil  ; Don't show messages
+        flyspell-issue-welcome-flag nil) ; Don't show welcome message
+
+  ;; Only check visible text in large buffers
+  (setq flyspell-large-region 1000))     ; Adjust threshold as needed
 
 ;;; =============================
 ;;; Outshine for Emacs Lisp Navigation
@@ -672,174 +762,177 @@
 (use-package! outshine
   :hook (emacs-lisp-mode . outshine-mode))
 
+;;; =============================
+;;; Eshell Aliases
+;;; =============================
+(set-eshell-alias! "cdl" "cd $1; ls")
+
+;; Git aliases
+(dolist (alias '(("cgw" . "/Git-hdir/$1")
+                 ("cgk" . "/Git-kh/$1")
+                 ("cgp" . "/Git-personal/$1")
+                 ("cgwl" . "/Git-hdir")
+                 ("cgkl" . "/Git-kh")
+                 ("cgpl" . "/Git-personal")))
+  (set-eshell-alias! (car alias) (concat "cd " hdir-dir-c (cdr alias) "; ls -a")))
+
+(set-eshell-alias!
+ "gc" "git checkout $1"
+ "gcb" "git checkout -b $1"
+ "gb" "git branch"
+ "gbd" "git branch -d $1"
+ "gbD" "git branch -D $1"
+ "gbdO" "git push origin --delete $1"
+ "gf" "git fetch $1"
+ "gm" "git merge $1"
+ "gmf" "git merge --no-ff $1"
+ "gpusho" "git push origin"
+ "gpush" "git push origin $1"
+ "gpull" "git pull"
+ "gpushs" "git push origin master --recurse-submodules=on-demand"
+ "gpulls" "git pull --recurse-submodules")
+
 ;;; =================================
 ;;; Corfu (modern CAPF completion)
 ;;; =================================
-;; WINDOWS NOTE: Corfu uses child frames for its popup. These work fine in GUI
-;; Emacs on Windows (runemacs.exe / emacsclientw.exe). If you ever run Emacs
-;; in a terminal (emacs -nw), child frames won't work — you'd need corfu-terminal.
-;; For now (GUI only), the config below is correct.
 
 (use-package! corfu
   :init
-  (setq corfu-auto t
-        corfu-auto-delay 0.6    ; slightly longer delay reduces noise while typing
-        corfu-auto-prefix 2
+  (setq corfu-auto t          ; enable auto popup
+        corfu-auto-delay 0.6 ; delay in seconds (increase if needed)
+        corfu-auto-prefix 2   ; number of chars before completion starts
         corfu-cycle t
         corfu-preselect 'valid
-        corfu-quit-no-match 'separator
+        corfu-quit-no-match 'separator  ; Better: quit only at separator
         corfu-quit-at-boundary 'separator
         corfu-scroll-margin 2
-        corfu-popupinfo-delay '(0.5 . 0.3))  ; CHANGED: tuple form (show . hide delay)
+        corfu-popupinfo-delay 0.3)
   :config
   (global-corfu-mode 1)
   (corfu-popupinfo-mode 1)
 
-  ;; CHANGED: Use `kbd` for reliable key parsing across Emacs versions.
-  ;; Also: do NOT bind RET to corfu-insert globally — it swallows RET
-  ;; in programming modes where you want a newline. Let corfu-insert
-  ;; happen on TAB (via my/smart-tab below) and leave RET alone.
+  ;; Keep Corfu separate from Copilot - use different keys
   (map! :map corfu-map
-        :i "<tab>"     #'corfu-next
+        :i "RET"     #'corfu-insert
+        :i "<tab>"   #'corfu-next          ; Alternative navigation
         :i "<backtab>" #'corfu-previous
-        :i "M-d"       #'corfu-info-documentation
-        :i "M-l"       #'corfu-info-location
-        :i "C-g"       #'corfu-quit
-        :i "C-n"       #'corfu-next      ; extra navigation
-        :i "C-p"       #'corfu-previous)
+        :i "M-d"     #'corfu-info-documentation
+        :i "M-l"     #'corfu-info-location
+        :i "C-g"     #'corfu-quit)
 
   (after! evil
     (add-hook 'corfu-mode-hook
               (lambda ()
                 (evil-make-intercept-map corfu-map)
+                ;; Ensure TAB works in corfu popup
                 (evil-normalize-keymaps)))))
 
 (custom-set-faces!
   '((corfu-popupinfo) :height 0.9))
 
-;;; =============================
-;;; Cape (CAPF extensions)
-;;; =============================
-;; CHANGED: No global additions to completion-at-point-functions.
-;; Cape sources are added buffer-locally in each mode's hook.
-(use-package! cape)
-
-;;; =============================
-;;; ESS / R — completion setup
-;;; =============================
-;; CHANGED: With Eglot active, ESS R buffers get LSP completions automatically.
-;; We do NOT override completion-at-point-functions here because Eglot registers
-;; its own CAPF that is much richer than cape-dabbrev/cape-file alone.
-;; We keep corfu-auto nil so the popup doesn't fire constantly while R is thinking.
+;;; --- ESS + Corfu: Make TAB trigger completion in .R buffers ---
 (after! ess
+  ;; Let TAB do completion in scripts, not only indentation
   (setq ess-tab-complete-in-script t)
-  ;; TAB triggers manual completion; Eglot's CAPF provides the candidates.
+
+  ;; Ensure TAB invokes completion when popup is not up yet
   (map! :map ess-r-mode-map
         :i "<tab>" #'completion-at-point
         :i "TAB"   #'completion-at-point)
+
+  ;; If you prefer manual popup only in ESS buffers, keep this:
   (add-hook 'ess-r-mode-hook
             (lambda ()
-              (setq-local corfu-auto nil)       ; manual TAB completion only
-              (setq-local corfu-auto-delay 0.8) ; longer — R is slow to respond
-              ;; Add cape-file as a fallback after Eglot's own CAPF
-              (add-hook 'completion-at-point-functions #'cape-file nil t)
-              (add-hook 'completion-at-point-functions #'cape-dabbrev nil t))))
-
-;;; =============================
-;;; Eshell — completion
-;;; =============================
-;; CHANGED: Full rewrite.
-;; - Do NOT add eshell-mode to corfu-excluded-modes (that silently breaks TAB).
-;; - Enable corfu-mode explicitly in the hook (global-corfu-mode skips eshell).
-;; - Provide file + dabbrev CAPFs locally; avoid pcomplete conflicts by not
-;;   touching completion-at-point-functions globally.
-;; - Use corfu-auto nil: auto popup in eshell is noisy and unpredictable.
-;; - TAB bound to completion-at-point explicitly.
-(after! eshell
-  (setq eshell-banner-message ""
-        eshell-history-size 5000)
-
-  (add-hook 'eshell-mode-hook
-            (lambda ()
               (setq-local corfu-auto nil)
-              (setq-local corfu-quit-at-boundary t)
-              ;; Use cape-file as primary CAPF; cape-dabbrev as fallback.
-              ;; cape-capf-buster prevents stale cache from confusing corfu.
-              (setq-local completion-at-point-functions
-                          (list (cape-capf-buster #'cape-file)
-                                #'cape-dabbrev))
-              ;; Explicit TAB binding for eshell
-              (keymap-local-set "TAB"   #'completion-at-point)
-              (keymap-local-set "<tab>" #'completion-at-point)
-              ;; Enable corfu locally
-              (corfu-mode 1))))
+              ;; Optional: shorter menu latency for when you press TAB repeatedly
+              (setq-local corfu-auto-delay 0.3))))
+
+;; Optional: prioritize ESS CAPF and add CAPE fallbacks
+(use-package! cape
+  :after (corfu ess)
+  :init
+  (defun yusman/ess-capf-setup ()
+    (setq-local completion-at-point-functions
+                (list
+                 #'ess-r-completion-at-point
+                 #'cape-dabbrev
+                 #'cape-file)))
+  (add-hook 'ess-r-mode-hook #'yusman/ess-capf-setup))
+
 
 ;;; =============================
-;;; shell-mode (cmd/bash via M-x shell)
+;;; Cape (optional extra CAPF sources)
 ;;; =============================
-(after! shell
-  (add-hook 'shell-mode-hook
-            (lambda ()
-              (setq-local completion-at-point-functions
-                          (list #'cape-file #'cape-dabbrev))
-              (corfu-mode 1))))
+;; Option A: install cape (declare in packages.el and doom sync), then:
+(use-package! cape
+  :init
+  ;; Keep it simple and robust
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  ;; Uncomment only if ispell is configured:
+  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
+  )
 
 ;;; =============================
-;;; GitHub Copilot
+;;; GitHub Copilot (no TAB conflicts)
 ;;; =============================
-;; CHANGED: Moved :bind to use-package :config map! form (Doom pattern).
-;; Kept the TAB binding only in copilot-completion-map so it doesn't
-;; conflict with corfu-map or normal buffer TAB.
-;;
 ;; See Requirements from copilot GitHub page: https://github.com/copilot-emacs/copilot.el, especially Node.js
 ;; which can be downloaded from https://nodejs.org/en/download/ (Standalone binary recommended for Windows ie. zip)
 ;; Unzip and add the folder path to your PATH environment variable. Check with `node -v` in terminal.
 ;; Run `doom sync` after adding copilot to the PATH after restarting
 ;; Node.js needed to be able to install copilot-language-server with M-x copilot-install-server
 ;; After installation run:  M-x copilot-login
+;; Activate (company +childframe) in init.el if not using Corfu
 (use-package! copilot
   :hook (prog-mode . copilot-mode)
+  :bind (:map copilot-completion-map
+              ("<tab>" . 'copilot-accept-completion)
+              ("TAB" . 'copilot-accept-completion)
+              ("C-TAB" . 'copilot-accept-completion-by-word)
+              ("C-<tab>" . 'copilot-accept-completion-by-word)
+              ("C-'"   . 'copilot-accept-completion-by-line)
+              ("C-n" . 'copilot-next-completion)
+              ("C-p" . 'copilot-previous-completion))
+
   :config
+  ;; Make sure this is defined before copilot-mode runs ie. indentation 2 spaces
   (add-to-list 'copilot-indentation-alist '(prog-mode 2))
   (add-to-list 'copilot-indentation-alist '(org-mode 2))
   (add-to-list 'copilot-indentation-alist '(text-mode 2))
   (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
-  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2))
-
-  (map! :map copilot-completion-map
-        "<tab>"   #'copilot-accept-completion
-        "TAB"     #'copilot-accept-completion
-        "C-TAB"   #'copilot-accept-completion-by-word
-        "C-<tab>" #'copilot-accept-completion-by-word
-        "C-'"     #'copilot-accept-completion-by-line
-        "C-n"     #'copilot-next-completion
-        "C-p"     #'copilot-previous-completion))
+  (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
 
 ;;; =============================
-;;; Smart TAB
+;;; Smart TAB with Better Corfu Detection
 ;;; =============================
-;; Priority: corfu popup → copilot suggestion → indent
-;; CHANGED: corfu--frame check replaced with corfu-popupinfo—the frame variable
-;; name changed across corfu versions. Using `corfu-popupinfo` is more stable.
-;; Also added `ignore-errors` around the frame check for robustness.
 (defun my/smart-tab ()
   "Confirm Corfu if visible; else accept Copilot; else indent."
   (interactive)
   (cond
-   ;; Corfu popup is visible
+   ;; Check if corfu popup is actually visible
    ((and (bound-and-true-p corfu-mode)
-         (ignore-errors (frame-live-p corfu--frame)))
+         (frame-live-p corfu--frame))
     (corfu-insert))
-   ;; Copilot has a suggestion
+   ;; Check if copilot has a suggestion
    ((and (bound-and-true-p copilot-mode)
-         (bound-and-true-p copilot--overlay)
+         (boundp 'copilot--overlay)
          copilot--overlay)
     (copilot-accept-completion))
-   ;; Default: normal tab/indent
+   ;; Default: indent
    (t
     (indent-for-tab-command))))
 
 (map! :i "<tab>" #'my/smart-tab)
+
+;;; =============================
+;;; ADDITIONAL: Useful Helper Function
+;;; =============================
+(defun my/show-keybinding-conflicts ()
+  "Show potential keybinding conflicts in current buffer."
+  (interactive)
+  (let ((conflicts '()))
+    (message "Check *Messages* buffer for keybinding information")
+    (describe-bindings)))
 
 ;;; =============================
 ;;; Misc: Copy Current File Path
@@ -863,41 +956,10 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
 ;;; ============================
 ;;; External settings
 ;;; ============================
+;; Load my custom org settings
 (load! "+bindings.el")
 (load! "+org.el")
 
-;;; =============================
-;;; Windows-specific: Performance Tweaks
-;;; =============================
-;; ADDED: These settings reduce sluggishness that's especially noticeable on
-;; Windows where process spawning and I/O are slower than on Linux/macOS.
-(when IS-WINDOWS
-  ;; Increase the amount of data Emacs reads from processes in one chunk.
-  ;; Default is 4096 bytes which causes many roundtrips for LSP/Eglot traffic.
-  (setq read-process-output-max (* 1024 1024)) ; 1MB
-
-  ;; Garbage collect less frequently during normal operation.
-  ;; The default 800KB threshold causes GC pauses every few seconds.
-  (setq gc-cons-threshold (* 128 1024 1024)) ; 128MB during use
-  (setq gc-cons-percentage 0.1)
-
-  ;; ADDED: Allow Emacs to keep a larger undo history — useful on slower systems
-  ;; where you might want to undo across longer editing sessions.
-  (setq undo-limit (* 10 1024 1024))       ; 10MB
-  (setq undo-strong-limit (* 15 1024 1024)) ; 15MB
-
-  ;; ADDED: Faster cursor display update on Windows
-  (setq cursor-in-non-selected-windows nil)
-  (setq highlight-nonselected-windows nil)
-
-  ;; ADDED: Prevent Emacs from auto-saving every few seconds to a temp file,
-  ;; which hits the disk frequently on Windows and causes brief freezes.
-  (setq auto-save-default nil)  ; remove if you rely on auto-save recovery
-
-  ;; ADDED: Longer idle time before eldoc triggers — prevents constant
-  ;; LSP hover requests while you're still typing (especially noticeable
-  ;; in R buffers where languageserver is already under load).
-  (setq eldoc-idle-delay 1.0))
 
 ;; Guide to use Daemon and Client for Windows
 ;; Create a EmacsClient shortcut on desktop eg. EmacsClient
@@ -912,11 +974,11 @@ If DIR-PATH-ONLY-P is non-nil, copy only the directory path."
 ;; rem %APPDATA% is where C:\Users\<username>\AppData\Roaming is
 ;; set HOME=%HOME%
 
-;; rem Clean previous server file file info first
+;; rem Clean previous server file info first
 ;; del /q ""%HOME%\\.emacs.d\\server\\*""
 
 ;; rem Start the Emacs daemon/server with HOME as the default directory
 ;; C:\Users\ybka\scoop\apps\emacs\current\bin\runemacs.exe --daemon
 
 ;; rem Open a client frame
-;; start "" "C:\Users\%USERNAME%\Desktop\emacsclientw.exe - Shortcut.lnk"
+;; start "" "C:\Users\%USERNAME%\Desktop\emacsclientw.exe - Shortcut.lnk
