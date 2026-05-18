@@ -379,7 +379,7 @@
 ;; Using "R" (relying on PATH) is cleaner but can break if PATH isn't set up
 ;; properly in the Emacs GUI process on Windows (which doesn't inherit shell PATH).
 (when (eq system-type 'windows-nt)
-  (setq inferior-ess-r-program "C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"))
+  (setq inferior-ess-r-program "C:/Program Files/R/R-4.6.0/bin/x64/Rterm.exe"))
 
 (defun check-r-version ()
   "Display the R version used by Emacs."
