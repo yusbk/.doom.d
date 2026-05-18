@@ -76,6 +76,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+
 ;;; =============================
 ;;; OS-specific Directory Settings
 ;;; =============================
@@ -84,10 +85,13 @@
         hdir-dir-h "/mnt/H"
         hdir-dir-c "~/"))
 
+;; Add slash for Windows ie. "O:/" Without it will call for last used folder in drive,
+;; which can be very different from the root and cause confusion.
 (when IS-WINDOWS
-  (setq hdir-dir-o "O:"
-        hdir-dir-h "H:"
-        hdir-dir-c "C:/Users/ykama/"))
+  (setq hdir-dir-o "O:/"
+        hdir-dir-h "H:/"
+        hdir-dir-c "C:/Users/ykama/"
+        hdir-dir-cc "C:/"))
 
 ;;; =============================
 ;;; OneDrive Paths
@@ -96,70 +100,14 @@
   (setq onedrive "OneDrive/"
         shortcutonedrive (concat hdir-dir-c "OneDrive/")))
 
+;; Handle separators properly for Windows OneDrive paths, which often contain
+;; spaces. Use `expand-file-name` to ensure correct path construction.
 (when IS-WINDOWS
-  (setq onedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"
-        shortcutonedrive "C:/Users/ykama/OneDrive - Helsedirektoratet/"))
+  (setq onedrive
+        (expand-file-name "OneDrive - Helsedirektoratet/"
+                          "C:/Users/ykama/")
+        shortcutonedrive onedrive))
 
-(set-eshell-alias! "cdo" (concat "cd " shortcutonedrive))
-
-;;; =============================
-;;; Git and Shell Configuration
-;;; =============================
-;; Use Error Handling to avoid issues if Git or Bash paths do not exist
-(when IS-WINDOWS
-  (after! exec-path
-    (let ((git-bin "C:/Program Files/Git/usr/bin"))
-      (when (file-directory-p git-bin)
-        (add-to-list 'exec-path git-bin)
-        (setenv "PATH" (concat git-bin ";" (getenv "PATH"))))))
-
-  (after! eshell
-    (let ((bash-path "C:/Program Files/Git/bin/bash.exe"))
-      (when (file-executable-p bash-path)
-        (setq explicit-shell-file-name bash-path
-              shell-file-name bash-path)))))
-
-;;; =============================
-;;; General Settings
-;;; =============================
-(setq evil-want-fine-undo t) ; Fine-grained undo in Evil mode
-
-;;; =============================
-;;; Format on Save (Selective)
-;;; =============================
-(setq +format-on-save-enabled-modes '(python-mode r-mode emacs-lisp-mode))
-
-
-;;; ============================
-;;; Which key defined
-;;; ============================
-;; Use C-h to see all the keys when there are many eg. more than one page
-(after! which-key
-  (which-key-add-key-based-replacements
-    "C-x RET" "set"
-    "C-x a" "abbreviation"
-    "C-x 8" "emoji"
-    "C-x n" "narrow-codes"
-    "C-x r" "register"
-    "C-x t" "tabs"
-    "C-x x" "buffer-related"
-    "C-x w" "winum"
-    "SPC m c" "Comments"
-    ))
-
-
-;;; =============================
-;;; Eshell Aliases (Fixed for Eshell)
-;;; =============================
-(map! :leader "o x" #'+eshell/frame)
-(dolist (alias `(("dsync" "~/.emacs.d/bin/doom sync")
-                 ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
-                 ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
-                 ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
-                 ("cdr" ,(concat hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
-                 ("cd1" ,(concat shortcutonedrive "; ls -a"))
-                 ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
-  (set-eshell-alias! (car alias) (cadr alias)))
 
 ;;; =============================
 ;;; Fonts
@@ -194,6 +142,109 @@
 
 ;; Load the first theme
 (load-theme (nth my-theme-index my-themes) :no-confirm)
+
+;;; =============================
+;;; Git and Shell Configuration (Windows)
+;;; =============================
+;; CHANGED: `after! exec-path` is not a real package — removed that wrapper.
+;; exec-path manipulation should happen unconditionally at startup, not deferred.
+;; Also: set shell-file-name here only for Windows; global one is set below.
+(when IS-WINDOWS
+  (let ((git-bin "C:/Program Files/Git/usr/bin"))
+    (when (file-directory-p git-bin)
+      (add-to-list 'exec-path git-bin)
+      (setenv "PATH" (concat git-bin ";" (getenv "PATH")))))
+
+  ;; CHANGED: Set eshell to use bash (from Git for Windows) only on Windows.
+  ;; Moved out of `after! eshell` because explicit-shell-file-name needs to be
+  ;; set before eshell loads, not inside a deferred block that runs too late.
+  (let ((bash-path "C:/Program Files/Git/bin/bash.exe"))
+    (when (file-executable-p bash-path)
+      (setq explicit-shell-file-name bash-path
+            shell-file-name bash-path))))
+
+;;; =============================
+;;; General Settings
+;;; =============================
+(setq evil-want-fine-undo t) ; Fine-grained undo in Evil mode
+
+;; CHANGED: Removed the duplicate/conflicting shell settings that appeared below.
+;; The Windows-specific ones above are sufficient.
+;; On Linux this falls through to whatever bash is in PATH.
+(unless IS-WINDOWS
+  (setq shell-file-name (executable-find "bash")))
+
+;; REMOVED: vterm-shell and explicit-shell-file-name set to cmdproxy.exe.
+;; cmdproxy.exe is a last-resort fallback — using it directly breaks many shell
+;; features and is why eshell/shell behaved oddly. The Git bash path above is
+;; the correct Windows shell to use. If you need vterm specifically, set it
+;; separately: (setq vterm-shell "C:/Windows/System32/cmd.exe")
+
+;;; =============================
+;;; Format on Save (Selective)
+;;; =============================
+(setq +format-on-save-enabled-modes '(python-mode r-mode emacs-lisp-mode))
+
+;;; ============================
+;;; Which key defined
+;;; ============================
+(after! which-key
+  (which-key-add-key-based-replacements
+    "C-x RET" "set"
+    "C-x a"   "abbreviation"
+    "C-x 8"   "emoji"
+    "C-x n"   "narrow-codes"
+    "C-x r"   "register"
+    "C-x t"   "tabs"
+    "C-x x"   "buffer-related"
+    "C-x w"   "winum"
+    "SPC m c" "Comments"))
+
+;;; =============================
+;;; Eshell Aliases
+;;; =============================
+(map! :leader "o x" #'+eshell/frame)
+
+(dolist (alias
+         `(("dsync" "~/.emacs.d/bin/doom sync")
+           ("cdc" ,(concat "cd " hdir-dir-c "; ls -a"))
+           ("cdo" ,(concat "cd " hdir-dir-o "; ls -a"))
+           ("cdh" ,(concat "cd " hdir-dir-h "; ls -a"))
+           ("cdr" ,(concat "cd " hdir-dir-o "/Prosjekt/Rusdata; ls -a"))
+           ("cdp" ,(concat "cd "
+                           (shell-quote-argument shortcutonedrive)
+                           "; ls -a"))
+           ("cdm" ,(concat "cd " hdir-dir-h "/meetings; ls -a"))))
+  (set-eshell-alias! (car alias) (cadr alias)))
+
+;;; =============================
+;;; Eshell Extra Aliases
+;;; =============================
+(set-eshell-alias! "cdl" "cd $1; ls")
+
+(dolist (alias '(("cgw" . "/Git-hdir/$1")
+                 ("cgk" . "/Git-kh/$1")
+                 ("cgp" . "/Git-personal/$1")
+                 ("cgwl" . "/Git-hdir")
+                 ("cgkl" . "/Git-kh")
+                 ("cgpl" . "/Git-personal")))
+  (set-eshell-alias! (car alias) (concat "cd " hdir-dir-c (cdr alias) "; ls -a")))
+
+(set-eshell-alias!
+ "gc" "git checkout $1"
+ "gcb" "git checkout -b $1"
+ "gb" "git branch"
+ "gbd" "git branch -d $1"
+ "gbD" "git branch -D $1"
+ "gbdO" "git push origin --delete $1"
+ "gf" "git fetch $1"
+ "gm" "git merge $1"
+ "gmf" "git merge --no-ff $1"
+ "gpusho" "git push origin"
+ "gpush" "git push origin $1"
+ "gpull" "git pull"
+ "gpushs" "git push origin master --recurse-submodules=on-demand"
+ "gpulls" "git pull --recurse-submodules")
 
 ;;; =============================
 ;;; Focus Mode
@@ -324,18 +375,19 @@
 ;;; ESS Configuration
 ;;; =============================
 
-;; Sett riktig sti til Rterm.exe (oppdater versjonsstien til din R).
+;; CHANGED: Pinned to exact versioned Rterm.exe path.
+;; Using "R" (relying on PATH) is cleaner but can break if PATH isn't set up
+;; properly in the Emacs GUI process on Windows (which doesn't inherit shell PATH).
 (when (eq system-type 'windows-nt)
   (setq inferior-ess-r-program "C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"))
 
-;; Check R version quickly
 (defun check-r-version ()
   "Display the R version used by Emacs."
   (interactive)
   (message "R version: %s"
            (car (split-string (shell-command-to-string "R --version") "\n"))))
 
-;; Automatically set CRAN mirror when ESS R starts
+;; Set CRAN mirror automatically when R starts
 (add-hook 'ess-r-post-run-hook
           (lambda ()
             (ess-send-string (ess-get-process)
@@ -351,7 +403,6 @@
   (insert "%>%")
   (ess-newline-and-indent))
 
-;; Retrieve previous commands from R process
 (defun ess-readline ()
   "Copy previous command from R process for editing."
   (interactive)
@@ -366,19 +417,14 @@
   (setq this-command 'ess-readline))
 
 (after! ess
-  ;; Disable workspace save prompt
-  (setq inferior-R-args "--no-save --no-restore-history --no-restore")
-
-  ;; ;; Enable rainbow delimiters for programming modes
-  ;; (add-hook! 'prog-mode-hook #'rainbow-delimiters-mode)
-
-  (setq ess-indent-with-fancy-comments nil
+  (setq inferior-R-args "--no-save --no-restore-history --no-restore"
+        ess-indent-with-fancy-comments nil
         ess-ask-for-ess-directory nil
-        ess-roxy-str "#'")
-  ;; Start R i samme vindu
-  (setq ess-switch-process t)
+        ess-roxy-str "#'"
+        ess-switch-process t)
 
-  ;; Keybindings for ESS
+  (add-to-list 'auto-mode-alist '("\\.[rR]\\'" . ess-r-mode))
+
   (map! (:map ess-mode-map
          :localleader
          "T" #'test-R-buffer
@@ -400,52 +446,156 @@
          :i "M-+" #'my-add-column
          :n "C-<up>" #'ess-readline)))
 
-;; -----------------------------
-;; Eglot for R (via languageserver)
-;; -----------------------------
-;; Installer eerst i R: install.packages("languageserver")
-;; install.packages(c("languageserver", "lintr", "styler"))
-(add-hook 'ess-r-mode-hook
-          (lambda ()
-            (require 'eglot)
-            (eglot-ensure)))
+;;; =============================
+;;; Eglot for R (via languageserver)
+;;; =============================
+;; THE JSONRPC TIMEOUT FIX:
+;; The error `jsonrpc-error request id=1 failed: Timed out` means Eglot sent a
+;; request to the R languageserver but got no reply within the timeout window.
+;; On Windows this almost always happens because:
+;;   1. `languageserver::run()` takes 5-15 seconds to start up (R startup is slow).
+;;   2. Eglot's default timeout (30s) is often not enough on a cold start with
+;;      antivirus scanning R + languageserver + all its dependencies.
+;;   3. The PATH "R" lookup fails silently in the GUI Emacs process on Windows,
+;;      so languageserver never actually starts.
+;;
+;; Fixes applied below:
+;;   - Use the full Rterm.exe path (not bare "R") to avoid PATH lookup failures.
+;;   - Increase eglot-connect-timeout to 120s.
+;;   - Add --no-save --no-restore flags to speed up R startup.
+;;   - Wrap eglot-ensure in a short idle timer so ESS finishes loading before
+;;     Eglot tries to connect (removes the mode-spec error on file open).
+;;   - Kept eglot-events-buffer-size at a non-zero value for debugging; set to 0
+;;     only after confirmed working (0 disables the log entirely).
+
+(after! eglot
+  (setq eglot-connect-timeout 120     ; Windows R startup is slow
+        eglot-events-buffer-size 2000  ; small log for debugging; set 0 when stable
+        eglot-report-progress nil)     ; avoids noisy modeline updates
+
+  ;; Use full Rterm.exe path — GUI Emacs on Windows doesn't inherit shell PATH,
+  ;; so bare "R" can fail silently.
+  (when IS-WINDOWS
+    (add-to-list 'eglot-server-programs
+                 `(ess-r-mode . ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
+                                 "--no-save"
+                                 "--no-restore"
+                                 "--slave"
+                                 "-e"
+                                 "languageserver::run()"))))
+  (unless IS-WINDOWS
+    (add-to-list 'eglot-server-programs
+                 '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
+
+  ;; POLYMODE-SAFE eglot-ensure
+  ;; Direct `eglot-ensure` in the mode hook fires during polymode chunk setup,
+  ;; before the R process exists, causing the "Polymode error (pm--mode-setup)"
+  ;; timeout. The fix:
+  ;;   1. Skip eglot entirely if we're inside a polymode inner buffer — let
+  ;;      the host buffer's Eglot session handle LSP for the whole .Rmd file.
+  ;;   2. For plain .R files, use a short idle timer so ESS finishes its own
+  ;;      setup before Eglot tries to connect.
+  (defun ybk/eglot-ensure-safe ()
+    "Start Eglot safely, skipping polymode inner buffers."
+    (when (and
+           ;; Not a polymode inner buffer (these are indirect buffers with a base)
+           (not (and (boundp 'polymode-mode) polymode-mode
+                     (buffer-base-buffer)))
+           ;; Not already managed
+           (not (eglot-managed-p)))
+      (run-with-idle-timer
+       2.0 nil
+       (lambda (buf)
+         (when (and (buffer-live-p buf)
+                    (not (eglot-managed-p)))
+           (with-current-buffer buf
+             ;; Final check: still not in a polymode inner buffer
+             (unless (and (boundp 'polymode-mode) polymode-mode
+                          (buffer-base-buffer))
+               (ignore-errors (eglot-ensure))))))
+       (current-buffer))))
+
+  (add-hook 'ess-r-mode-hook #'ybk/eglot-ensure-safe))
 
 
-;; Optional: make sure Eglot knows the server program for R
-(with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs
-               '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
+;; (after! eglot
+;;   (setq eglot-connect-timeout 120   ; CHANGED from 60 — Windows R startup is slow
+;;         eglot-events-buffer-size 2000  ; CHANGED: keep small log for debugging
+;;         eglot-report-progress nil)  ; CHANGED: avoids noisy modeline updates
 
-;; Handy keybindings (Doom defaults cover many; these are extra examples)
+;;   ;; CHANGED: Use full path to Rterm so Eglot finds it even when the GUI Emacs
+;;   ;; process doesn't inherit your shell PATH (common on Windows).
+;;   (when IS-WINDOWS
+;;     (add-to-list 'eglot-server-programs
+;;                  `(ess-r-mode . ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
+;;                                  "--no-save"
+;;                                  "--no-restore"
+;;                                  "--slave"
+;;                                  "-e"
+;;                                  "languageserver::run()"))))
+
+;;   ;; Linux / fallback: rely on PATH
+;;   (unless IS-WINDOWS
+;;     (add-to-list 'eglot-server-programs
+;;                  '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
+
+;;   ;; CHANGED: Don't call eglot-ensure directly in the hook — use a short idle
+;;   ;; timer instead. This gives ESS time to finish setting up the buffer before
+;;   ;; Eglot tries to connect, which prevents the "File mode specification error"
+;;   ;; you see when opening .R files.
+;;   (add-hook 'ess-r-mode-hook
+;;             (lambda ()
+;;               (run-with-idle-timer
+;;                1.5 nil  ; wait 1.5 seconds of idle before connecting
+;;                (lambda ()
+;;                  (when (and (buffer-live-p (current-buffer))
+;;                             (derived-mode-p 'ess-r-mode))
+;;                    (eglot-ensure)))))))
+
+;; Eglot keybindings
 (map! :map ess-r-mode-map
       :localleader
       "l s" #'eglot
       "l r" #'eglot-reconnect
       "l f" #'eglot-format
       "l a" #'eglot-code-actions
-      "l d" #'eldoc  ;; hover docs are also on 'K' (doom’s lookup)
+      "l d" #'eldoc
       "l R" #'eglot-rename
-      "l =" #'apheleia-format-buffer ; explicit formating
-      )
+      "l =" #'apheleia-format-buffer)
 
-;; Optional: show diagnostics inline
-(setq eglot-report-progress t
-      eglot-events-buffer-size 0)
-
-;; If you use 'apheleia' to format via styler:
+;;; =============================
+;;; Apheleia (R formatting via styler)
+;;; =============================
 (with-eval-after-load 'apheleia
   (setf (alist-get 'R apheleia-formatters)
-        '("Rscript" "--vanilla" "-e" "styler::style_file(commandArgs(TRUE)[1])" filepath))
+        '("Rscript" "--vanilla" "-e"
+          "styler::style_file(commandArgs(TRUE)[1])"
+          filepath))
   (add-hook 'ess-r-mode-hook #'apheleia-mode))
 
-;; using Apheleia on save and not binding eglot-format ;;
 (add-hook 'ess-r-mode-hook
           (lambda ()
             (when (bound-and-true-p apheleia-mode)
               (add-hook 'before-save-hook #'apheleia-format-buffer nil t))))
 
-;; -- Commenting ---------------------------------------------------------------
-;; Function must be defined before bindings
+;;; =============================
+;;; ESS Style & Comment Settings
+;;; =============================
+(after! ess-r-mode
+  (setq ess-style 'RStudio
+        comment-style 'plain
+        ess-indent-with-fancy-comments nil
+        ess-fancy-comments nil)
+
+  (add-hook 'ess-r-mode-hook
+            (lambda ()
+              (setq-local comment-start "# "
+                          comment-end ""
+                          comment-add 0))))
+
+;;; =============================
+;;; Comment Align Helper
+;;; =============================
 (defun ybk/align-comment-line-generic (&optional width)
   "Pad comment line with '-' to reach WIDTH using buffer's `comment-start`."
   (interactive)
@@ -470,20 +620,14 @@
         (delete-region (line-beginning-position) (line-end-position))
         (insert new-line)))))
 
-;; ---- Keybindings ----
-
-;; Global-ish: works in most editable buffers
 (after! general
   (map! :map prog-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map text-mode-map "C-c -" #'ybk/align-comment-line-generic)
   (map! :map conf-mode-map "C-c -" #'ybk/align-comment-line-generic))
 
-;; ESS-specific: ensure it’s available even if something overrides prog-mode-map
 (after! ess
   (map! :map ess-r-mode-map
         "C-c -" #'ybk/align-comment-line-generic)
-
-  ;; Localleader menu under SPC m
   (map! :map ess-r-mode-map
         :localleader
         (:prefix ("c" . "Comments")
@@ -491,26 +635,6 @@
                  "l" #'comment-line
                  "r" #'comment-region
                  "u" #'uncomment-region)))
-
-;; ;; Disable line numbers in inferior ESS mode                  ;;
-;; (setq-hook! 'inferior-ess-mode-hook display-line-numbers nil) ;;
-
-(after! ess-r-mode
-  (setq ess-style 'RStudio)
-  (setq comment-style 'plain ; 'aligned cause it to add trailing #
-        ess-indent-with-fancy-comments nil)
-
-  ;; disable trailing # in comments
-  (setq ess-fancy-comments nil)
-
-  ;; ensure comment prefix is exactly "# "
-  (add-hook 'ess-r-mode-hook
-            (lambda ()
-              (setq-local comment-start "# "
-                          comment-end ""
-                          comment-add 0)))
-  )
-
 
 ;;; =============================
 ;;; Outline Folding for ESS & Markdown
@@ -879,6 +1003,10 @@
 ;; See Requirements from copilot GitHub page: https://github.com/copilot-emacs/copilot.el, especially Node.js
 ;; which can be downloaded from https://nodejs.org/en/download/ (Standalone binary recommended for Windows ie. zip)
 ;; Unzip and add the folder path to your PATH environment variable. Check with `node -v` in terminal.
+;; Check npm -v to confirm npm is also available (comes with Node.js).
+;; Copilot CLI is installed via npm, so having npm working is essential for installing the copilot-language-server.
+;; Run `npm install -g @githubnext/copilot-cli` to install the CLI globally, which provides the copilot-language-server needed for Emacs integration.
+;; If not successful, run this: npm install -g @github/copilot-language-server --prefix=C:\Users\ykama\.local (specify where the node.js is installed if npm global install doesn't work)
 ;; Run `doom sync` after adding copilot to the PATH after restarting
 ;; Node.js needed to be able to install copilot-language-server with M-x copilot-install-server
 ;; After installation run:  M-x copilot-login
