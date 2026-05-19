@@ -375,7 +375,7 @@
 ;;; ESS Configuration
 ;;; =============================
 
-;; CHANGED: Pinned to exact versioned Rterm.exe path.
+;; CHANGED: Pinned to exact versioned Rterm.exe path. OBS! Change in Eglot path as well.
 ;; Using "R" (relying on PATH) is cleaner but can break if PATH isn't set up
 ;; properly in the Emacs GUI process on Windows (which doesn't inherit shell PATH).
 (when (eq system-type 'windows-nt)
@@ -469,7 +469,7 @@
 ;;     only after confirmed working (0 disables the log entirely).
 
 (after! eglot
-  (setq eglot-connect-timeout 120     ; Windows R startup is slow
+  (setq eglot-connect-timeout 60      ; Windows R startup is slow
         eglot-events-buffer-size 2000  ; small log for debugging; set 0 when stable
         eglot-report-progress nil)     ; avoids noisy modeline updates
 
@@ -477,7 +477,7 @@
   ;; so bare "R" can fail silently.
   (when IS-WINDOWS
     (add-to-list 'eglot-server-programs
-                 `(ess-r-mode . ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
+                 `(ess-r-mode . ("C:/Program Files/R/R-4.6.0/bin/x64/Rterm.exe"
                                  "--no-save"
                                  "--no-restore"
                                  "--slave"
