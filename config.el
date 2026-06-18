@@ -120,12 +120,14 @@
 ;;; UI and Themes
 ;;; =============================
 
+;; ;; Remove shortcuts on splashscreen
+;; (remove-hook '+dashboard-functions #'+dashboard-widget-shortmenu)
+
 ;; (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir)) ;;
 (setq fancy-splash-image (expand-file-name "img/hdir2.png" doom-user-dir))
 
 (setq my-themes '(doom-fairy-floss
                   doom-gruvbox
-                  doom-fairy-floss
                   doom-plain
                   doom-ayu-mirage
                   doom-earl-grey
@@ -469,7 +471,7 @@
 ;;     only after confirmed working (0 disables the log entirely).
 
 (after! eglot
-  (setq eglot-connect-timeout 60      ; Windows R startup is slow
+  (setq eglot-connect-timeout 120      ; Windows R startup is slow
         eglot-events-buffer-size 2000  ; small log for debugging; set 0 when stable
         eglot-report-progress nil)     ; avoids noisy modeline updates
 
@@ -787,18 +789,6 @@
   ;; Linux-specific settings
   (when IS-LINUX
     (setq ispell-program-name "aspell"))
-
-  ;; Enable flyspell for programming modes (comments/strings only)
-  (add-hook 'ess-r-mode-hook #'flyspell-prog-mode)
-  (add-hook 'emacs-lisp-mode-hook #'flyspell-prog-mode)
-
-  ;; Enable flyspell for text modes (everything)
-  (add-hook 'org-mode-hook #'flyspell-mode)
-  (add-hook 'markdown-mode-hook #'flyspell-mode)
-
-  ;; Optional: Add more programming modes
-  ;; (add-hook 'python-mode-hook #'flyspell-prog-mode)
-  ;; (add-hook 'js-mode-hook #'flyspell-prog-mode)
 
   ;; Language switching functions
   (defun my/flyspell-norwegian ()
