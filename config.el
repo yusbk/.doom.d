@@ -125,6 +125,7 @@
 
 ;; (setq fancy-splash-image (expand-file-name "img/doom-emacs.png" doom-user-dir)) ;;
 (setq fancy-splash-image (expand-file-name "img/hdir2.png" doom-user-dir))
+;; (setq fancy-splash-image (expand-file-name "img/hdir_rainbow.png" doom-user-dir))
 
 (setq my-themes '(doom-fairy-floss
                   doom-gruvbox
