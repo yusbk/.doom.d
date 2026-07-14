@@ -767,6 +767,14 @@
       "C-<right>" #'+evil/window-move-right)
 
 ;;; =============================
+;;; Folders Navigation with treemacs
+;;; =============================
+;;; Use treemacs for folders navigation
+(map! :leader
+      :desc "Folder treemacs"
+      "o t" #'treemacs)
+
+;;; =============================
 ;;; Beacon (Cursor Blink)
 ;;; =============================
 (use-package! beacon

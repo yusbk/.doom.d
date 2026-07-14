@@ -31,6 +31,7 @@
        ;;ivy               ; a search engine for love and life
        (vertico           ; the search engine of the future
         +icons)
+
        :ui
        ;;deft              ; notational velocity for Emacs
        doom              ; what makes DOOM look the way it does
@@ -47,7 +48,8 @@
        ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler.
+       (treemacs          ; a project drawer, like neotree but cooler.
+        +lsp)              ; enable integration and add shortcuts for common commands
        unicode           ; extended unicode support for various languages
        (vc-gutter +pretty) ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
