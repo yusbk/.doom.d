@@ -183,6 +183,12 @@
 ;; the correct Windows shell to use. If you need vterm specifically, set it
 ;; separately: (setq vterm-shell "C:/Windows/System32/cmd.exe")
 
+;;; add to $DOOMDIR/config.el
+(setq-default vterm-shell "C:/Program
+        Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
+(setq-default explicit-shell-file-name "C:/Program
+        Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
+
 ;;; =============================
 ;;; Format on Save (Selective)
 ;;; =============================

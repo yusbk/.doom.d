@@ -43,7 +43,7 @@
        minimap           ; show a map of the code on the side. Install BlockFont from minimap github to support more symbols
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
-       neotree           ; a project drawer, like NERDTree for vim
+       ;;neotree           ; a project drawer, like NERDTree for vim
        ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
@@ -108,7 +108,7 @@
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp                ; M-x vscode
-        +eglot             ; use Eglot (built-in Emacs LSP client)
+        ;;+eglot             ; use Eglot (built-in Emacs LSP client)
         ;;+peek              ; looking up definitions and references
         )
        magit             ; a git porcelain for Emacs
