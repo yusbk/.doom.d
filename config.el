@@ -212,7 +212,9 @@
 ;;; =============================
 ;;; Eshell Aliases
 ;;; =============================
-(map! :leader "o x" #'+eshell/frame)
+(map! :leader
+      :desc "ehsell frame"
+      "o x" #'+eshell/frame)
 
 (dolist (alias
          `(("dsync" "~/.emacs.d/bin/doom sync")
