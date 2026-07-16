@@ -213,8 +213,10 @@
 ;;; Eshell Aliases
 ;;; =============================
 (map! :leader
-      :desc "ehsell frame"
-      "o x" #'+eshell/frame)
+      ;; :desc "ehsell frame"
+      ;; "o X" #'+eshell/frame ;already bound to "SPC o E"
+      :desc "Open eshell below"
+      "o x" #'+eshell/split-below)
 
 (dolist (alias
          `(("dsync" "~/.emacs.d/bin/doom sync")
@@ -288,8 +290,8 @@
   )
 
 (map! :leader
-      (:prefix ("o" . "open")
-       :desc "Toggle minimap" "m" #'minimap-mode))
+      :desc "Toggle minimap"
+      "o m" #'minimap-mode)
 
 ;;; =============================
 ;;; Evil Escape Settings
