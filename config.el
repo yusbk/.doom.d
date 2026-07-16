@@ -255,7 +255,7 @@
  "gmf" "git merge --no-ff $1"
  "gpusho" "git push origin"
  "gpush" "git push origin $1"
- "gpull" "git pull"
+ "gp" "git pull"
  "gpushs" "git push origin master --recurse-submodules=on-demand"
  "gpulls" "git pull --recurse-submodules")
 
