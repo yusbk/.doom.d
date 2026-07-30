@@ -252,12 +252,28 @@
  "gbdO" "git push origin --delete $1"
  "gf" "git fetch $1"
  "gm" "git merge $1"
- "gmf" "git merge --no-ff $1"
+ "gmnf" "git merge --no-ff $1"
+ "gmf" "git merge --ff-only $1"
  "gpusho" "git push origin"
  "gpush" "git push origin $1"
  "gp" "git pull"
+ "gpr" "git pull --rebase origin $1"
  "gpushs" "git push origin master --recurse-submodules=on-demand"
  "gpulls" "git pull --recurse-submodules")
+
+;; ;; Husk
+;; --------
+;; git checkout dev
+;; git rebase main
+
+;; git checkout main
+;; git merge --ff-only dev
+
+;; ;;Tips for squashing commits into one:
+;; git checkout main
+;; git merge --squash dev
+;; git commit -m "Fix #25 Add tooltip support"
+
 
 ;;; =============================
 ;;; Focus Mode
