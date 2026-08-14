@@ -110,7 +110,7 @@
        (lookup             ; navigate your code and its documentation
         +dictionary)
        (lsp                ; M-x vscode
-        ;;+eglot             ; use Eglot (built-in Emacs LSP client)
+        +eglot             ; use Eglot (built-in Emacs LSP client)
         ;;+peek              ; looking up definitions and references
         )
        magit             ; a git porcelain for Emacs
