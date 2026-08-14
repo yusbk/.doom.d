@@ -250,24 +250,32 @@
  "gbd" "git branch -d $1"
  "gbD" "git branch -D $1"
  "gbdO" "git push origin --delete $1"
- "gf" "git fetch $1"
- "gm" "git merge $1"
+ "gfo" "git fetch origin"
+ ;;  "gm" "git merge $1"
+ "gr" "git rebase $1"
  "gmnf" "git merge --no-ff $1"
  "gmf" "git merge --ff-only $1"
  "gpusho" "git push origin"
  "gpush" "git push origin $1"
- "gp" "git pull"
+ ;;  "gp" "git pull"
  "gpr" "git pull --rebase origin $1"
  "gpushs" "git push origin master --recurse-submodules=on-demand"
  "gpulls" "git pull --recurse-submodules")
 
-;; ;; Husk
-;; --------
+;; ;; Husk settings
+;; ;---------------
+;; git config --global pull.rebase true
+;; git config --global merge.ff only
+;;
+;; ; Steps---
 ;; git checkout dev
-;; git rebase main
+;; ;; make changes and commit
+;; git fetch origin
+;; git rebase origin/main
 
 ;; git checkout main
 ;; git merge --ff-only dev
+;; git push origin main
 
 ;; ;;Tips for squashing commits into one:
 ;; git checkout main
@@ -932,8 +940,9 @@
  "gbd" "git branch -d $1"
  "gbD" "git branch -D $1"
  "gbdO" "git push origin --delete $1"
- "gf" "git fetch $1"
- "gm" "git merge $1"
+ "gfo" "git fetch origin"
+ ;;  "gm" "git merge $1"
+ "gr" "git rebase $1"
  "gmf" "git merge --no-ff $1"
  "gpusho" "git push origin"
  "gpush" "git push origin $1"
