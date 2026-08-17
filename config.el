@@ -282,6 +282,20 @@
 ;; git merge --squash dev
 ;; git commit -m "Fix #25 Add tooltip support"
 
+;; Magit steps-by-steps
+;; ----------------------
+;; SPC g g        ; Magit
+;; b b temp       ; switch to temp
+;; ... work ...
+;; s              ; stage
+;; c c            ; commit
+;; f f            ; fetch origin
+;; r e            ; rebase onto
+;; origin/main
+;; b b main       ; switch to main
+;; m -f m         ; fast-forward merge temp
+;; P p            ; push
+;; b k temp       ; delete temp
 
 ;;; =============================
 ;;; Focus Mode
