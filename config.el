@@ -430,8 +430,19 @@
 ;; CHANGED: Pinned to exact versioned Rterm.exe path. OBS! Change in Eglot path as well.
 ;; Using "R" (relying on PATH) is cleaner but can break if PATH isn't set up
 ;; properly in the Emacs GUI process on Windows (which doesn't inherit shell PATH).
+(defconst ybk-rterm
+  "C:/Program Files/R/R-4.6.0/bin/x64/Rterm.exe")
+
+(defconst ybk-r-languageserver-cmd
+  `(,ybk-rterm
+    "--no-save"
+    "--no-restore"
+    "--slave"
+    "-e"
+    "languageserver::run()"))
+
 (when (eq system-type 'windows-nt)
-  (setq inferior-ess-r-program "C:/Program Files/R/R-4.6.0/bin/x64/Rterm.exe"))
+  (setq inferior-ess-r-program ybk-rterm))
 
 (defun check-r-version ()
   "Display the R version used by Emacs."
@@ -528,13 +539,10 @@
   ;; Use full Rterm.exe path — GUI Emacs on Windows doesn't inherit shell PATH,
   ;; so bare "R" can fail silently.
   (when IS-WINDOWS
-    (add-to-list 'eglot-server-programs
-                 `(ess-r-mode . ("C:/Program Files/R/R-4.6.0/bin/x64/Rterm.exe"
-                                 "--no-save"
-                                 "--no-restore"
-                                 "--slave"
-                                 "-e"
-                                 "languageserver::run()"))))
+    (add-to-list
+     'eglot-server-programs
+     `(ess-r-mode . ,ybk-r-languageserver-cmd)))
+
   (unless IS-WINDOWS
     (add-to-list 'eglot-server-programs
                  '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
