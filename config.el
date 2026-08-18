@@ -183,11 +183,12 @@
 ;; the correct Windows shell to use. If you need vterm specifically, set it
 ;; separately: (setq vterm-shell "C:/Windows/System32/cmd.exe")
 
-;;; add to $DOOMDIR/config.el
-(setq-default vterm-shell "C:/Program
-        Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
-(setq-default explicit-shell-file-name "C:/Program
-        Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
+;;; Not used anymore, but keeping for reference in case you want to use cmdproxy.exe
+;; ;;; add to $DOOMDIR/config.el
+;; (setq-default vterm-shell "C:/Program
+;;         Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
+;; (setq-default explicit-shell-file-name "C:/Program
+;;         Files/emacs-30.1/libexec/emacs/30.1/x86_64-w64-mingw32/cmdproxy.exe")
 
 ;;; =============================
 ;;; Format on Save (Selective)
@@ -933,36 +934,6 @@
 (use-package! outshine
   :hook (emacs-lisp-mode . outshine-mode))
 
-;;; =============================
-;;; Eshell Aliases
-;;; =============================
-(set-eshell-alias! "cdl" "cd $1; ls")
-
-;; Git aliases
-(dolist (alias '(("cgw" . "/Git-hdir/$1")
-                 ("cgk" . "/Git-kh/$1")
-                 ("cgp" . "/Git-personal/$1")
-                 ("cgwl" . "/Git-hdir")
-                 ("cgkl" . "/Git-kh")
-                 ("cgpl" . "/Git-personal")))
-  (set-eshell-alias! (car alias) (concat "cd " hdir-dir-c (cdr alias) "; ls -a")))
-
-(set-eshell-alias!
- "gc" "git checkout $1"
- "gcb" "git checkout -b $1"
- "gb" "git branch"
- "gbd" "git branch -d $1"
- "gbD" "git branch -D $1"
- "gbdO" "git push origin --delete $1"
- "gfo" "git fetch origin"
- ;;  "gm" "git merge $1"
- "gr" "git rebase $1"
- "gmf" "git merge --no-ff $1"
- "gpusho" "git push origin"
- "gpush" "git push origin $1"
- "gpull" "git pull"
- "gpushs" "git push origin master --recurse-submodules=on-demand"
- "gpulls" "git pull --recurse-submodules")
 
 ;;; =================================
 ;;; Corfu (modern CAPF completion)
