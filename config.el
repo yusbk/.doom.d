@@ -127,13 +127,13 @@
 (setq fancy-splash-image (expand-file-name "img/hdir2.png" doom-user-dir))
 ;; (setq fancy-splash-image (expand-file-name "img/hdir_rainbow.png" doom-user-dir))
 
-(setq my-themes '(doom-fairy-floss
-                  doom-gruvbox
-                  doom-plain
-                  doom-ayu-mirage
-                  doom-earl-grey
-                  ))
-(setq my-theme-index 0)
+(defvar my-theme-index 0)
+(defconst my-themes '(doom-fairy-floss
+                      doom-gruvbox
+                      doom-plain
+                      doom-ayu-mirage
+                      doom-earl-grey
+                      ))
 
 (defun cycle-themes ()
   "Cycle through my-themes without modifying the list."
@@ -448,7 +448,9 @@
   "Display the R version used by Emacs."
   (interactive)
   (message "R version: %s"
-           (car (split-string (shell-command-to-string "R --version") "\n"))))
+           (car (split-string (shell-command-to-string
+                               (format "\"%s\" --version"
+                                       inferior-ess-r-program))))))
 
 ;; Set CRAN mirror automatically when R starts
 (add-hook 'ess-r-post-run-hook
@@ -925,7 +927,6 @@
 ;; Enable smart flyspell automatically
 (add-hook 'text-mode-hook #'my/smart-flyspell-mode)
 (add-hook 'prog-mode-hook #'my/smart-flyspell-mode)
-(add-hook 'org-mode-hook #'my/smart-flyspell-mode)
 
 ;; Flyspell can be slow on large files - optimize it
 (after! flyspell
