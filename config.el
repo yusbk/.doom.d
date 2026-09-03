@@ -450,13 +450,13 @@
 (when (eq system-type 'windows-nt)
   (setq inferior-ess-r-program ybk-rterm))
 
-(defun check-r-version ()
-  "Display the R version used by Emacs."
-  (interactive)
-  (message "R version: %s"
-           (car (split-string (shell-command-to-string
-                               (format "\"%s\" --version"
-                                       inferior-ess-r-program))))))
+;; (defun check-r-version ()
+;;   "Display the R version used by Emacs."
+;;   (interactive)
+;;   (message "R version: %s"
+;;            (car (split-string (shell-command-to-string
+;;                                (format "\"%s\" --version"
+;;                                        inferior-ess-r-program))))))
 
 ;; Set CRAN mirror automatically when R starts
 (add-hook 'ess-r-post-run-hook
@@ -996,13 +996,10 @@ Skips polymode inner buffers, whose LSP session is handled by the host buffer."
   (add-to-list 'completion-at-point-functions #'cape-file)
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
 
-  (defun yusman/ess-capf-setup ()
-    (setq-local completion-at-point-functions
-                (list
-                 #'ess-r-completion-at-point
-                 #'cape-dabbrev
-                 #'cape-file)))
-  (add-hook 'ess-r-mode-hook #'yusman/ess-capf-setup))
+  :config
+  ;; Make TAB invoke completion when there is nothing to indent.
+  (setq tab-always-indent 'complete)
+  )
 
 ;;; =============================
 ;;; GitHub Copilot (no TAB conflicts)
