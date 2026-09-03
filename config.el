@@ -318,15 +318,21 @@
 ;;; =============================
 ;;; Minimap
 ;;; ============================
+;; CHANGED: added `:commands minimap-mode' and moved settings from `:config'
+;; to `:init'. A bare `:config' block (with no `:defer'/`:commands'/`:hook')
+;; makes use-package! load minimap.el immediately at startup even though you
+;; only ever toggle it manually via "SPC o m". `:commands' tells use-package!
+;; to defer loading until `minimap-mode' is actually called, and `:init' runs
+;; the setq before that (still fine, since these are just defcustoms).
 (use-package! minimap
-  :config
+  :commands minimap-mode
+  :init
   ;; Always show minimap on the right
   (setq minimap-window-location 'right
         minimap-width-fraction 0.1
-        minimap-major-modes '(prog-mode org-mode))
-  ;; Automatically open minimap when you open a file
-  ;; (add-hook 'prog-mode-hook #'minimap-mode)
-  )
+        minimap-major-modes '(prog-mode org-mode)))
+;; Automatically open minimap when you open a file
+;; (add-hook 'prog-mode-hook #'minimap-mode)
 
 (map! :leader
       :desc "Toggle minimap"
@@ -533,6 +539,16 @@
 ;;   - Kept eglot-events-buffer-size at a non-zero value for debugging; set to 0
 ;;     only after confirmed working (0 disables the log entirely).
 
+;; CHANGED: Eglot is now MANUAL START ONLY.
+;; Previously `ybk/eglot-ensure-safe' was hooked onto `ess-r-mode-hook', so an
+;; idle timer silently launched Rterm.exe + languageserver (a several-second
+;; process spin-up on Windows) every time you opened a .R file, whether or not
+;; you actually wanted LSP for that buffer. That auto-hook is gone. The
+;; `eglot-server-programs' registration below is still needed (it tells Eglot
+;; *how* to start R's language server), but nothing calls `eglot-ensure'
+;; automatically anymore — only `SPC m l s' does (see keybind at the bottom of
+;; this block). Also removed `+lsp' from the `ess' module in init.el, which
+;; was the other (redundant) source of auto-start.
 (after! eglot
   (setq eglot-connect-timeout 120      ; Windows R startup is slow
         eglot-events-buffer-size 2000  ; small log for debugging; set 0 when stable
@@ -549,75 +565,28 @@
     (add-to-list 'eglot-server-programs
                  '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
 
-  ;; POLYMODE-SAFE eglot-ensure
-  ;; Direct `eglot-ensure` in the mode hook fires during polymode chunk setup,
-  ;; before the R process exists, causing the "Polymode error (pm--mode-setup)"
-  ;; timeout. The fix:
-  ;;   1. Skip eglot entirely if we're inside a polymode inner buffer — let
-  ;;      the host buffer's Eglot session handle LSP for the whole .Rmd file.
-  ;;   2. For plain .R files, use a short idle timer so ESS finishes its own
-  ;;      setup before Eglot tries to connect.
-  (defun ybk/eglot-ensure-safe ()
-    "Start Eglot safely, skipping polymode inner buffers."
-    (when (and
-           ;; Not a polymode inner buffer (these are indirect buffers with a base)
-           (not (and (boundp 'polymode-mode) polymode-mode
-                     (buffer-base-buffer)))
-           ;; Not already managed
-           (not (eglot-managed-p)))
-      (run-with-idle-timer
-       2.0 nil
-       (lambda (buf)
-         (when (and (buffer-live-p buf)
-                    (not (eglot-managed-p)))
-           (with-current-buffer buf
-             ;; Final check: still not in a polymode inner buffer
-             (unless (and (boundp 'polymode-mode) polymode-mode
-                          (buffer-base-buffer))
-               (ignore-errors (eglot-ensure))))))
-       (current-buffer))))
+  ;; CHANGED: kept as an interactive command (was an automatic idle-timer
+  ;; hook). Still skips polymode inner buffers — starting Eglot inside an
+  ;; indirect polymode buffer is what caused the old "Polymode error
+  ;; (pm--mode-setup)" timeout; the host .Rmd buffer's Eglot session covers
+  ;; those chunks instead.
+  (defun ybk/eglot-start ()
+    "Manually start Eglot for the current R buffer.
+Skips polymode inner buffers, whose LSP session is handled by the host buffer."
+    (interactive)
+    (cond
+     ((eglot-managed-p)
+      (message "Eglot is already managing this buffer."))
+     ((and (boundp 'polymode-mode) polymode-mode (buffer-base-buffer))
+      (message "Inside a polymode inner buffer — Eglot is managed by the host buffer."))
+     (t
+      (eglot-ensure)))))
 
-  (add-hook 'ess-r-mode-hook #'ybk/eglot-ensure-safe))
-
-
-;; (after! eglot
-;;   (setq eglot-connect-timeout 120   ; CHANGED from 60 — Windows R startup is slow
-;;         eglot-events-buffer-size 2000  ; CHANGED: keep small log for debugging
-;;         eglot-report-progress nil)  ; CHANGED: avoids noisy modeline updates
-
-;;   ;; CHANGED: Use full path to Rterm so Eglot finds it even when the GUI Emacs
-;;   ;; process doesn't inherit your shell PATH (common on Windows).
-;;   (when IS-WINDOWS
-;;     (add-to-list 'eglot-server-programs
-;;                  `(ess-r-mode . ("C:/Program Files/R/R-4.5.1/bin/x64/Rterm.exe"
-;;                                  "--no-save"
-;;                                  "--no-restore"
-;;                                  "--slave"
-;;                                  "-e"
-;;                                  "languageserver::run()"))))
-
-;;   ;; Linux / fallback: rely on PATH
-;;   (unless IS-WINDOWS
-;;     (add-to-list 'eglot-server-programs
-;;                  '(ess-r-mode . ("R" "--slave" "-e" "languageserver::run()"))))
-
-;;   ;; CHANGED: Don't call eglot-ensure directly in the hook — use a short idle
-;;   ;; timer instead. This gives ESS time to finish setting up the buffer before
-;;   ;; Eglot tries to connect, which prevents the "File mode specification error"
-;;   ;; you see when opening .R files.
-;;   (add-hook 'ess-r-mode-hook
-;;             (lambda ()
-;;               (run-with-idle-timer
-;;                1.5 nil  ; wait 1.5 seconds of idle before connecting
-;;                (lambda ()
-;;                  (when (and (buffer-live-p (current-buffer))
-;;                             (derived-mode-p 'ess-r-mode))
-;;                    (eglot-ensure)))))))
-
-;; Eglot keybindings
+;; Eglot keybindings — "l s" now calls the manual starter above instead of
+;; auto-connecting; everything else is unchanged.
 (map! :map ess-r-mode-map
       :localleader
-      "l s" #'eglot
+      "l s" #'ybk/eglot-start   ; CHANGED: was #'eglot
       "l r" #'eglot-reconnect
       "l f" #'eglot-format
       "l a" #'eglot-code-actions
@@ -878,6 +847,7 @@
 (map! :leader
       (:prefix ("t" . "toggle")
                (:prefix ("S" . "Spell lang")
+                :desc "Auto (smart by mode)" "a" #'my/smart-flyspell-mode ; CHANGED: new — the manual trigger for what used to run automatically
                 :desc "Norwegian" "n" #'my/flyspell-norwegian
                 :desc "English" "e" #'my/flyspell-english
                 :desc "Prog mode" "p" #'flyspell-prog-mode
@@ -909,7 +879,8 @@
 ;;   code_here <- 42             # ← NOT checked (inside code block)
 ;;   ```
 
-;; Automatically choose the right flyspell mode based on buffer type
+;; Choose the right flyspell mode based on buffer type — now invoked only via
+;; keybind (see below), never automatically.
 (defun my/smart-flyspell-mode ()
   "Enable appropriate flyspell mode based on major mode."
   (interactive)
@@ -924,9 +895,20 @@
    ((derived-mode-p 'org-mode)
     (flyspell-mode))))
 
-;; Enable smart flyspell automatically
-(add-hook 'text-mode-hook #'my/smart-flyspell-mode)
-(add-hook 'prog-mode-hook #'my/smart-flyspell-mode)
+;; CHANGED: removed automatic activation.
+;;   (add-hook 'text-mode-hook #'my/smart-flyspell-mode)
+;;   (add-hook 'prog-mode-hook #'my/smart-flyspell-mode)
+;; These forced ispell/hunspell to spin up on every text and prog buffer you
+;; opened, which is exactly the "unless activated with a selected keybind"
+;; behavior you wanted to avoid. `my/smart-flyspell-mode' is now bound under
+;; "SPC t S a" instead (see the keybind block below) — press it when you
+;; actually want spell-check for the current buffer.
+;;
+;; Doom's own `:checkers (spell +flyspell)' module also auto-hooks flyspell
+;; onto `text-mode-hook'/`prog-mode-hook' by default. Remove those too so
+;; nothing auto-starts flyspell, from Doom or from us:
+(remove-hook 'text-mode-hook #'flyspell-mode)
+(remove-hook 'prog-mode-hook #'flyspell-prog-mode)
 
 ;; Flyspell can be slow on large files - optimize it
 (after! flyspell
@@ -999,10 +981,21 @@
               ;; Optional: shorter menu latency for when you press TAB repeatedly
               (setq-local corfu-auto-delay 0.3))))
 
-;; Optional: prioritize ESS CAPF and add CAPE fallbacks
+;;; =============================
+;;; Cape (extra CAPF sources)
+;;; =============================
+;; CHANGED: merged what used to be two separate `use-package! cape' blocks
+;; into one. Two specs for the same package register overlapping autoload/
+;; hook setup twice for no benefit — same behavior, less startup bookkeeping.
 (use-package! cape
   :after (corfu ess)
   :init
+  ;; Global CAPF fallbacks: file-path completion and dabbrev (word completion
+  ;; from open buffers). Deliberately NOT adding `cape-ispell' here — that
+  ;; would be another auto spell-check path, which you don't want by default.
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+
   (defun yusman/ess-capf-setup ()
     (setq-local completion-at-point-functions
                 (list
@@ -1010,20 +1003,6 @@
                  #'cape-dabbrev
                  #'cape-file)))
   (add-hook 'ess-r-mode-hook #'yusman/ess-capf-setup))
-
-
-;;; =============================
-;;; Cape (optional extra CAPF sources)
-;;; =============================
-;; Option A: install cape (declare in packages.el and doom sync), then:
-(use-package! cape
-  :init
-  ;; Keep it simple and robust
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  ;; Uncomment only if ispell is configured:
-  ;; (add-to-list 'completion-at-point-functions #'cape-ispell)
-  )
 
 ;;; =============================
 ;;; GitHub Copilot (no TAB conflicts)
@@ -1040,7 +1019,12 @@
 ;; After installation run:  M-x copilot-login
 ;; Activate (company +childframe) in init.el if not using Corfu
 (use-package! copilot
-  :hook (prog-mode . copilot-mode)
+  :commands copilot-mode   ; CHANGED: was `:hook (prog-mode . copilot-mode)',
+                                        ; which silently spun up copilot-mode (and its
+                                        ; node-based language server) in every single
+                                        ; programming buffer you opened. `:commands' defers
+                                        ; loading the package until `copilot-mode' is
+                                        ; actually called — now only via the toggle below.
   :bind (:map copilot-completion-map
               ("<tab>" . 'copilot-accept-completion)
               ("TAB" . 'copilot-accept-completion)
@@ -1057,6 +1041,36 @@
   (add-to-list 'copilot-indentation-alist '(text-mode 2))
   (add-to-list 'copilot-indentation-alist '(clojure-mode 2))
   (add-to-list 'copilot-indentation-alist '(emacs-lisp-mode 2)))
+
+;; CHANGED: new — on-demand start/stop for the current buffer, since Copilot no
+;; longer auto-starts. `ybk/copilot-toggle' flips it on or off; the explicit
+;; on/off variants are there in case you want them bound separately (e.g. one
+;; key to always "start", another to always "stop", rather than a toggle).
+(defun ybk/copilot-toggle ()
+  "Toggle `copilot-mode' in the current buffer."
+  (interactive)
+  (if (bound-and-true-p copilot-mode)
+      (progn (copilot-mode -1) (message "Copilot: off"))
+    (progn (copilot-mode 1) (message "Copilot: on"))))
+
+(defun ybk/copilot-on ()
+  "Turn `copilot-mode' on in the current buffer."
+  (interactive)
+  (copilot-mode 1)
+  (message "Copilot: on"))
+
+(defun ybk/copilot-off ()
+  "Turn `copilot-mode' off in the current buffer."
+  (interactive)
+  (copilot-mode -1)
+  (message "Copilot: off"))
+
+(map! :leader
+      :prefix ("c" . "code")
+      (:prefix ("p" . "Copilot")
+       :desc "Toggle"  "p" #'ybk/copilot-toggle
+       :desc "Start"   "s" #'ybk/copilot-on
+       :desc "Stop"    "k" #'ybk/copilot-off))
 
 ;;; =============================
 ;;; Smart TAB with Better Corfu Detection

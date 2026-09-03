@@ -71,7 +71,7 @@
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       (whitespace         ; a butler for your whitespace  
+       (whitespace         ; a butler for your whitespace
         +guess
         +trim)
        ;;word-wrap         ; soft wrapping with language-aware indent
@@ -147,7 +147,14 @@
        (ess               ; emacs speaks statistics
         ;; +stan
         ;; +tree-sitter
-        +lsp
+        ;; +lsp            ; CHANGED: removed. This flag made Doom add `lsp!'
+        ;;                 ; (which dispatches to `eglot-ensure') onto
+        ;;                 ; `ess-r-mode-local-vars-hook', so Eglot silently
+        ;;                 ; started for every .R file you opened. The
+        ;;                 ; `:tools lsp' module (below) is still enabled, so
+        ;;                 ; Eglot itself is fully available — it's just no
+        ;;                 ; longer wired to auto-start. Start it manually with
+        ;;                 ; `SPC m l s' (see `ybk/eglot-start' in config.el).
         )
        ;;factor
        ;;faust             ; dsp, but you get to keep your soul
